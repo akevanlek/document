@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexum — Allocation คืออะไร</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#F5F3EE;
+  --surface:#FFFFFF;
+  --s2:#EDEAE3;
+  --s3:#E4E1D9;
+  --border:#DDD9D0;
+  --text:#1C1A17;
+  --text2:#6A6760;
+  --text3:#B0ADA6;
+  --red:#BF3018;--red-l:#FBF0EC;--red-m:#F0C0B0;
+  --teal:#0C6B6B;--teal-l:#E5F3F3;--teal-m:#9DD0D0;
+  --navy:#1B3080;--navy-l:#EAF0FA;--navy-m:#A8C0EE;
+  --green:#18703A;--green-l:#E6F5EC;--green-m:#90D0AA;
+  --amber:#A85C0A;--amber-l:#FDF3E5;--amber-m:#F0C878;
+  --font:'Sarabun',sans-serif;
+  --mono:'IBM Plex Mono',monospace;
+  --r:12px;--rl:20px;--rxl:28px;
+}
+
+body{
+  font-family:var(--font);
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.7;
+  padding:0;
+}
+
+/* ── Layout ── */
+.page{max-width:760px;margin:0 auto;padding:48px 24px 80px;}
+
+/* ── Header ── */
+.doc-header{margin-bottom:48px;}
+.doc-tag{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--red);background:var(--red-l);
+  padding:5px 12px;border-radius:20px;margin-bottom:16px;
+}
+.doc-tag svg{width:12px;height:12px;}
+h1{
+  font-size:36px;font-weight:700;line-height:1.2;
+  color:var(--text);margin-bottom:10px;
+  letter-spacing:-.02em;
+}
+.doc-sub{font-size:16px;color:var(--text2);line-height:1.6;max-width:520px;}
+.doc-meta{
+  margin-top:20px;display:flex;gap:16px;flex-wrap:wrap;
+  font-size:12px;color:var(--text3);
+  padding-top:20px;border-top:1px solid var(--border);
+}
+.doc-meta span{display:flex;align-items:center;gap:5px;}
+
+/* ── Section heading ── */
+.sh{
+  display:flex;align-items:center;gap:10px;
+  margin-bottom:16px;margin-top:40px;
+}
+.sh-num{
+  width:28px;height:28px;border-radius:50%;
+  background:var(--text);color:#fff;
+  font-size:12px;font-weight:600;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.sh-title{font-size:20px;font-weight:700;color:var(--text);}
+
+/* ── Callout box ── */
+.callout{
+  border-radius:var(--rl);padding:20px 22px;
+  margin-bottom:16px;
+}
+.callout-title{font-size:14px;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+.callout-title svg{width:16px;height:16px;flex-shrink:0;}
+.callout-body{font-size:14px;line-height:1.7;}
+.co-key{background:var(--s2);border:1px solid var(--border);}
+.co-key .callout-title{color:var(--text);}
+.co-key .callout-body{color:var(--text2);}
+.co-green{background:var(--green-l);border:1px solid var(--green-m);}
+.co-green .callout-title{color:var(--green);}
+.co-green .callout-body{color:var(--green);}
+.co-amber{background:var(--amber-l);border:1px solid var(--amber-m);}
+.co-amber .callout-title{color:var(--amber);}
+.co-amber .callout-body{color:var(--amber);}
+.co-red{background:var(--red-l);border:1px solid var(--red-m);}
+.co-red .callout-title{color:var(--red);}
+.co-red .callout-body{color:var(--red);}
+
+/* ── Analogy card (big visual) ── */
+.analogy{
+  border:1px solid var(--border);border-radius:var(--rxl);
+  overflow:hidden;margin-bottom:24px;
+}
+.analogy-top{
+  background:var(--text);padding:24px 28px;
+  display:flex;flex-direction:column;gap:6px;
+}
+.analogy-label{font-size:11px;font-weight:600;color:rgba(255,255,255,.45);letter-spacing:.08em;text-transform:uppercase;}
+.analogy-title{font-size:22px;font-weight:700;color:#fff;line-height:1.3;}
+.analogy-body{padding:20px 24px;background:var(--surface);}
+.analogy-body p{font-size:15px;color:var(--text2);line-height:1.75;}
+
+/* ── Wallet visual ── */
+.wallet-visual{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--rxl);padding:24px;margin-bottom:16px;
+}
+.wallet-visual-title{font-size:13px;font-weight:600;color:var(--text2);margin-bottom:16px;letter-spacing:.04em;text-transform:uppercase;}
+
+.money-bar-wrap{margin-bottom:8px;}
+.money-bar-label{font-size:12px;color:var(--text2);margin-bottom:6px;display:flex;justify-content:space-between;}
+.money-bar-total{font-size:11px;font-weight:600;font-family:var(--mono);color:var(--text3);}
+.money-bar{height:28px;border-radius:8px;display:flex;overflow:hidden;gap:2px;}
+.money-seg{
+  height:100%;display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:600;transition:width .4s;
+  white-space:nowrap;overflow:hidden;
+}
+.seg-payroll{background:var(--teal);color:#fff;}
+.seg-lending{background:var(--navy);color:#fff;}
+.seg-free   {background:var(--green-l);color:var(--green);border:1px solid var(--green-m);}
+
+.money-legend{display:flex;gap:16px;margin-top:10px;flex-wrap:wrap;}
+.ml-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);}
+.ml-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0;}
+
+/* ── Comparison table ── */
+.cmp-table{border:1px solid var(--border);border-radius:var(--rl);overflow:hidden;margin-bottom:16px;}
+.cmp-head{display:grid;grid-template-columns:1fr 1fr 1fr;background:var(--s2);border-bottom:1px solid var(--border);}
+.cmp-head-cell{padding:10px 14px;font-size:12px;font-weight:700;color:var(--text);}
+.cmp-row{display:grid;grid-template-columns:1fr 1fr 1fr;border-bottom:1px solid var(--border);}
+.cmp-row:last-child{border-bottom:none;}
+.cmp-cell{padding:11px 14px;font-size:13px;color:var(--text2);border-right:1px solid var(--border);}
+.cmp-cell:last-child{border-right:none;}
+.cmp-cell.label{font-weight:600;color:var(--text);background:var(--s2);}
+.cmp-cell b{color:var(--text);font-weight:600;}
+
+/* ── Flag cards ── */
+.flags-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+.flag-card{border-radius:var(--rl);padding:18px 20px;border:1px solid var(--border);}
+.flag-name{font-size:13px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:8px;}
+.flag-name svg{width:14px;height:14px;}
+.flag-desc{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:10px;}
+.flag-states{display:flex;flex-direction:column;gap:5px;}
+.flag-state{display:flex;align-items:flex-start;gap:8px;font-size:12px;}
+.fs-pill{
+  font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;
+  flex-shrink:0;margin-top:1px;
+}
+.pill-on {background:var(--green-l);color:var(--green);}
+.pill-off{background:var(--s2);color:var(--text2);}
+.flag-state p{color:var(--text2);line-height:1.5;}
+
+/* ── Use case cards ── */
+.usecase{
+  border-radius:var(--rxl);margin-bottom:16px;
+  border:1px solid var(--border);overflow:hidden;
+}
+.uc-header{
+  padding:18px 22px;display:flex;align-items:flex-start;gap:16px;
+}
+.uc-icon{
+  width:44px;height:44px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.uc-icon svg{width:22px;height:22px;}
+.uci-teal {background:var(--teal-l);} .uci-teal  svg{stroke:var(--teal);}
+.uci-navy {background:var(--navy-l);} .uci-navy  svg{stroke:var(--navy);}
+.uci-green{background:var(--green-l);}.uci-green svg{stroke:var(--green);}
+.uc-info{flex:1;}
+.uc-name{font-size:17px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.uc-tagline{font-size:13px;color:var(--text2);}
+.uc-body{
+  padding:0 22px 18px;display:flex;flex-direction:column;gap:10px;
+}
+.uc-flow{
+  background:var(--s2);border-radius:var(--r);
+  padding:14px 16px;display:flex;flex-direction:column;gap:8px;
+}
+.uc-flow-title{font-size:11px;font-weight:600;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:2px;}
+.uc-step{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--text2);}
+.uc-step-n{
+  width:20px;height:20px;border-radius:50%;
+  background:var(--surface);border:1px solid var(--border);
+  font-size:10px;font-weight:700;color:var(--text);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  margin-top:2px;
+}
+.uc-flags{display:flex;gap:6px;flex-wrap:wrap;}
+.uc-flag{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;}
+
+/* ── Rule cards ── */
+.rules{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;}
+.rule{
+  border-radius:var(--r);padding:14px 16px;
+  display:flex;gap:12px;align-items:flex-start;
+  border:1px solid var(--border);background:var(--surface);
+}
+.rule-icon{
+  width:32px;height:32px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.rule-icon svg{width:16px;height:16px;}
+.ri-green{background:var(--green-l);} .ri-green svg{stroke:var(--green);}
+.ri-red  {background:var(--red-l);  } .ri-red   svg{stroke:var(--red);}
+.ri-amber{background:var(--amber-l);} .ri-amber svg{stroke:var(--amber);}
+.ri-navy {background:var(--navy-l); } .ri-navy  svg{stroke:var(--navy);}
+.rule-body{flex:1;}
+.rule-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.rule-desc{font-size:13px;color:var(--text2);line-height:1.6;}
+.rule-code{
+  font-family:var(--mono);font-size:11px;
+  background:var(--s2);border:1px solid var(--border);
+  border-radius:6px;padding:6px 10px;margin-top:7px;
+  color:var(--text);
+}
+
+/* ── Status section ── */
+.status-flow{
+  display:flex;align-items:center;gap:0;
+  margin-bottom:16px;flex-wrap:wrap;
+}
+.status-node{
+  border-radius:var(--r);padding:10px 16px;
+  font-size:13px;font-weight:600;text-align:center;min-width:90px;
+}
+.status-arrow{
+  font-size:18px;color:var(--text3);padding:0 6px;
+  flex-shrink:0;
+}
+.sn-gray  {background:var(--s2);color:var(--text2);border:1px solid var(--border);}
+.sn-green {background:var(--green-l);color:var(--green);border:1px solid var(--green-m);}
+.sn-amber {background:var(--amber-l);color:var(--amber);border:1px solid var(--amber-m);}
+.sn-red   {background:var(--red-l);color:var(--red);border:1px solid var(--red-m);}
+.status-desc{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
+.sd{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--text2);}
+.sd-badge{font-size:11px;font-weight:600;padding:2px 9px;border-radius:20px;flex-shrink:0;margin-top:2px;}
+
+/* ── Footer ── */
+.doc-footer{
+  margin-top:56px;padding-top:24px;border-top:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:gap;
+  font-size:12px;color:var(--text3);
+}
+
+/* ── Divider ── */
+hr.sec-div{border:none;border-top:1px solid var(--border);margin:32px 0;}
+
+/* highlight text */
+mark{background:var(--amber-l);color:var(--amber);padding:1px 4px;border-radius:4px;font-weight:600;}
+strong{color:var(--text);font-weight:700;}
+
+@media(max-width:600px){
+  h1{font-size:26px;}
+  .flags-grid{grid-template-columns:1fr;}
+  .cmp-head,.cmp-row{grid-template-columns:1fr;}
+  .cmp-cell{border-right:none;border-bottom:1px solid var(--border);}
+  .cmp-head-cell:not(:first-child){display:none;}
+  .status-flow{flex-direction:column;align-items:flex-start;}
+  .status-arrow{transform:rotate(90deg);}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ── Header ── -->
+<div class="doc-header">
+  <div class="doc-tag">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="12" height="10" rx="2"/><path d="M5 4V3a1 1 0 012 0v1M9 4V3a1 1 0 012 0v1"/></svg>
+    Nexum · Internal Concept Doc
+  </div>
+  <h1>Allocation คืออะไร?</h1>
+  <p class="doc-sub">หลักการพื้นฐานของระบบกระเป๋าเงิน Nexum — อ่านแล้วทุกคนในทีมควรเข้าใจตรงกัน</p>
+  <div class="doc-meta">
+    <span>📄 อ่านประมาณ 5 นาที</span>
+    <span>👥 สำหรับทุกคนในทีม</span>
+    <span>🔄 อัปเดต ต.ค. 2568</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════
+     1. BIG IDEA
+══════════════════════════ -->
+<div class="sh"><div class="sh-num">1</div><div class="sh-title">แนวคิดหลัก</div></div>
+
+<div class="analogy">
+  <div class="analogy-top">
+    <div class="analogy-label">เปรียบเหมือน</div>
+    <div class="analogy-title">กระเป๋าสตางค์ที่มีช่องแยกอยู่ภายใน</div>
+  </div>
+  <div class="analogy-body">
+    <p>ลองนึกถึงกระเป๋าสตางค์ที่มีเงิน <strong>1,000 บาท</strong> แล้วคุณแบ่งไว้ในใจว่า <strong>"300 บาทนี้ไว้จ่ายค่าน้ำมัน"</strong> — เงินยังอยู่ในกระเป๋าเดิม ไม่ได้หยิบออกไปไหน แค่คุณ "จอง" มันไว้แล้ว</p>
+    <p style="margin-top:10px;"><strong>Allocation ทำงานแบบเดียวกัน</strong> — มันคือการ "จอง" เงินในกระเป๋าหลักไว้สำหรับวัตถุประสงค์เฉพาะ โดยที่เงินจริงๆ ยังอยู่ที่เดิม</p>
+  </div>
+</div>
+
+<div class="callout co-green">
+  <div class="callout-title">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
+    หลักการสำคัญที่สุด
+  </div>
+  <div class="callout-body"><strong>ยอดเงินในกระเป๋าหลักไม่เปลี่ยน</strong> เมื่อสร้าง Allocation — แค่แบ่งว่าเงินส่วนนั้นใช้ทำอะไรได้บ้าง และเหลือเท่าไหร่ที่ใช้ได้ทันที</div>
+</div>
+
+<!-- Wallet visual -->
+<div class="wallet-visual">
+  <div class="wallet-visual-title">ตัวอย่าง: กระเป๋าหลักมี 10,000 บาท</div>
+  <div class="money-bar-label">
+    <span>แบ่งการใช้งาน</span>
+    <span class="money-bar-total">รวม 10,000 THB</span>
+  </div>
+  <div class="money-bar">
+    <div class="money-seg seg-payroll" style="width:50%;">Payroll 5,000</div>
+    <div class="money-seg seg-lending" style="width:10%;">Pool 1,000</div>
+    <div class="money-seg seg-free"    style="width:40%;">ใช้ได้ 4,000</div>
+  </div>
+  <div class="money-legend">
+    <div class="ml-item"><div class="ml-dot" style="background:var(--teal);"></div>Payroll alloc — จองไว้จ่ายเงินเดือน</div>
+    <div class="ml-item"><div class="ml-dot" style="background:var(--navy);"></div>Lending pool — จองไว้ปล่อยกู้</div>
+    <div class="ml-item"><div class="ml-dot" style="background:var(--green-l);border:1px solid var(--green-m);"></div>ใช้ได้ทันที — free balance</div>
+  </div>
+</div>
+
+<div class="callout co-amber">
+  <div class="callout-title">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/></svg>
+    สูตรง่ายๆ
+  </div>
+  <div class="callout-body">
+    <strong>ยอดเงินทั้งหมด = เงินที่จองไว้ (Allocation) + เงินที่ใช้ได้ทันที (Free balance)</strong><br>
+    <span style="opacity:.8;">10,000 = 6,000 (จอง) + 4,000 (ใช้ได้)</span>
+  </div>
+</div>
+
+<hr class="sec-div">
+
+<!-- ══════════════════════════
+     2. สองสิ่งที่ควบคุมได้
+══════════════════════════ -->
+<div class="sh"><div class="sh-num">2</div><div class="sh-title">ควบคุมพฤติกรรมด้วย 2 สวิตช์</div></div>
+
+<p style="font-size:15px;color:var(--text2);margin-bottom:20px;line-height:1.7;">แต่ละ Allocation มีสวิตช์ 2 ตัวที่เปิด/ปิดได้อิสระ ไม่เกี่ยวกัน กำหนดว่ากระเป๋านี้จะ "ทำงานอย่างไร"</p>
+
+<div class="flags-grid">
+  <!-- Revolving -->
+  <div class="flag-card">
+    <div class="flag-name" style="color:var(--navy);">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+      Revolving
+    </div>
+    <div class="flag-desc">วงเงินจะ "เติมคืน" หรือเปล่า?</div>
+    <div class="flag-states">
+      <div class="flag-state">
+        <div class="fs-pill pill-on">เปิด</div>
+        <p>ใช้แล้วถ้าได้เงินคืน วงเงินกลับมาอัตโนมัติ เช่น บัตรเครดิต จ่ายคืนแล้วใช้ใหม่ได้</p>
+      </div>
+      <div class="flag-state">
+        <div class="fs-pill pill-off">ปิด</div>
+        <p>ใช้แล้วหมดเลย วงเงินไม่กลับคืน เหมือนกองทุนที่ให้ครั้งเดียว</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Restricted -->
+  <div class="flag-card">
+    <div class="flag-name" style="color:var(--red);">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+      Restricted
+    </div>
+    <div class="flag-desc">เงินในกระเป๋านี้ "ถอนได้" หรือเปล่า?</div>
+    <div class="flag-states">
+      <div class="flag-state">
+        <div class="fs-pill pill-on">เปิด</div>
+        <p>ล็อกไว้ ถอนออกหรือเอาไปใช้อื่นไม่ได้ ต้องใช้ตามวัตถุประสงค์เท่านั้น</p>
+      </div>
+      <div class="flag-state">
+        <div class="fs-pill pill-off">ปิด</div>
+        <p>ยืดหยุ่น ยังถอนออกหรือใช้ที่อื่นได้ เป็นแค่การ "แนะนำ" ไม่ได้บังคับ</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Combo table -->
+<div class="cmp-table">
+  <div class="cmp-head">
+    <div class="cmp-head-cell">Revolving + Restricted</div>
+    <div class="cmp-head-cell">ลักษณะ</div>
+    <div class="cmp-head-cell">ใช้กับ</div>
+  </div>
+  <div class="cmp-row">
+    <div class="cmp-cell label">❌ ปิด + ❌ ปิด</div>
+    <div class="cmp-cell">ใช้ครั้งเดียว ยืดหยุ่น</div>
+    <div class="cmp-cell">งบโปรเจกต์แบบถอนคืนได้</div>
+  </div>
+  <div class="cmp-row">
+    <div class="cmp-cell label">❌ ปิด + ✅ เปิด</div>
+    <div class="cmp-cell">ใช้ครั้งเดียว ล็อก</div>
+    <div class="cmp-cell">งบจ่ายเฉพาะอย่าง ไม่คืน</div>
+  </div>
+  <div class="cmp-row">
+    <div class="cmp-cell label">✅ เปิด + ❌ ปิด</div>
+    <div class="cmp-cell">เติมได้ ยังถอนได้</div>
+    <div class="cmp-cell">วงเงินสำรองทั่วไป</div>
+  </div>
+  <div class="cmp-row" style="background:var(--green-l);">
+    <div class="cmp-cell label" style="background:var(--green-l);color:var(--green);">✅ เปิด + ✅ เปิด</div>
+    <div class="cmp-cell" style="color:var(--green);font-weight:500;">เติมได้ + ล็อก</div>
+    <div class="cmp-cell" style="color:var(--green);font-weight:500;">Payroll, Credit — ใช้บ่อยที่สุด</div>
+  </div>
+</div>
+
+<hr class="sec-div">
+
+<!-- ══════════════════════════
+     3. DURATION
+══════════════════════════ -->
+<div class="sh"><div class="sh-num">3</div><div class="sh-title">กระเป๋าอยู่ได้นานแค่ไหน?</div></div>
+
+<p style="font-size:15px;color:var(--text2);margin-bottom:16px;line-height:1.7;">เมื่อสร้าง Allocation เราต้องกำหนดว่ามันจะ "หมดอายุ" หรือเปล่า</p>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+  <div class="callout co-key" style="margin:0;">
+    <div class="callout-title">⏳ Ongoing</div>
+    <div class="callout-body">ใช้ไปเรื่อยๆ จนกว่าจะยกเลิกเอง ไม่มีวันหมดอายุ เหมาะกับ Payroll, Credit pool</div>
+  </div>
+  <div class="callout co-key" style="margin:0;">
+    <div class="callout-title">📅 Time-bound</div>
+    <div class="callout-body">กำหนดวันหมดอายุ พอครบกำหนด เงินที่เหลือจะ "unlock" กลับมาที่กระเป๋าหลัก</div>
+  </div>
+</div>
+
+<hr class="sec-div">
+
+<!-- ══════════════════════════
+     4. REFILL TRIGGER
+══════════════════════════ -->
+<div class="sh"><div class="sh-num">4</div><div class="sh-title">วงเงินเติมยังไง? (Revolving เท่านั้น)</div></div>
+
+<p style="font-size:15px;color:var(--text2);margin-bottom:16px;line-height:1.7;">กระเป๋าที่เปิด Revolving จะเติมวงเงินได้ 2 แบบ</p>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+  <div class="callout co-key" style="margin:0;padding:18px 20px;">
+    <div class="callout-title" style="color:var(--navy);">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+      Repayment-based
+    </div>
+    <div class="callout-body" style="color:var(--text2);">
+      วงเงินเติมเมื่อ<strong>ผู้ใช้ชำระเงินคืน</strong><br>
+      → ใช้กับระบบปล่อยกู้<br>
+      ชำระ 100 บาท กลับมา 100 บาท
+    </div>
+  </div>
+  <div class="callout co-key" style="margin:0;padding:18px 20px;">
+    <div class="callout-title" style="color:var(--teal);">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      Schedule-based
+    </div>
+    <div class="callout-body" style="color:var(--text2);">
+      วงเงินเติม<strong>ตามวันที่กำหนด</strong><br>
+      → ใช้กับระบบจ่ายเงินเดือน<br>
+      ทุกวันที่ 25 เติม 5,000 บาทอัตโนมัติ
+    </div>
+  </div>
+</div>
+
+<div class="callout co-amber">
+  <div class="callout-title">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/></svg>
+    กรณีเงินไม่พอเติม (Schedule)
+  </div>
+  <div class="callout-body">ถ้าถึงวันที่กำหนดแล้วเงินในกระเป๋าหลักไม่พอ → <strong>ไม่เติม</strong> และเปลี่ยน status เป็น <mark>pending_refill</mark> พร้อมแจ้งเตือนเจ้าของ รอจนเติมเงินพอแล้วค่อยดำเนินการ</div>
+</div>
+
+<hr class="sec-div">
+
+<!-- ══════════════════════════
+     5. USE CASES
+══════════════════════════ -->
+<div class="sh"><div class="sh-num">5</div><div class="sh-title">3 กรณีที่ใช้จริงในระบบ</div></div>
+
+<!-- Case 1: Payroll -->
+<div class="usecase">
+  <div class="uc-header">
+    <div class="uc-icon uci-teal">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="3"/><path d="M16 3H8a2 2 0 00-2 2v2h12V5a2 2 0 00-2-2z"/><path d="M8 14h5"/></svg>
+    </div>
+    <div class="uc-info">
+      <div class="uc-name">Case 1 — ระบบจ่ายเงินเดือน</div>
+      <div class="uc-tagline">บริษัทล็อกงบ แล้วเติมให้พนักงานทุกเดือนอัตโนมัติ</div>
+    </div>
+  </div>
+  <div class="uc-body">
+    <div class="uc-flow">
+      <div class="uc-flow-title">วิธีทำงาน</div>
+      <div class="uc-step"><div class="uc-step-n">1</div><span>บริษัทสร้าง Payroll alloc จอง 5,000 บาทในกระเป๋าหลัก</span></div>
+      <div class="uc-step"><div class="uc-step-n">2</div><span>ทุกวันที่ 25 ระบบดึงเงินจากกระเป๋าหลัก เติมเข้า alloc อัตโนมัติ</span></div>
+      <div class="uc-step"><div class="uc-step-n">3</div><span>ถ้าเงินไม่พอ → แจ้งเตือนบริษัทให้เติม แล้วค่อยดำเนินการ</span></div>
+      <div class="uc-step"><div class="uc-step-n">4</div><span>พนักงานใช้จ่ายผ่าน alloc นี้ บริษัทเห็นยอดใช้จริง real-time</span></div>
+    </div>
+    <div class="uc-flags">
+      <span class="uc-flag" style="background:var(--teal-l);color:var(--teal);">✓ Revolving (เติมทุกเดือน)</span>
+      <span class="uc-flag" style="background:var(--red-l);color:var(--red);">✓ Restricted (ถอนไม่ได้)</span>
+      <span class="uc-flag" style="background:var(--s2);color:var(--text2);">Schedule · วันที่ 25</span>
+    </div>
+  </div>
+</div>
+
+<!-- Case 2: Lending -->
+<div class="usecase">
+  <div class="uc-header">
+    <div class="uc-icon uci-navy">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20"/><path d="M6 15h4"/></svg>
+    </div>
+    <div class="uc-info">
+      <div class="uc-name">Case 2 — ระบบปล่อยกู้</div>
+      <div class="uc-tagline">Issuer สร้าง pool แล้วดึงออกให้ลูกค้าทีละคน</div>
+    </div>
+  </div>
+  <div class="uc-body">
+    <div class="uc-flow">
+      <div class="uc-flow-title">วิธีทำงาน (2 ชั้น)</div>
+      <div class="uc-step"><div class="uc-step-n">1</div><span><strong>Issuer</strong> สร้าง Lending pool alloc จอง 10,000 บาทไว้ปล่อยกู้</span></div>
+      <div class="uc-step"><div class="uc-step-n">2</div><span>เมื่อจะปล่อยกู้ให้ User A → ดึงเงินออกจาก pool สร้าง Credit alloc ให้ User A</span></div>
+      <div class="uc-step"><div class="uc-step-n">3</div><span>User A ใช้จ่ายผ่าน Credit alloc — pool ลดลง</span></div>
+      <div class="uc-step"><div class="uc-step-n">4</div><span>User A ชำระเงินคืน → Credit alloc เติม + pool เติมกลับอัตโนมัติ</span></div>
+    </div>
+    <div class="uc-flags">
+      <span class="uc-flag" style="background:var(--navy-l);color:var(--navy);">✓ Revolving (เติมเมื่อ repay)</span>
+      <span class="uc-flag" style="background:var(--red-l);color:var(--red);">✓ Restricted (ถอนไม่ได้)</span>
+      <span class="uc-flag" style="background:var(--s2);color:var(--text2);">Repayment-based</span>
+    </div>
+  </div>
+</div>
+
+<hr class="sec-div">
+
+<!-- ══════════════════════════
+     6. STATUS
+══════════════════════════ -->
+<div class="sh"><div class="sh-num">6</div><div class="sh-title">สถานะของ Allocation</div></div>
+
+<div class="status-flow">
+  <div class="status-node sn-gray">pending</div>
+  <div class="status-arrow">→</div>
+  <div class="status-node sn-green">active</div>
+  <div class="status-arrow">→</div>
+  <div class="status-node sn-red">exhausted</div>
+  <div class="status-arrow">→</div>
+  <div class="status-node sn-gray">cancelled</div>
+</div>
+<div style="margin-left:8px;margin-bottom:4px;display:flex;align-items:center;gap:8px;">
+  <div class="status-arrow" style="color:var(--green);font-size:14px;">↩ Revolving:</div>
+  <div style="font-size:12px;color:var(--green);">exhausted → active (เมื่อได้รับเงินคืน)</div>
+</div>
+
+<div class="status-desc" style="margin-top:16px;">
+  <div class="sd"><span class="sd-badge" style="background:var(--s2);color:var(--text2);">pending</span><span>สร้างแล้วแต่ยังไม่เริ่ม (รอวันที่กำหนด หรือรอ approve)</span></div>
+  <div class="sd"><span class="sd-badge" style="background:var(--green-l);color:var(--green);">active</span><span>ใช้งานได้ปกติ มีวงเงินคงเหลือ</span></div>
+  <div class="sd"><span class="sd-badge" style="background:var(--amber-l);color:var(--amber);">pending_refill</span><span>ถึงเวลาเติมแล้วแต่เงินไม่พอ — ใช้ได้เท่าที่เหลือ รอเจ้าของเติม</span></div>
+  <div class="sd"><span class="sd-badge" style="background:var(--red-l);color:var(--red);">exhausted</span><span>วงเงินหมดแล้ว ใช้ต่อไม่ได้ (Revolving จะเติมกลับเมื่อมีการ repay)</span></div>
+  <div class="sd"><span class="sd-badge" style="background:var(--s2);color:var(--text2);">cancelled</span><span>ยกเลิกแล้ว วงเงินที่เหลือ unlock กลับกระเป๋าหลัก</span></div>
+</div>
+
+<hr class="sec-div">
+
+<!-- ══════════════════════════
+     7. RULES
+══════════════════════════ -->
+<div class="sh"><div class="sh-num">7</div><div class="sh-title">กฎที่ระบบบังคับเสมอ</div></div>
+
+<div class="rules">
+  <div class="rule">
+    <div class="rule-icon ri-green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg></div>
+    <div class="rule-body">
+      <div class="rule-title">เงินพอก่อนสร้าง Allocation</div>
+      <div class="rule-desc">ก่อนสร้าง Allocation ใหม่ ระบบจะตรวจว่า free balance เพียงพอ ถ้าไม่พอ สร้างไม่ได้</div>
+      <div class="rule-code">free_balance ≥ allocation_amount</div>
+    </div>
+  </div>
+  <div class="rule">
+    <div class="rule-icon ri-navy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="3"/><path d="M16 3H8a2 2 0 00-2 2v2h12V5a2 2 0 00-2-2z"/></svg></div>
+    <div class="rule-body">
+      <div class="rule-title">ยอดรวม Allocation ห้ามเกินยอดกระเป๋าหลัก</div>
+      <div class="rule-desc">ผลรวมของทุก Allocation ต้องไม่เกินยอดเงินทั้งหมดในกระเป๋าหลัก</div>
+      <div class="rule-code">sum(allocations) ≤ main_wallet.balance</div>
+    </div>
+  </div>
+  <div class="rule">
+    <div class="rule-icon ri-red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
+    <div class="rule-body">
+      <div class="rule-title">Restricted = ห้ามถอนออกเด็ดขาด</div>
+      <div class="rule-desc">กระเป๋าที่เปิด Restricted ไว้ เงินส่วนนั้นถอนออกไม่ได้ ใช้ได้แค่ตามวัตถุประสงค์ที่กำหนด</div>
+    </div>
+  </div>
+  <div class="rule">
+    <div class="rule-icon ri-amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/></svg></div>
+    <div class="rule-body">
+      <div class="rule-title">เติมแบบ All-or-nothing</div>
+      <div class="rule-desc">ถ้าเงินไม่พอเติม ระบบจะไม่เติมบางส่วน — เติมทั้งหมดหรือไม่เติมเลย และแจ้งเตือนเจ้าของ</div>
+    </div>
+  </div>
+</div>
+
+<hr class="sec-div">
+
+<!-- ── Glossary ── -->
+<div class="sh"><div class="sh-num">8</div><div class="sh-title">คำศัพท์ที่ต้องรู้</div></div>
+
+<div class="cmp-table">
+  <div class="cmp-head" style="grid-template-columns:1fr 2fr;">
+    <div class="cmp-head-cell">คำ</div>
+    <div class="cmp-head-cell">ความหมาย</div>
+  </div>
+  <div class="cmp-row" style="grid-template-columns:1fr 2fr;">
+    <div class="cmp-cell label" style="font-family:var(--mono);font-size:12px;">Allocation</div>
+    <div class="cmp-cell">การจองเงินไว้ในกระเป๋าหลักสำหรับวัตถุประสงค์เฉพาะ</div>
+  </div>
+  <div class="cmp-row" style="grid-template-columns:1fr 2fr;">
+    <div class="cmp-cell label" style="font-family:var(--mono);font-size:12px;">available_amount</div>
+    <div class="cmp-cell">วงเงินที่เหลือใช้ได้ใน allocation นั้น (= amount − used)</div>
+  </div>
+  <div class="cmp-row" style="grid-template-columns:1fr 2fr;">
+    <div class="cmp-cell label" style="font-family:var(--mono);font-size:12px;">free_balance</div>
+    <div class="cmp-cell">เงินในกระเป๋าหลักที่ยังไม่ถูกจอง ใช้ได้ทันที</div>
+  </div>
+  <div class="cmp-row" style="grid-template-columns:1fr 2fr;">
+    <div class="cmp-cell label" style="font-family:var(--mono);font-size:12px;">Revolving</div>
+    <div class="cmp-cell">วงเงินเติมคืนได้ เมื่อชำระเงิน หรือถึงวันที่กำหนด</div>
+  </div>
+  <div class="cmp-row" style="grid-template-columns:1fr 2fr;">
+    <div class="cmp-cell label" style="font-family:var(--mono);font-size:12px;">Restricted</div>
+    <div class="cmp-cell">เงินที่จองไว้ถอนออกไม่ได้ ต้องใช้ตามวัตถุประสงค์เท่านั้น</div>
+  </div>
+  <div class="cmp-row" style="grid-template-columns:1fr 2fr;">
+    <div class="cmp-cell label" style="font-family:var(--mono);font-size:12px;">pending_refill</div>
+    <div class="cmp-cell">สถานะรอเติม — ถึงเวลาแล้วแต่เงินไม่พอ รอเจ้าของเติมเงิน</div>
+  </div>
+  <div class="cmp-row" style="grid-template-columns:1fr 2fr;">
+    <div class="cmp-cell label" style="font-family:var(--mono);font-size:12px;">Lending pool</div>
+    <div class="cmp-cell">กระเป๋าที่ issuer สร้างไว้รวบรวมเงินก่อนปล่อยกู้รายคน</div>
+  </div>
+</div>
+
+<!-- ── Footer ── -->
+<div class="doc-footer">
+  <span>Nexum Internal Docs · Allocation Model</span>
+  <span>ต.ค. 2568</span>
+</div>
+
+</div><!-- /page -->
+</body>
+</html>
