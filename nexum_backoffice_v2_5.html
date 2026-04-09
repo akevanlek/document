@@ -1,0 +1,785 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+--p:#7C3AED;--p2:#6D28D9;--p3:#4C1D95;--pl:#EDE9FE;--pll:#F5F3FF;--pm:#DDD6FE;
+--ink:#18181B;--ink2:#3F3F46;--ink3:#71717A;--ink4:#A1A1AA;--ink5:#D4D4D8;
+--bg:#FAFAFA;--bg2:#FFFFFF;--bg3:#F4F4F5;--border:#E4E4E7;--border2:#D4D4D8;
+--green:#059669;--green-l:#ECFDF5;--green-2:#D1FAE5;
+--amber:#D97706;--amber-l:#FFFBEB;--amber-2:#FEF3C7;
+--blue:#2563EB;--blue-l:#EFF6FF;--blue-2:#DBEAFE;
+--red:#DC2626;--red-l:#FEF2F2;--red-2:#FEE2E2;
+--teal:#0891B2;--teal-l:#ECFEFF;
+}
+.app{display:grid;grid-template-columns:220px 1fr;height:680px;font-family:'Sarabun',sans-serif;background:var(--bg);border-radius:20px;overflow:hidden;border:1px solid var(--border);box-shadow:0 20px 60px rgba(0,0,0,.12)}
+
+/* ─── SIDEBAR ─── */
+.sb{background:var(--p3);display:flex;flex-direction:column;position:relative;overflow:hidden}
+.sb::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;border-radius:50%;background:rgba(124,58,237,.3);pointer-events:none}
+.sb::after{content:'';position:absolute;bottom:-40px;left:-40px;width:160px;height:160px;border-radius:50%;background:rgba(109,40,217,.2);pointer-events:none}
+.sb-brand{padding:20px 18px 16px;border-bottom:1px solid rgba(255,255,255,.08);position:relative;z-index:1}
+.sb-logo{display:flex;align-items:center;gap:10px}
+.sb-mark{width:32px;height:32px;background:linear-gradient(135deg,var(--p),#A78BFA);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(124,58,237,.4)}
+.sb-mark svg{width:15px;height:15px}
+.sb-wordmark{display:flex;flex-direction:column}
+.sb-name{font-size:14px;font-weight:700;color:#fff;letter-spacing:-.01em;font-family:'DM Sans',sans-serif}
+.sb-role{font-size:10px;color:rgba(255,255,255,.4);margin-top:1px;font-weight:400}
+.sb-nav{flex:1;padding:10px 0;overflow-y:auto;position:relative;z-index:1}
+.sb-nav::-webkit-scrollbar{width:0}
+.sb-group{padding:16px 14px 4px}
+.sb-group-label{font-size:9px;font-weight:600;color:rgba(255,255,255,.25);letter-spacing:.1em;text-transform:uppercase}
+.sb-item{display:flex;align-items:center;gap:9px;padding:8px 14px;cursor:pointer;color:rgba(255,255,255,.45);font-size:12px;font-weight:500;border-radius:8px;margin:1px 8px;transition:all .15s;position:relative}
+.sb-item:hover{color:rgba(255,255,255,.8);background:rgba(255,255,255,.06)}
+.sb-item.active{color:#fff;background:rgba(255,255,255,.12)}
+.sb-item.active::before{content:'';position:absolute;left:-8px;top:50%;transform:translateY(-50%);width:3px;height:20px;background:linear-gradient(#A78BFA,var(--p));border-radius:0 2px 2px 0}
+.sb-item svg{width:14px;height:14px;flex-shrink:0;opacity:.7}
+.sb-item.active svg{opacity:1}
+.sb-badge{margin-left:auto;background:rgba(167,139,250,.25);color:#A78BFA;font-size:9px;padding:2px 6px;border-radius:99px;font-weight:600}
+.sb-tag{margin-left:auto;font-size:9px;padding:2px 6px;border-radius:99px;font-weight:500;background:rgba(255,255,255,.08);color:rgba(255,255,255,.35)}
+.sb-foot{padding:14px 18px;border-top:1px solid rgba(255,255,255,.08);position:relative;z-index:1}
+.sb-user{display:flex;align-items:center;gap:9px}
+.sb-av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#A78BFA,var(--p));display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0}
+.sb-uname{font-size:11px;color:rgba(255,255,255,.85);font-weight:600}
+.sb-urole{font-size:10px;color:rgba(255,255,255,.3)}
+
+/* ─── MAIN ─── */
+.main{display:flex;flex-direction:column;overflow:hidden;background:var(--bg)}
+.topbar{height:54px;padding:0 22px;display:flex;align-items:center;justify-content:space-between;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0}
+.bc{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink4)}
+.bc-sep{color:var(--ink5)}
+.bc-curr{color:var(--ink);font-weight:600;font-size:13px}
+.tb-right{display:flex;gap:8px;align-items:center}
+.tb-btn{height:30px;padding:0 12px;border-radius:8px;font-size:12px;font-family:'Sarabun',sans-serif;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .15s;font-weight:500}
+.tb-ghost{background:none;border:1px solid var(--border2);color:var(--ink3)}
+.tb-ghost:hover{background:var(--bg3);color:var(--ink)}
+.tb-primary{background:var(--p);border:none;color:#fff;box-shadow:0 2px 8px rgba(124,58,237,.3)}
+.tb-primary:hover{background:var(--p2);box-shadow:0 4px 12px rgba(124,58,237,.4)}
+.tb-btn svg{width:12px;height:12px}
+.content{flex:1;overflow-y:auto;padding:20px 22px}
+.content::-webkit-scrollbar{width:4px}
+.content::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.pane{display:none}.pane.show{display:block}
+
+/* ─── STAT CARDS ─── */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.stat{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:14px 16px;transition:all .15s;cursor:default}
+.stat:hover{box-shadow:0 4px 16px rgba(0,0,0,.06);transform:translateY(-1px)}
+.stat-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.stat-icon{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center}
+.stat-icon svg{width:15px;height:15px}
+.si-p{background:var(--pl)}.si-p svg{color:var(--p)}
+.si-g{background:var(--green-l)}.si-g svg{color:var(--green)}
+.si-b{background:var(--blue-l)}.si-b svg{color:var(--blue)}
+.si-a{background:var(--amber-l)}.si-a svg{color:var(--amber)}
+.stat-trend{font-size:10px;font-weight:600;padding:2px 7px;border-radius:99px}
+.trend-up{background:var(--green-2);color:var(--green)}
+.trend-down{background:var(--red-2);color:var(--red)}
+.stat-val{font-size:26px;font-weight:700;color:var(--ink);line-height:1;font-family:'DM Sans',sans-serif;letter-spacing:-.02em}
+.stat-lbl{font-size:11px;color:var(--ink3);margin-top:4px}
+.stat-sub{font-size:10px;color:var(--ink4);margin-top:2px}
+
+/* ─── CARDS ─── */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px}
+.card-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.card-title{font-size:12px;font-weight:700;color:var(--ink);letter-spacing:-.01em}
+.card-sub{font-size:10px;color:var(--ink4);font-weight:400;margin-top:1px}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.bar-row:last-child{margin-bottom:0}
+.bar-lbl{font-size:11px;color:var(--ink2);width:90px;flex-shrink:0}
+.bar-track{flex:1;height:5px;background:var(--bg3);border-radius:99px;overflow:hidden}
+.bar-fill{height:100%;border-radius:99px;transition:width .5s ease}
+.bar-num{font-size:11px;font-weight:600;color:var(--ink);width:28px;text-align:right;flex-shrink:0;font-family:'DM Sans',sans-serif}
+
+/* ─── TABLE ─── */
+.tw{border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{padding:9px 13px;text-align:left;font-size:10px;font-weight:700;color:var(--ink3);background:var(--bg3);letter-spacing:.05em;text-transform:uppercase;border-bottom:1px solid var(--border)}
+.tbl td{padding:10px 13px;border-bottom:1px solid var(--border);color:var(--ink);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:var(--pll)}
+.cell-e{display:flex;align-items:center;gap:9px}
+.av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
+.av-p{background:var(--pl);color:var(--p2)}
+.av-g{background:var(--green-l);color:var(--green)}
+.av-b{background:var(--blue-l);color:var(--blue)}
+.av-a{background:var(--amber-l);color:var(--amber)}
+.name-l{font-size:12px;font-weight:600;color:var(--ink)}
+.sub-l{font-size:10px;color:var(--ink4)}
+.badge{font-size:10px;padding:3px 8px;border-radius:99px;font-weight:600;display:inline-flex;align-items:center;gap:3px;letter-spacing:.01em}
+.badge::before{content:'';width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.6}
+.b-green{background:var(--green-l);color:var(--green)}
+.b-red{background:var(--red-l);color:var(--red)}
+.b-amber{background:var(--amber-l);color:var(--amber)}
+.b-blue{background:var(--blue-l);color:var(--blue)}
+.b-purple{background:var(--pl);color:var(--p2)}
+.b-gray{background:var(--bg3);color:var(--ink3)}
+.mr-id{font-family:'DM Sans',monospace;font-size:10px;background:var(--bg3);border:1px solid var(--border);border-radius:5px;padding:2px 6px;color:var(--ink3)}
+
+/* ─── FORM ─── */
+.invite-box{background:linear-gradient(135deg,var(--pll),#fff);border:1px solid var(--pm);border-radius:14px;padding:16px 18px;margin-bottom:16px}
+.invite-title{font-size:13px;font-weight:700;color:var(--p2);margin-bottom:12px;display:flex;align-items:center;gap:7px;letter-spacing:-.01em}
+.invite-title svg{width:14px;height:14px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.fl{font-size:11px;font-weight:700;color:var(--ink2);margin-bottom:4px;display:block;letter-spacing:.01em}
+.fh{font-size:10px;color:var(--ink4);margin-bottom:4px;display:block}
+.fi{width:100%;padding:8px 11px;font-size:12px;font-family:'Sarabun',sans-serif;border:1.5px solid var(--border2);border-radius:9px;background:var(--bg2);color:var(--ink);outline:none;transition:all .15s}
+.fi:focus{border-color:var(--p);box-shadow:0 0 0 3px rgba(124,58,237,.1)}
+.fi.err{border-color:var(--red);background:var(--red-l)}
+.form-err{font-size:10px;color:var(--red);margin-top:3px;display:none}
+.form-err.show{display:block}
+.btn{padding:8px 16px;border-radius:9px;font-size:12px;font-family:'Sarabun',sans-serif;cursor:pointer;font-weight:600;display:inline-flex;align-items:center;gap:6px;transition:all .15s;letter-spacing:.01em}
+.btn svg{width:12px;height:12px}
+.btn-ghost{background:none;border:1.5px solid var(--border2);color:var(--ink3)}
+.btn-ghost:hover{background:var(--bg3);color:var(--ink);border-color:var(--border2)}
+.btn-primary{background:var(--p);border:none;color:#fff;box-shadow:0 2px 8px rgba(124,58,237,.25)}
+.btn-primary:hover{background:var(--p2);box-shadow:0 4px 14px rgba(124,58,237,.35)}
+.btn-sm{padding:4px 10px;font-size:10px;border-radius:7px}
+.form-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.sec-title{font-size:13px;font-weight:700;color:var(--ink);letter-spacing:-.01em}
+.sec-sub{font-size:11px;color:var(--ink4)}
+.divider{height:1px;background:var(--border);margin:12px 0}
+.fg-label{font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.fg-label::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* ─── FORM LIBRARY ─── */
+.readonly-note{background:var(--pll);border:1px solid var(--pm);border-radius:10px;padding:10px 14px;font-size:11px;color:var(--p2);margin-bottom:16px;display:flex;gap:8px;align-items:flex-start;font-weight:500}
+.readonly-note svg{width:13px;height:13px;flex-shrink:0;margin-top:1px}
+.form-card-item{background:var(--bg2);border:1px solid var(--border);border-radius:12px;margin-bottom:8px;overflow:hidden;transition:all .15s}
+.form-card-item:hover{border-color:var(--pm);box-shadow:0 2px 12px rgba(124,58,237,.08)}
+.fci-hd{padding:13px 16px;display:flex;align-items:flex-start;justify-content:space-between;cursor:pointer}
+.fci-name{font-size:12px;font-weight:700;color:var(--ink);letter-spacing:-.01em;margin-bottom:2px}
+.fci-desc{font-size:10px;color:var(--ink4);margin-bottom:6px}
+.fci-chips{display:flex;gap:4px;flex-wrap:wrap}
+.chip{font-size:10px;padding:2px 8px;border-radius:99px;font-weight:600}
+.chip-p{background:var(--pl);color:var(--p2)}
+.chip-t{background:var(--teal-l);color:var(--teal)}
+.chip-g{background:var(--green-l);color:var(--green)}
+.fci-right{display:flex;align-items:center;gap:8px;flex-shrink:0;margin-left:12px}
+.tag{font-size:10px;padding:2px 8px;border-radius:99px;font-weight:600;white-space:nowrap}
+.t-range{background:var(--green-l);color:var(--green)}
+.t-ceil{background:var(--amber-l);color:var(--amber)}
+.t-lock{background:var(--red-l);color:var(--red)}
+.fci-detail{display:none;border-top:1px solid var(--border);padding:12px 16px}
+.fci-detail.open{display:block}
+.ftbl{width:100%;border-collapse:collapse;font-size:11px}
+.ftbl th{padding:7px 10px;text-align:left;font-size:10px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--p),var(--p2));letter-spacing:.04em;text-transform:uppercase}
+.ftbl td{padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:middle}
+.ftbl tr:last-child td{border-bottom:none}
+.ftbl tr:nth-child(even) td{background:var(--bg3)}
+.ftbl tr.mdr-row td{background:var(--teal-l)}
+.fname{font-weight:600;color:var(--ink);font-size:11px}
+.fdesc{font-size:10px;color:var(--ink4);margin-top:1px}
+.fuse{font-size:10px;padding:2px 7px;border-radius:99px;font-weight:600}
+.fuse-all{background:var(--pl);color:var(--p2)}
+.fuse-c2c{background:var(--blue-l);color:var(--blue)}
+.fuse-c2b{background:var(--teal-l);color:var(--teal)}
+.fuse-pay{background:var(--green-l);color:var(--green)}
+.mdr-note{background:var(--teal-l);border:1px solid #A5F3FC;border-radius:8px;padding:9px 12px;font-size:10px;color:var(--teal);line-height:1.6;margin-top:8px;font-weight:500}
+
+/* ─── AUDIT ─── */
+.audit-item{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.audit-item:last-child{border-bottom:none}
+.audit-line{display:flex;flex-direction:column;align-items:center;gap:0}
+.audit-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:3px}
+.audit-action{font-size:12px;color:var(--ink);font-weight:600;margin-bottom:2px}
+.audit-meta{font-size:10px;color:var(--ink4)}
+
+/* ─── STAFF ─── */
+.role-pill{font-size:10px;padding:3px 9px;border-radius:99px;font-weight:700;letter-spacing:.02em}
+</style>
+
+<div class="app">
+<!-- ─── SIDEBAR ─── -->
+<div class="sb">
+  <div class="sb-brand">
+    <div class="sb-logo">
+      <div class="sb-mark"><svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M8 3l5 5-5 5"/></svg></div>
+      <div class="sb-wordmark">
+        <div class="sb-name">Nexum</div>
+        <div class="sb-role">BackOffice · Marketing</div>
+      </div>
+    </div>
+  </div>
+  <div class="sb-nav">
+    <div class="sb-group"><div class="sb-group-label">ภาพรวม</div></div>
+    <div class="sb-item active" onclick="nav(this,'dash')">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="5" height="5" rx="1.2"/><rect x="9" y="2" width="5" height="5" rx="1.2"/><rect x="2" y="9" width="5" height="5" rx="1.2"/><rect x="9" y="9" width="5" height="5" rx="1.2"/></svg>
+      Dashboard
+    </div>
+    <div class="sb-group"><div class="sb-group-label">Products</div></div>
+    <div class="sb-item" onclick="nav(this,'ia')">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="5.5" r="2.5"/><path d="M2.5 13.5c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/></svg>
+      I/A Clients<span class="sb-badge">12</span>
+    </div>
+    <div class="sb-item" onclick="nav(this,'payroll')">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 5v3.2l2.2 1.6"/></svg>
+      Payroll Clients<span class="sb-badge">8</span>
+    </div>
+    <div class="sb-item" onclick="nav(this,'future')">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2v12M2 8h12"/></svg>
+      Products อื่นๆ<span class="sb-tag">เร็วๆ นี้</span>
+    </div>
+    <div class="sb-group"><div class="sb-group-label">Dev Forms</div></div>
+    <div class="sb-item" onclick="nav(this,'forms')">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="2"/><path d="M5 6h6M5 9.5h4"/></svg>
+      Form Library
+    </div>
+    <div class="sb-group"><div class="sb-group-label">ทีมงาน</div></div>
+    <div class="sb-item" onclick="nav(this,'staff')">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6" cy="5" r="2"/><circle cx="11" cy="5" r="2"/><path d="M1.5 13.5c0-2.5 2-4 4.5-4M8.5 9.5c2.5 0 4.5 1.5 4.5 4"/></svg>
+      Staff
+    </div>
+    <div class="sb-group"><div class="sb-group-label">ระบบ</div></div>
+    <div class="sb-item" onclick="nav(this,'audit')">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 4h10M3 8h7M3 12h5"/></svg>
+      Audit Log
+    </div>
+  </div>
+  <div class="sb-foot">
+    <div class="sb-user">
+      <div class="sb-av">MK</div>
+      <div><div class="sb-uname">Marketing Team</div><div class="sb-urole">Nexum · Manager</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── MAIN ─── -->
+<div class="main">
+  <div class="topbar">
+    <div class="bc">
+      <span>Nexum</span><span class="bc-sep">/</span>
+      <span class="bc-curr" id="bc-curr">Dashboard</span>
+    </div>
+    <div class="tb-right">
+      <button class="tb-btn tb-ghost"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="4"/><path d="M11 11l2.5 2.5"/></svg>ค้นหา</button>
+      <button class="tb-btn tb-primary" onclick="handleCta()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 3v10M3 8h10"/></svg><span id="cta-lbl">เพิ่มใหม่</span></button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ── DASHBOARD ── -->
+    <div class="pane show" id="pane-dash">
+      <div class="stats">
+        <div class="stat"><div class="stat-top"><div class="stat-icon si-b"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="5.5" r="2.5"/><path d="M2.5 13.5c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/></svg></div><span class="stat-trend trend-up">+2</span></div><div class="stat-val">12</div><div class="stat-lbl">I/A Clients</div><div class="stat-sub">active 10 · pending 2</div></div>
+        <div class="stat"><div class="stat-top"><div class="stat-icon si-g"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 5v3.2l2.2 1.6"/></svg></div><span class="stat-trend trend-up">+1</span></div><div class="stat-val">8</div><div class="stat-lbl">Payroll Clients</div><div class="stat-sub">active 7 · pending 1</div></div>
+        <div class="stat"><div class="stat-top"><div class="stat-icon si-a"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2v4l2.5 2"/><circle cx="8" cy="9" r="6"/></svg></div><span class="stat-trend trend-down">3</span></div><div class="stat-val">3</div><div class="stat-lbl">รอ Consent</div><div class="stat-sub">I/A 2 · Payroll 1</div></div>
+        <div class="stat"><div class="stat-top"><div class="stat-icon si-p"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="2"/><path d="M5 6h6M5 9.5h4"/></svg></div><span class="stat-trend trend-up">5</span></div><div class="stat-val">5</div><div class="stat-lbl">Dev Forms</div><div class="stat-sub">I/A 3 · Payroll 2</div></div>
+      </div>
+
+      <div class="grid2">
+        <div class="card">
+          <div class="card-hd">
+            <div><div class="card-title">I/A Clients — แยกตาม Form</div><div class="card-sub">จำนวน active</div></div>
+          </div>
+          <div class="bar-row"><span class="bar-lbl">Form A Standard</span><div class="bar-track"><div class="bar-fill" style="width:58%;background:var(--p)"></div></div><span class="bar-num">7</span></div>
+          <div class="bar-row"><span class="bar-lbl">Form B Premium</span><div class="bar-track"><div class="bar-fill" style="width:25%;background:var(--p)"></div></div><span class="bar-num">3</span></div>
+          <div class="bar-row"><span class="bar-lbl">Form C Micro</span><div class="bar-track"><div class="bar-fill" style="width:8%;background:var(--p)"></div></div><span class="bar-num">1</span></div>
+          <div class="divider"></div>
+          <div class="bar-row"><span class="bar-lbl" style="color:var(--amber)">รอ Consent</span><div class="bar-track"><div class="bar-fill" style="width:17%;background:var(--amber)"></div></div><span class="bar-num" style="color:var(--amber)">2</span></div>
+          <div class="bar-row"><span class="bar-lbl" style="color:var(--red)">Suspended</span><div class="bar-track"><div class="bar-fill" style="width:8%;background:var(--red)"></div></div><span class="bar-num" style="color:var(--red)">1</span></div>
+        </div>
+        <div class="card">
+          <div class="card-hd">
+            <div><div class="card-title">Payroll Clients — สถานะ</div><div class="card-sub">จำนวนและพนักงาน</div></div>
+          </div>
+          <div class="bar-row"><span class="bar-lbl">PF-1 รายคน</span><div class="bar-track"><div class="bar-fill" style="width:75%;background:var(--green)"></div></div><span class="bar-num">6</span></div>
+          <div class="bar-row"><span class="bar-lbl">PF-2 ขั้นบันได</span><div class="bar-track"><div class="bar-fill" style="width:13%;background:var(--green)"></div></div><span class="bar-num">1</span></div>
+          <div class="divider"></div>
+          <div class="bar-row"><span class="bar-lbl" style="color:var(--amber)">รอ Consent</span><div class="bar-track"><div class="bar-fill" style="width:13%;background:var(--amber)"></div></div><span class="bar-num" style="color:var(--amber)">1</span></div>
+          <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);display:flex;justify-content:space-between">
+            <span style="font-size:11px;color:var(--ink3)">พนักงานทั้งหมด</span>
+            <span style="font-size:12px;font-weight:700;color:var(--ink);font-family:'DM Sans',sans-serif">1,284 คน</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div class="card">
+          <div class="card-hd"><div class="card-title">Clients ล่าสุด</div><div style="font-size:10px;color:var(--p);cursor:pointer;font-weight:600" onclick="nav(document.querySelector('[onclick*=\'ia\']'),\'ia\')">ดูทั้งหมด →</div></div>
+          <div class="tw"><table class="tbl">
+            <thead><tr><th>Client</th><th>ประเภท</th><th>Form</th><th>เพิ่มเมื่อ</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td><div class="cell-e"><div class="av av-p">FS</div><div><div class="name-l">FinServe Co.</div><div class="sub-l">MR-00100012</div></div></div></td><td><span class="badge b-blue">I/A</span></td><td><span class="badge b-purple">Form A</span></td><td style="font-size:11px;color:var(--ink3)">10 มี.ค. 68</td><td><span class="badge b-green">active</span></td></tr>
+              <tr><td><div class="cell-e"><div class="av av-g">AG</div><div><div class="name-l">AgroPayroll Ltd.</div><div class="sub-l">MR-00500011</div></div></div></td><td><span class="badge b-green">Payroll</span></td><td><span class="badge b-green">PF-1</span></td><td style="font-size:11px;color:var(--ink3)">8 มี.ค. 68</td><td><span class="badge b-green">active</span></td></tr>
+              <tr><td><div class="cell-e"><div class="av av-b">CP</div><div><div class="name-l">CreditPlus</div><div class="sub-l">MR-00200034</div></div></div></td><td><span class="badge b-blue">I/A</span></td><td><span class="badge b-purple">Form B</span></td><td style="font-size:11px;color:var(--ink3)">5 มี.ค. 68</td><td><span class="badge b-amber">รอ Consent</span></td></tr>
+              <tr><td><div class="cell-e"><div class="av av-a">RS</div><div><div class="name-l">RetailStar Co.</div><div class="sub-l">MR-00700033</div></div></div></td><td><span class="badge b-green">Payroll</span></td><td><span class="badge b-gray">—</span></td><td style="font-size:11px;color:var(--ink3)">2 มี.ค. 68</td><td><span class="badge b-amber">รอ Consent</span></td></tr>
+            </tbody>
+          </table></div>
+        </div>
+
+        <div class="card">
+          <div class="card-hd"><div class="card-title">Activity ล่าสุด</div></div>
+          <div class="audit-item">
+            <div class="audit-dot" style="background:var(--p);width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:3px"></div>
+            <div><div class="audit-action">เพิ่ม I/A Client — CreditPlus (MR-00200034)</div><div class="audit-meta">ส่ง Form B · สมพร วงษ์ทอง · วันนี้ 14:32</div></div>
+          </div>
+          <div class="audit-item">
+            <div class="audit-dot" style="background:var(--green);width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:3px"></div>
+            <div><div class="audit-action">Consent สำเร็จ — FinServe Co.</div><div class="audit-meta">I/A กด accept ใน Mana App · วันนี้ 11:05</div></div>
+          </div>
+          <div class="audit-item">
+            <div class="audit-dot" style="background:var(--green);width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:3px"></div>
+            <div><div class="audit-action">เพิ่ม Payroll Client — RetailStar Co.</div><div class="audit-meta">ส่ง PF-2 · นภาพร กาญจน์ · เมื่อวาน 09:20</div></div>
+          </div>
+          <div class="audit-item">
+            <div class="audit-dot" style="background:var(--amber);width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:3px"></div>
+            <div><div class="audit-action">ส่ง Form ใหม่ — MoneyTree เปลี่ยน Form A → C</div><div class="audit-meta">สมพร วงษ์ทอง · 9 มี.ค. 68 16:45</div></div>
+          </div>
+          <div class="audit-item" style="border-bottom:none">
+            <div class="audit-dot" style="background:var(--red);width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:3px"></div>
+            <div><div class="audit-action">Suspend I/A — NanoLend (MR-00400078)</div><div class="audit-meta">นภาพร กาญจน์ · 8 มี.ค. 68 17:05</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── I/A CLIENTS ── -->
+    <div class="pane" id="pane-ia">
+      <div class="invite-box">
+        <div class="invite-title"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="8" cy="5.5" r="2.5"/><path d="M2.5 13.5c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/></svg>เพิ่ม I/A Client ใหม่</div>
+        <div class="form-row">
+          <div><label class="fl">MrId</label><span class="fh">รหัสจาก Mana Platform</span><input class="fi" id="ia-mrid" type="text" placeholder="MR-00123456" oninput="clrE('ia-mrid')"><div class="form-err" id="err-ia-mrid">กรุณากรอก MrId</div></div>
+          <div><label class="fl">เบอร์โทรศัพท์</label><span class="fh">เบอร์ติดต่อหลัก</span><input class="fi" id="ia-phone" type="tel" placeholder="0812345678" oninput="clrE('ia-phone')"><div class="form-err" id="err-ia-phone">กรุณากรอกเบอร์โทร</div></div>
+        </div>
+        <div style="margin-bottom:12px"><label class="fl">Form ที่จะส่งให้</label><span class="fh">I/A จะนำ Form นี้ไปสร้าง Contract Template เอง</span>
+          <select class="fi" id="ia-form"><option>Form A — APR 0–15% · วงเงิน 0–100,000 ฿</option><option>Form B — APR 0–24% · วงเงิน 0–500,000 ฿ + C2B</option><option>Form C — APR 0–36% · วงเงิน 0–10,000 ฿ (Micro)</option></select></div>
+        <div style="background:var(--amber-l);border:1px solid var(--amber-2);border-radius:9px;padding:9px 12px;font-size:11px;color:var(--amber);margin-bottom:12px;display:flex;gap:8px;font-weight:500"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" style="flex-shrink:0;margin-top:1px"><circle cx="8" cy="8" r="6"/><path d="M8 7v4M8 5.5v.3"/></svg>ระบบส่ง Consent พร้อม Form ให้ I/A ยืนยันใน Mana App · I/A กด "ยอมรับ" แล้วสร้าง Contract Template ได้เลย</div>
+        <div class="form-actions"><button class="btn btn-ghost" onclick="clrIa()">ล้าง</button><button class="btn btn-primary" onclick="subIa()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 3v10M3 8h10"/></svg>เพิ่ม I/A + ส่ง Form</button></div>
+      </div>
+      <div class="sec-hdr"><div class="sec-title">I/A Clients ทั้งหมด</div><div class="sec-sub">12 ราย · active 10</div></div>
+      <div class="tw"><table class="tbl"><thead><tr><th>I/A Client</th><th>MrId</th><th>เบอร์โทร</th><th>Form</th><th>Templates</th><th>Status</th><th></th></tr></thead>
+        <tbody id="ia-tbody">
+          <tr><td><div class="cell-e"><div class="av av-p">FS</div><div><div class="name-l">FinServe Co.</div></div></div></td><td><span class="mr-id">MR-00100012</span></td><td style="font-size:11px;color:var(--ink3)">081-234-5678</td><td><span class="badge b-purple">Form A</span></td><td style="font-size:11px">3 templates</td><td><span class="badge b-green">active</span></td><td><button class="btn btn-ghost btn-sm">ดู</button></td></tr>
+          <tr><td><div class="cell-e"><div class="av av-b">CP</div><div><div class="name-l">CreditPlus</div></div></div></td><td><span class="mr-id">MR-00200034</span></td><td style="font-size:11px;color:var(--ink3)">089-876-5432</td><td><span class="badge b-purple">Form B</span></td><td style="font-size:11px">2 templates</td><td><span class="badge b-green">active</span></td><td><button class="btn btn-ghost btn-sm">ดู</button></td></tr>
+          <tr><td><div class="cell-e"><div class="av av-a">MT</div><div><div class="name-l">MoneyTree</div></div></div></td><td><span class="mr-id">MR-00300056</span></td><td style="font-size:11px;color:var(--ink3)">062-111-2233</td><td><span class="badge b-purple">Form C</span></td><td style="font-size:11px">1 template</td><td><span class="badge b-green">active</span></td><td><button class="btn btn-ghost btn-sm">ดู</button></td></tr>
+          <tr><td><div class="cell-e"><div class="av av-g">NL</div><div><div class="name-l">NanoLend</div></div></div></td><td><span class="mr-id">MR-00400078</span></td><td style="font-size:11px;color:var(--ink3)">093-000-1122</td><td><span class="badge b-gray">—</span></td><td style="font-size:11px;color:var(--ink4)">0 templates</td><td><span class="badge b-amber">รอ Consent</span></td><td><button class="btn btn-ghost btn-sm">ดู</button></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <!-- ── PAYROLL CLIENTS ── -->
+    <div class="pane" id="pane-payroll">
+      <div class="sec-hdr" style="margin-bottom:14px">
+        <div>
+          <div class="sec-title">Payroll Clients ทั้งหมด</div>
+          <div class="sec-sub">8 ราย · active 7 · รอ Consent 1</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <div style="position:relative">
+            <svg style="position:absolute;left:9px;top:50%;transform:translateY(-50%);width:12px;height:12px;opacity:.35" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.4"/><path d="M10 10l3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+            <input type="text" placeholder="ค้นหา..." style="padding:6px 10px 6px 28px;font-size:12px;font-family:'Sarabun',sans-serif;border:1.5px solid var(--border2);border-radius:9px;background:var(--bg2);color:var(--ink);width:190px;outline:none">
+          </div>
+          <select style="padding:6px 10px;font-size:12px;font-family:'Sarabun',sans-serif;border:1.5px solid var(--border2);border-radius:9px;background:var(--bg2);color:var(--ink);cursor:pointer">
+            <option>สถานะทั้งหมด</option>
+            <option>active</option>
+            <option>รอ Consent</option>
+            <option>Suspended</option>
+          </select>
+          <select style="padding:6px 10px;font-size:12px;font-family:'Sarabun',sans-serif;border:1.5px solid var(--border2);border-radius:9px;background:var(--bg2);color:var(--ink);cursor:pointer">
+            <option>Form ทั้งหมด</option>
+            <option>PF-1 รายคน</option>
+            <option>PF-2 ขั้นบันได</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="tw"><table class="tbl">
+        <thead><tr><th>Payroll Client</th><th>MrId</th><th>เบอร์โทร</th><th>Payroll Form</th><th>พนักงาน</th><th>รอบจ่ายล่าสุด</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+          <tr>
+            <td><div class="cell-e"><div class="av av-g">AG</div><div><div class="name-l">AgroPayroll Ltd.</div><div class="sub-l">บริษัท เกษตรพัฒนา จำกัด</div></div></div></td>
+            <td><span class="mr-id">MR-00500011</span></td>
+            <td style="font-size:11px;color:var(--ink3)">064-111-2222</td>
+            <td><span class="badge b-green">PF-1 รายคน</span></td>
+            <td style="font-size:12px;font-family:'DM Sans',sans-serif;font-weight:600">245 คน</td>
+            <td style="font-size:11px;color:var(--ink3)">28 ก.พ. 68</td>
+            <td><span class="badge b-green">active</span></td>
+            <td><button class="btn btn-ghost btn-sm">ดู</button></td>
+          </tr>
+          <tr>
+            <td><div class="cell-e"><div class="av av-b">TC</div><div><div class="name-l">TechCorp Thailand</div><div class="sub-l">บริษัท เทคคอร์ป ไทยแลนด์ จำกัด</div></div></div></td>
+            <td><span class="mr-id">MR-00600022</span></td>
+            <td style="font-size:11px;color:var(--ink3)">062-333-4444</td>
+            <td><span class="badge b-green">PF-2 ขั้นบันได</span></td>
+            <td style="font-size:12px;font-family:'DM Sans',sans-serif;font-weight:600">88 คน</td>
+            <td style="font-size:11px;color:var(--ink3)">28 ก.พ. 68</td>
+            <td><span class="badge b-green">active</span></td>
+            <td><button class="btn btn-ghost btn-sm">ดู</button></td>
+          </tr>
+          <tr>
+            <td><div class="cell-e"><div class="av av-p">MF</div><div><div class="name-l">ManufactureThai Co.</div><div class="sub-l">บริษัท แมนูแฟคเจอร์ไทย จำกัด</div></div></div></td>
+            <td><span class="mr-id">MR-00800044</span></td>
+            <td style="font-size:11px;color:var(--ink3)">089-222-3344</td>
+            <td><span class="badge b-green">PF-1 รายคน</span></td>
+            <td style="font-size:12px;font-family:'DM Sans',sans-serif;font-weight:600">512 คน</td>
+            <td style="font-size:11px;color:var(--ink3)">28 ก.พ. 68</td>
+            <td><span class="badge b-green">active</span></td>
+            <td><button class="btn btn-ghost btn-sm">ดู</button></td>
+          </tr>
+          <tr>
+            <td><div class="cell-e"><div class="av av-b">LG</div><div><div class="name-l">LogisThai Group</div><div class="sub-l">บริษัท โลจิสไทย กรุ๊ป จำกัด</div></div></div></td>
+            <td><span class="mr-id">MR-00900055</span></td>
+            <td style="font-size:11px;color:var(--ink3)">081-444-5566</td>
+            <td><span class="badge b-green">PF-1 รายคน</span></td>
+            <td style="font-size:12px;font-family:'DM Sans',sans-serif;font-weight:600">320 คน</td>
+            <td style="font-size:11px;color:var(--ink3)">28 ก.พ. 68</td>
+            <td><span class="badge b-green">active</span></td>
+            <td><button class="btn btn-ghost btn-sm">ดู</button></td>
+          </tr>
+          <tr>
+            <td><div class="cell-e"><div class="av av-a">FD</div><div><div class="name-l">FoodDeli Express</div><div class="sub-l">บริษัท ฟู้ดเดลิ เอ็กซ์เพรส จำกัด</div></div></div></td>
+            <td><span class="mr-id">MR-01000066</span></td>
+            <td style="font-size:11px;color:var(--ink3)">062-777-8899</td>
+            <td><span class="badge b-green">PF-2 ขั้นบันได</span></td>
+            <td style="font-size:12px;font-family:'DM Sans',sans-serif;font-weight:600">54 คน</td>
+            <td style="font-size:11px;color:var(--ink3)">28 ก.พ. 68</td>
+            <td><span class="badge b-green">active</span></td>
+            <td><button class="btn btn-ghost btn-sm">ดู</button></td>
+          </tr>
+          <tr>
+            <td><div class="cell-e"><div class="av av-g">SC</div><div><div class="name-l">SmartConstruct Co.</div><div class="sub-l">บริษัท สมาร์ทคอนสตรัคท์ จำกัด</div></div></div></td>
+            <td><span class="mr-id">MR-01100077</span></td>
+            <td style="font-size:11px;color:var(--ink3)">089-000-1100</td>
+            <td><span class="badge b-green">PF-1 รายคน</span></td>
+            <td style="font-size:12px;font-family:'DM Sans',sans-serif;font-weight:600">65 คน</td>
+            <td style="font-size:11px;color:var(--ink3)">28 ก.พ. 68</td>
+            <td><span class="badge b-green">active</span></td>
+            <td><button class="btn btn-ghost btn-sm">ดู</button></td>
+          </tr>
+          <tr>
+            <td><div class="cell-e"><div class="av av-b">RX</div><div><div class="name-l">RetailMax Network</div><div class="sub-l">บริษัท รีเทลแมกซ์ เน็ตเวิร์ค จำกัด</div></div></div></td>
+            <td><span class="mr-id">MR-01200088</span></td>
+            <td style="font-size:11px;color:var(--ink3)">064-555-6677</td>
+            <td><span class="badge b-green">PF-1 รายคน</span></td>
+            <td style="font-size:12px;font-family:'DM Sans',sans-serif;font-weight:600">108 คน</td>
+            <td style="font-size:11px;color:var(--ink3)">28 ก.พ. 68</td>
+            <td><span class="badge b-green">active</span></td>
+            <td><button class="btn btn-ghost btn-sm">ดู</button></td>
+          </tr>
+          <tr>
+            <td><div class="cell-e"><div class="av av-a">RS</div><div><div class="name-l">RetailStar Co.</div><div class="sub-l">บริษัท รีเทลสตาร์ จำกัด</div></div></div></td>
+            <td><span class="mr-id">MR-00700033</span></td>
+            <td style="font-size:11px;color:var(--ink3)">081-555-6666</td>
+            <td><span class="badge b-gray">—</span></td>
+            <td style="font-size:11px;color:var(--ink4)">—</td>
+            <td style="font-size:11px;color:var(--ink4)">—</td>
+            <td><span class="badge b-amber">รอ Consent</span></td>
+            <td><button class="btn btn-ghost btn-sm">ดู</button></td>
+          </tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <!-- ── FUTURE ── -->
+    <div class="pane" id="pane-future">
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:60px 20px;text-align:center">
+        <div style="font-size:36px;margin-bottom:12px">🔜</div>
+        <div style="font-size:14px;font-weight:700;color:var(--ink);margin-bottom:6px;font-family:'DM Sans',sans-serif">Products อื่นๆ</div>
+        <div style="font-size:12px;color:var(--ink4)">จะปรากฏที่นี่เมื่อ Nexum Dev เพิ่มเข้าระบบ</div>
+      </div>
+    </div>
+
+    <!-- ── FORM LIBRARY ── -->
+    <div class="pane" id="pane-forms">
+      <div class="readonly-note"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 7v4M8 5.5v.3"/></svg>Form เหล่านี้สร้างโดย <b style="margin:0 2px">Nexum Dev</b> · Marketing ดูและส่งให้ลูกค้าเท่านั้น · ไม่สามารถแก้ไขได้</div>
+
+      <!-- filter bar -->
+      <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center">
+        <div style="position:relative;flex:1;min-width:180px;max-width:260px">
+          <svg style="position:absolute;left:10px;top:50%;transform:translateY(-50%);width:12px;height:12px;opacity:.35" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.4"/><path d="M10 10l3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          <input id="fl-search" type="text" placeholder="ค้นหา Form..." oninput="filterLib()" style="width:100%;padding:7px 11px 7px 30px;font-size:12px;font-family:'Sarabun',sans-serif;border:1.5px solid var(--border2);border-radius:9px;background:var(--bg2);color:var(--ink);outline:none">
+        </div>
+        <select id="fl-type" onchange="filterLib()" style="padding:7px 10px;font-size:12px;font-family:'Sarabun',sans-serif;border:1.5px solid var(--border2);border-radius:9px;background:var(--bg2);color:var(--ink);cursor:pointer">
+          <option value="">ประเภททั้งหมด</option>
+          <option value="C2C">C2C</option>
+          <option value="C2M">C2M</option>
+          <option value="C2C+C2M">C2C+C2M</option>
+          <option value="Payroll">Payroll</option>
+        </select>
+        <select id="fl-status" onchange="filterLib()" style="padding:7px 10px;font-size:12px;font-family:'Sarabun',sans-serif;border:1.5px solid var(--border2);border-radius:9px;background:var(--bg2);color:var(--ink);cursor:pointer">
+          <option value="">สถานะทั้งหมด</option>
+          <option value="active">Active</option>
+          <option value="deprecated">Deprecated</option>
+        </select>
+        <span id="fl-count" style="font-size:11px;color:var(--ink4);margin-left:auto"></span>
+      </div>
+
+      <div id="fl-ia-head" class="sec-hdr"><div class="sec-title">I/A Forms</div><div class="sec-sub" id="fl-ia-sub"></div></div>
+      <div id="fl-ia-list"></div>
+
+      <div id="fl-pay-head" class="sec-hdr" style="margin-top:4px"><div class="sec-title">Payroll Forms</div><div class="sec-sub" id="fl-pay-sub"></div></div>
+      <div id="fl-pay-list"></div>
+    </div>
+
+    <!-- ── STAFF ── -->
+    <div class="pane" id="pane-staff">
+      <div class="invite-box">
+        <div class="invite-title"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="6" cy="5" r="2"/><circle cx="11" cy="5" r="2"/><path d="M1.5 13.5c0-2.5 2-4 4.5-4M8.5 9.5c2.5 0 4.5 1.5 4.5 4"/></svg>เพิ่มพนักงาน Marketing</div>
+        <div class="form-row">
+          <div><label class="fl">MrId</label><span class="fh">รหัสจาก Mana Platform</span><input class="fi" id="st-mrid" type="text" placeholder="MR-00567890" oninput="clrE('st-mrid')"><div class="form-err" id="err-st-mrid">กรุณากรอก MrId</div></div>
+          <div><label class="fl">เบอร์โทรศัพท์</label><span class="fh">เบอร์ติดต่อ</span><input class="fi" id="st-phone" type="tel" placeholder="0912345678" oninput="clrE('st-phone')"><div class="form-err" id="err-st-phone">กรุณากรอกเบอร์โทร</div></div>
+        </div>
+        <div class="form-actions"><select class="fi" style="width:130px;margin-right:auto"><option>Admin</option><option>Manager</option><option>Viewer</option></select><button class="btn btn-ghost" onclick="clrSt()">ล้าง</button><button class="btn btn-primary" onclick="subSt()">เพิ่มพนักงาน</button></div>
+      </div>
+      <div class="tw"><table class="tbl"><thead><tr><th>พนักงาน</th><th>MrId</th><th>เบอร์โทร</th><th>Role</th><th>Status</th><th></th></tr></thead>
+        <tbody id="st-tbody">
+          <tr><td><div class="cell-e"><div class="av av-p">NK</div><div><div class="name-l">นภาพร กาญจน์</div></div></div></td><td><span class="mr-id">MR-00000001</span></td><td style="font-size:11px;color:var(--ink3)">080-000-0001</td><td><span class="badge b-purple">Admin</span></td><td><span class="badge b-green">active</span></td><td><button class="btn btn-ghost btn-sm">แก้ไข</button></td></tr>
+          <tr><td><div class="cell-e"><div class="av av-b">SP</div><div><div class="name-l">สมพร วงษ์ทอง</div></div></div></td><td><span class="mr-id">MR-00000042</span></td><td style="font-size:11px;color:var(--ink3)">081-234-0042</td><td><span class="badge b-amber">Manager</span></td><td><span class="badge b-green">active</span></td><td><button class="btn btn-ghost btn-sm">แก้ไข</button></td></tr>
+          <tr><td><div class="cell-e"><div class="av av-a">WR</div><div><div class="name-l">วิภาวรรณ รักษา</div></div></div></td><td><span class="mr-id">MR-00000055</span></td><td style="font-size:11px;color:var(--ink3)">089-555-0055</td><td><span class="badge b-gray">Viewer</span></td><td><span class="badge b-green">active</span></td><td><button class="btn btn-ghost btn-sm">แก้ไข</button></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <!-- ── AUDIT LOG ── -->
+    <div class="pane" id="pane-audit">
+      <div class="card" style="margin-bottom:12px">
+        <div class="form-row" style="margin-bottom:0"><input class="fi" type="text" placeholder="ค้นหา action, MrId..."><select class="fi"><option>ทุก action</option><option>I/A</option><option>Payroll</option><option>Staff</option></select></div>
+      </div>
+      <div class="card">
+        <div class="audit-item"><div class="audit-dot" style="background:var(--blue);margin-top:4px;width:8px;height:8px;border-radius:50%;flex-shrink:0"></div><div><div class="audit-action">เพิ่ม I/A Client — CreditPlus (MR-00200034) · Form B</div><div class="audit-meta">นภาพร กาญจน์ · 16 มี.ค. 2568 14:32</div></div></div>
+        <div class="audit-item"><div class="audit-dot" style="background:var(--green);margin-top:4px;width:8px;height:8px;border-radius:50%;flex-shrink:0"></div><div><div class="audit-action">เพิ่ม Payroll Client — TechCorp Thailand · PF-2</div><div class="audit-meta">สมพร วงษ์ทอง · 15 มี.ค. 2568 11:10</div></div></div>
+        <div class="audit-item"><div class="audit-dot" style="background:var(--p);margin-top:4px;width:8px;height:8px;border-radius:50%;flex-shrink:0"></div><div><div class="audit-action">เพิ่มพนักงาน Marketing — MR-00000055</div><div class="audit-meta">นภาพร กาญจน์ · 14 มี.ค. 2568 16:45</div></div></div>
+        <div class="audit-item"><div class="audit-dot" style="background:var(--amber);margin-top:4px;width:8px;height:8px;border-radius:50%;flex-shrink:0"></div><div><div class="audit-action">ส่ง Form ใหม่ — FinServe Co. เปลี่ยน Form A → Form B</div><div class="audit-meta">สมพร วงษ์ทอง · 13 มี.ค. 2568 09:20</div></div></div>
+        <div class="audit-item" style="border-bottom:none"><div class="audit-dot" style="background:var(--red);margin-top:4px;width:8px;height:8px;border-radius:50%;flex-shrink:0"></div><div><div class="audit-action">Suspend I/A Client — NanoLend (MR-00400078)</div><div class="audit-meta">นภาพร กาญจน์ · 12 มี.ค. 2568 17:05</div></div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<script>
+/* ── FORM LIBRARY DATA ── */
+var flForms = [
+  {
+    id:'FA', name:'Form A — Standard', type:'C2C', status:'active', usedBy:7, version:'v1.2', updatedAt:'10 มี.ค. 2568',
+    desc:'เงินกู้ C2C · ไม่รองรับ C2M',
+    chips:[{label:'APR 12–20%',cls:'chip-p'},{label:'วงเงิน 5K–100K ฿',cls:'chip-p'},{label:'IBC 5–30%',cls:'chip-p'}],
+    note:'Form A ไม่มี MDR — ไม่เปิดใช้ C2M สำหรับ Form นี้',
+    noteColor:'var(--blue-l)',noteBorder:'var(--blue-2)',noteText:'var(--blue)',
+    fields:[
+      {name:'วงเงินเครดิต',perm:'range',devVal:'5,000–100,000 ฿',iaAction:'เลือกช่วงที่ต้องการ',scope:'all'},
+      {name:'อัตราดอกเบี้ย (APR)',desc:'Annual Percentage Rate',perm:'range',devVal:'12–20% ต่อปี',iaAction:'เลือก % ในช่วง',scope:'all'},
+      {name:'วงเงินกดเงินสดสูงสุด/ครั้ง',perm:'ceil',devVal:'ceiling = 50,000 ฿',iaAction:'ตั้งไม่เกิน ceiling',scope:'c2c'},
+      {name:'ค่าธรรมเนียมกดเงินสด',perm:'range',devVal:'1.5–3.5%',iaAction:'เลือกรูปแบบ + ค่า',scope:'c2c'},
+      {name:'วันตัดรอบ',perm:'range',devVal:'1–28 ของเดือน',iaAction:'เลือกวัน → ล็อคใน Contract',scope:'all'},
+      {name:'วันกำหนดชำระ',perm:'ceil',devVal:'ceiling = 30 วันหลังตัดรอบ',iaAction:'เลือกวันเป๊ะ → ล็อคใน Contract',scope:'all'},
+      {name:'อัตราหักชำระ IBC',perm:'range',devVal:'5–30% ของ income-tagged',iaAction:'เลือก % ในช่วง',scope:'all'},
+      {name:'ค่าธรรมเนียม Payroll',desc:'รายได้ Nexum',perm:'lock',devVal:'10 บาท/คน/รอบ',iaAction:'เปลี่ยนไม่ได้',scope:'pay'},
+    ]
+  },
+  {
+    id:'FB', name:'Form B — Premium', type:'C2C+C2M', status:'active', usedBy:3, version:'v2.0', updatedAt:'5 มี.ค. 2568',
+    desc:'เงินกู้ C2C + รับชำระร้านค้า C2M',
+    chips:[{label:'APR 10–24%',cls:'chip-p'},{label:'วงเงิน 5K–500K ฿',cls:'chip-p'},{label:'IBC 5–25%',cls:'chip-p'},{label:'MDR 1–4%',cls:'chip-t'}],
+    note:'MDR ตัวอย่าง 3%: User จ่าย 100 ฿ → ร้านได้ 97 ฿ · 3 ฿ แบ่งเป็น Interchange + Network + Acquirer Fee อัตโนมัติ',
+    noteColor:'var(--teal-l)',noteBorder:'#A5F3FC',noteText:'var(--teal)',
+    fields:[
+      {name:'วงเงินเครดิต',perm:'range',devVal:'5,000–500,000 ฿',iaAction:'เลือกช่วงที่ต้องการ',scope:'all'},
+      {name:'อัตราดอกเบี้ย (APR)',desc:'Annual Percentage Rate',perm:'range',devVal:'10–24% ต่อปี',iaAction:'เลือก % ในช่วง',scope:'all'},
+      {name:'วงเงินกดเงินสดสูงสุด/ครั้ง',perm:'ceil',devVal:'ceiling = 50,000 ฿',iaAction:'ตั้งไม่เกิน ceiling',scope:'c2c'},
+      {name:'ค่าธรรมเนียมกดเงินสด',perm:'range',devVal:'1.5–3.5%',iaAction:'เลือกรูปแบบ + ค่า',scope:'c2c'},
+      {name:'วันตัดรอบ',perm:'range',devVal:'1–28 ของเดือน',iaAction:'เลือกวัน → ล็อคใน Contract',scope:'all'},
+      {name:'วันกำหนดชำระ',perm:'ceil',devVal:'ceiling = 30 วันหลังตัดรอบ',iaAction:'เลือกวันเป๊ะ → ล็อคใน Contract',scope:'all'},
+      {name:'อัตราหักชำระ IBC',perm:'range',devVal:'5–25% ของ income-tagged',iaAction:'เลือก % ในช่วง',scope:'all'},
+      {name:'MDR',desc:'Merchant Discount Rate',perm:'range',devVal:'1–4% ต่อ transaction',iaAction:'เลือก % ในช่วง',scope:'c2m'},
+      {name:'ค่าธรรมเนียม Payroll',desc:'รายได้ Nexum',perm:'lock',devVal:'10 บาท/คน/รอบ',iaAction:'เปลี่ยนไม่ได้',scope:'pay'},
+    ]
+  },
+  {
+    id:'FC', name:'Form C — Micro Loan', type:'C2C', status:'active', usedBy:1, version:'v1.0', updatedAt:'20 ก.พ. 2568',
+    desc:'วงเงินเล็ก · ไม่รองรับ C2M',
+    chips:[{label:'APR 20–36%',cls:'chip-p'},{label:'วงเงิน 1K–10K ฿',cls:'chip-p'},{label:'IBC 10–40%',cls:'chip-p'}],
+    note:'Form C เน้น Micro Credit · วงเงินต่ำ APR สูงกว่า · ไม่มี MDR / C2M',
+    noteColor:'var(--amber-l)',noteBorder:'var(--amber-2)',noteText:'var(--amber)',
+    fields:[
+      {name:'วงเงินเครดิต',perm:'range',devVal:'1,000–10,000 ฿',iaAction:'เลือกช่วงที่ต้องการ',scope:'all'},
+      {name:'อัตราดอกเบี้ย (APR)',perm:'range',devVal:'20–36% ต่อปี',iaAction:'เลือก % ในช่วง',scope:'all'},
+      {name:'วงเงินกดเงินสดสูงสุด/ครั้ง',perm:'ceil',devVal:'ceiling = 5,000 ฿',iaAction:'ตั้งไม่เกิน ceiling',scope:'c2c'},
+      {name:'ค่าธรรมเนียมกดเงินสด',perm:'range',devVal:'2–5%',iaAction:'เลือกรูปแบบ + ค่า',scope:'c2c'},
+      {name:'วันตัดรอบ',perm:'range',devVal:'1–28 ของเดือน',iaAction:'เลือกวัน → ล็อคใน Contract',scope:'all'},
+      {name:'วันกำหนดชำระ',perm:'ceil',devVal:'ceiling = 30 วันหลังตัดรอบ',iaAction:'เลือกวันเป๊ะ → ล็อคใน Contract',scope:'all'},
+      {name:'อัตราหักชำระ IBC',perm:'range',devVal:'10–40% ของ income-tagged',iaAction:'เลือก % ในช่วง',scope:'all'},
+    ]
+  },
+  {
+    id:'FD', name:'Form D — IBC Full Package', type:'C2C+C2M', status:'active', usedBy:2, version:'v1.0', updatedAt:'15 ก.พ. 2568',
+    desc:'ครบทุก feature รวม IBC เต็มรูปแบบ',
+    chips:[{label:'APR 8–18%',cls:'chip-p'},{label:'วงเงิน 5K–300K ฿',cls:'chip-p'},{label:'IBC 15–60%',cls:'chip-p'},{label:'MDR 0.5–2.5%',cls:'chip-t'}],
+    note:'IBC rate สูงกว่า Form อื่น เนื่องจากออกแบบสำหรับ Issuer ที่ใช้ IBC เป็นหลัก',
+    noteColor:'var(--green-l)',noteBorder:'var(--green-2)',noteText:'var(--green)',
+    fields:[
+      {name:'วงเงินเครดิต',perm:'range',devVal:'5,000–300,000 ฿',iaAction:'เลือกช่วงที่ต้องการ',scope:'all'},
+      {name:'อัตราดอกเบี้ย (APR)',perm:'range',devVal:'8–18% ต่อปี',iaAction:'เลือก % ในช่วง',scope:'all'},
+      {name:'วงเงินกดเงินสดสูงสุด/ครั้ง',perm:'ceil',devVal:'ceiling = 50,000 ฿',iaAction:'ตั้งไม่เกิน ceiling',scope:'c2c'},
+      {name:'ค่าธรรมเนียมกดเงินสด',perm:'range',devVal:'1–2.5%',iaAction:'เลือกรูปแบบ + ค่า',scope:'c2c'},
+      {name:'วันตัดรอบ',perm:'range',devVal:'1–28 ของเดือน',iaAction:'เลือกวัน → ล็อคใน Contract',scope:'all'},
+      {name:'วันกำหนดชำระ',perm:'ceil',devVal:'ceiling = 30 วันหลังตัดรอบ',iaAction:'เลือกวันเป๊ะ → ล็อคใน Contract',scope:'all'},
+      {name:'อัตราหักชำระ IBC',perm:'range',devVal:'15–60% ของ income-tagged',iaAction:'เลือก % ในช่วง',scope:'all'},
+      {name:'MDR',desc:'Merchant Discount Rate',perm:'range',devVal:'0.5–2.5% ต่อ transaction',iaAction:'เลือก % ในช่วง',scope:'c2m'},
+      {name:'ค่าธรรมเนียม Payroll',desc:'รายได้ Nexum',perm:'lock',devVal:'10 บาท/คน/รอบ',iaAction:'เปลี่ยนไม่ได้',scope:'pay'},
+    ]
+  },
+  {
+    id:'FX', name:'Form X — Legacy C2C', type:'C2C', status:'deprecated', usedBy:0, version:'v0.9', updatedAt:'1 ม.ค. 2568',
+    desc:'เวอร์ชันเก่า · ไม่รับ Client ใหม่',
+    chips:[{label:'APR 15–35%',cls:'chip-p'},{label:'วงเงิน 3K–50K ฿',cls:'chip-p'}],
+    note:'Form นี้ถูก deprecated แล้ว · ใช้ Form A หรือ Form C แทน',
+    noteColor:'var(--bg3)',noteBorder:'var(--border2)',noteText:'var(--ink3)',
+    fields:[
+      {name:'วงเงินเครดิต',perm:'range',devVal:'3,000–50,000 ฿',iaAction:'เลือกช่วงที่ต้องการ',scope:'all'},
+      {name:'อัตราดอกเบี้ย (APR)',perm:'range',devVal:'15–35% ต่อปี',iaAction:'เลือก % ในช่วง',scope:'all'},
+      {name:'วงเงินกดเงินสดสูงสุด/ครั้ง',perm:'ceil',devVal:'ceiling = 20,000 ฿',iaAction:'ตั้งไม่เกิน ceiling',scope:'c2c'},
+      {name:'ค่าธรรมเนียมกดเงินสด',perm:'range',devVal:'2–5%',iaAction:'เลือกรูปแบบ + ค่า',scope:'c2c'},
+    ]
+  },
+];
+var flPayroll = [
+  {
+    id:'PF1', name:'Payroll Form 1 — รายคน', type:'Payroll', status:'active', usedBy:7, version:'v1.0', updatedAt:'1 ม.ค. 2568',
+    desc:'ค่าธรรมเนียมคิดรายคนต่อรอบจ่าย',
+    chips:[{label:'10 บาท/คน/รอบ',cls:'chip-g'}],
+    note:'เหมาะกับบริษัทขนาดใหญ่ · ค่าใช้จ่ายแปรผันตามจำนวนพนักงาน',
+    noteColor:'var(--green-l)',noteBorder:'var(--green-2)',noteText:'var(--green)',
+    fields:[
+      {name:'ค่าธรรมเนียม Payroll',desc:'รายได้ Nexum',perm:'lock',devVal:'10 บาท/คน/รอบ',iaAction:'เปลี่ยนไม่ได้',scope:'pay'},
+    ]
+  },
+  {
+    id:'PF2', name:'Payroll Form 2 — ขั้นบันได', type:'Payroll', status:'active', usedBy:1, version:'v1.0', updatedAt:'1 ม.ค. 2568',
+    desc:'ค่าธรรมเนียมแบบขั้นบันไดตามจำนวนพนักงาน',
+    chips:[{label:'≤30 คน = 300 ฿',cls:'chip-g'},{label:'≤60 คน = 500 ฿',cls:'chip-g'},{label:'61+ คน = 800 ฿',cls:'chip-g'}],
+    note:'เหมาะกับบริษัท SME · ค่าใช้จ่ายแน่นอนล่วงหน้า',
+    noteColor:'var(--green-l)',noteBorder:'var(--green-2)',noteText:'var(--green)',
+    fields:[
+      {name:'ค่าธรรมเนียม Payroll (≤30 คน)',perm:'lock',devVal:'300 บาท/รอบ',iaAction:'เปลี่ยนไม่ได้',scope:'pay'},
+      {name:'ค่าธรรมเนียม Payroll (31–60 คน)',perm:'lock',devVal:'500 บาท/รอบ',iaAction:'เปลี่ยนไม่ได้',scope:'pay'},
+      {name:'ค่าธรรมเนียม Payroll (61+ คน)',perm:'lock',devVal:'800 บาท/รอบ',iaAction:'เปลี่ยนไม่ได้',scope:'pay'},
+    ]
+  },
+];
+
+var scopeMap = {
+  all:  {label:'C2C + C2M', cls:'fuse-all'},
+  c2c:  {label:'C2C', cls:'fuse-c2c'},
+  c2m:  {label:'C2M', cls:'fuse-c2b'},
+  pay:  {label:'Payroll', cls:'fuse-pay'},
+};
+var permMap = {
+  range:{label:'⇔ ช่วง', cls:'t-range'},
+  ceil: {label:'↑ ceiling', cls:'t-ceil'},
+  lock: {label:'🔒 ล็อค', cls:'t-lock'},
+};
+
+function buildFormCard(f) {
+  var chipsHtml = f.chips.map(c=>'<span class="chip '+c.cls+'">'+c.label+'</span>').join('');
+  var statusBadge = f.status==='active' ? '<span class="badge b-green">active</span>' : '<span class="badge b-gray">deprecated</span>';
+  var rowBg = f.status==='deprecated' ? 'background:var(--bg3);opacity:.7;' : '';
+  var fieldsHtml = f.fields.map(function(fd){
+    var p=permMap[fd.perm], s=scopeMap[fd.scope||'all'];
+    var devStyle = fd.perm==='lock' ? 'color:var(--red)' : '';
+    var iaStyle  = fd.perm==='lock' ? 'color:var(--ink4)' : 'color:var(--blue)';
+    var mdrCls   = fd.scope==='c2m' ? ' mdr-row' : '';
+    return '<tr class="'+mdrCls+'"><td><div class="fname">'+fd.name+'</div>'+(fd.desc?'<div class="fdesc">'+fd.desc+'</div>':'')+'</td>'
+      +'<td><span class="tag '+p.cls+'">'+p.label+'</span></td>'
+      +'<td style="font-size:11px;'+devStyle+'">'+fd.devVal+'</td>'
+      +'<td style="font-size:11px;'+iaStyle+'">'+fd.iaAction+'</td>'
+      +'<td><span class="fuse '+s.cls+'">'+s.label+'</span></td></tr>';
+  }).join('');
+  return '<div class="form-card-item" id="fcard-'+f.id+'" style="'+rowBg+'">'
+    +'<div class="fci-hd" onclick="toggleF(\''+f.id+'\')">'
+    +'<div>'
+    +'<div class="fci-name">'+f.name+'<span style="font-size:10px;font-weight:500;color:var(--ink4);margin-left:8px">'+f.version+'</span></div>'
+    +'<div class="fci-desc">'+f.desc+'</div>'
+    +'<div class="fci-chips">'+chipsHtml+'</div>'
+    +'</div>'
+    +'<div class="fci-right">'+statusBadge+'<span style="font-size:10px;color:var(--ink4)">'+f.usedBy+' ราย</span><span id="arr-'+f.id+'" style="color:var(--ink4);font-size:13px">▾</span></div>'
+    +'</div>'
+    +'<div class="fci-detail" id="fd-'+f.id+'">'
+    +'<div style="font-size:10px;color:var(--ink4);margin-bottom:8px">อัปเดต '+f.updatedAt+' · '+f.fields.length+' fields</div>'
+    +'<table class="ftbl"><thead><tr><th style="width:24%">Field</th><th style="width:11%">Permission</th><th style="width:28%">Dev กำหนด</th><th style="width:22%">I/A ทำได้</th><th>ใช้กับ</th></tr></thead>'
+    +'<tbody>'+fieldsHtml+'</tbody></table>'
+    +'<div class="mdr-note" style="background:'+f.noteColor+';border-color:'+f.noteBorder+';color:'+f.noteText+'">'+f.note+'</div>'
+    +'</div></div>';
+}
+
+function filterLib() {
+  var q = document.getElementById('fl-search').value.toLowerCase();
+  var t = document.getElementById('fl-type').value;
+  var s = document.getElementById('fl-status').value;
+  var iaForms = flForms.filter(function(f){
+    return (!q||f.name.toLowerCase().includes(q))&&(!t||f.type===t)&&(!s||f.status===s);
+  });
+  var payForms = flPayroll.filter(function(f){
+    return (!q||f.name.toLowerCase().includes(q))&&(!t||t===''||t==='Payroll')&&(!s||f.status===s);
+  });
+  if(t && t!=='Payroll') payForms=[];
+  if(t==='Payroll') iaForms=[];
+  document.getElementById('fl-ia-list').innerHTML = iaForms.map(buildFormCard).join('') || '<div style="padding:20px;text-align:center;font-size:12px;color:var(--ink4)">ไม่พบ Form</div>';
+  document.getElementById('fl-pay-list').innerHTML = payForms.map(buildFormCard).join('') || '<div style="padding:20px;text-align:center;font-size:12px;color:var(--ink4)">ไม่พบ Form</div>';
+  document.getElementById('fl-ia-sub').textContent = iaForms.length+' Forms · คลิกเพื่อดู fields';
+  document.getElementById('fl-pay-sub').textContent = payForms.length+' Forms';
+  document.getElementById('fl-count').textContent = 'ทั้งหมด '+(iaForms.length+payForms.length)+' Forms';
+  document.getElementById('fl-ia-head').style.display = (t==='Payroll') ? 'none' : '';
+  document.getElementById('fl-pay-head').style.display = (t && t!=='Payroll') ? 'none' : '';
+}
+
+var pages={dash:'Dashboard',ia:'I/A Clients',payroll:'Payroll Clients',future:'Products อื่นๆ',forms:'Form Library',staff:'Staff',audit:'Audit Log'};
+var ctas={dash:'เพิ่ม Client',ia:'+ I/A Client',payroll:'+ Payroll Client',future:'',forms:'',staff:'+ เพิ่มพนักงาน',audit:'Export CSV'};
+function nav(el,id){
+  document.querySelectorAll('.sb-item').forEach(n=>n.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('show'));
+  document.getElementById('pane-'+id).classList.add('show');
+  document.getElementById('bc-curr').textContent=pages[id];
+  document.getElementById('cta-lbl').textContent=ctas[id]||'เพิ่มใหม่';
+}
+function handleCta(){
+  var a=document.querySelector('.sb-item.active');
+  var m=a&&a.getAttribute('onclick').match(/nav\(this,'(\w+)'\)/);
+  if(!m)return;
+  if(m[1]==='ia')document.getElementById('ia-mrid').focus();
+  else if(m[1]==='payroll')document.getElementById('pr-mrid').focus();
+  else if(m[1]==='staff')document.getElementById('st-mrid').focus();
+  else if(ctas[m[1]])alert(ctas[m[1]]);
+}
+function toggleF(k){
+  var fd=document.getElementById('fd-'+k),arr=document.getElementById('arr-'+k);
+  if(!fd)return;
+  var o=fd.classList.contains('open');
+  fd.classList.toggle('open',!o);
+  arr.textContent=o?'▾':'▴';
+}
+document.addEventListener('DOMContentLoaded',function(){ filterLib(); });
+function clrE(id){document.getElementById('err-'+id).classList.remove('show');document.getElementById(id).classList.remove('err');}
+function shwE(id){document.getElementById('err-'+id).classList.add('show');document.getElementById(id).classList.add('err');}
+function clrIa(){['ia-mrid','ia-phone'].forEach(f=>{document.getElementById(f).value='';clrE(f);});}
+function clrPr(){['pr-mrid','pr-phone'].forEach(f=>{document.getElementById(f).value='';clrE(f);});}
+function clrSt(){['st-mrid','st-phone'].forEach(f=>{document.getElementById(f).value='';clrE(f);});}
+function subIa(){
+  var m=document.getElementById('ia-mrid').value.trim(),p=document.getElementById('ia-phone').value.trim(),ok=true;
+  if(!m){shwE('ia-mrid');ok=false;}if(!p){shwE('ia-phone');ok=false;}if(!ok)return;
+  var f=document.getElementById('ia-form').options[document.getElementById('ia-form').selectedIndex].text.split('—')[0].trim();
+  var tb=document.getElementById('ia-tbody'),tr=document.createElement('tr');
+  tr.innerHTML='<td><div class="cell-e"><div class="av av-g">'+m.slice(-2).toUpperCase()+'</div><div><div class="name-l">'+m+'</div></div></div></td><td><span class="mr-id">'+m+'</span></td><td style="font-size:11px;color:var(--ink3)">'+p+'</td><td><span class="badge b-purple">'+f+'</span></td><td style="font-size:11px;color:var(--ink4)">0 templates</td><td><span class="badge b-amber">รอ Consent</span></td><td><button class="btn btn-ghost btn-sm">ดู</button></td>';
+  tb.appendChild(tr);clrIa();alert('ส่ง Form ให้ I/A แล้ว · MrId: '+m+' · '+f);
+}
+function subPr(){
+  var m=document.getElementById('pr-mrid').value.trim(),p=document.getElementById('pr-phone').value.trim(),ok=true;
+  if(!m){shwE('pr-mrid');ok=false;}if(!p){shwE('pr-phone');ok=false;}if(!ok)return;
+  var tb=document.getElementById('pr-tbody'),tr=document.createElement('tr');
+  tr.innerHTML='<td><div class="cell-e"><div class="av av-g">'+m.slice(-2).toUpperCase()+'</div><div><div class="name-l">'+m+'</div></div></div></td><td><span class="mr-id">'+m+'</span></td><td style="font-size:11px;color:var(--ink3)">'+p+'</td><td><span class="badge b-green">PF-1</span></td><td style="font-size:11px;color:var(--ink4)">—</td><td><span class="badge b-amber">รอ Consent</span></td><td><button class="btn btn-ghost btn-sm">ดู</button></td>';
+  tb.appendChild(tr);clrPr();alert('ส่ง Form ให้ Payroll Client แล้ว · MrId: '+m);
+}
+function subSt(){
+  var m=document.getElementById('st-mrid').value.trim(),p=document.getElementById('st-phone').value.trim(),ok=true;
+  if(!m){shwE('st-mrid');ok=false;}if(!p){shwE('st-phone');ok=false;}if(!ok)return;
+  var tb=document.getElementById('st-tbody'),tr=document.createElement('tr');
+  tr.innerHTML='<td><div class="cell-e"><div class="av av-g">'+m.slice(-2).toUpperCase()+'</div><div><div class="name-l">'+m+'</div></div></div></td><td><span class="mr-id">'+m+'</span></td><td style="font-size:11px;color:var(--ink3)">'+p+'</td><td><span class="badge b-gray">Viewer</span></td><td><span class="badge b-green">active</span></td><td><button class="btn btn-ghost btn-sm">แก้ไข</button></td>';
+  tb.appendChild(tr);clrSt();alert('เพิ่มพนักงานแล้ว · MrId: '+m);
+}
+</script>
