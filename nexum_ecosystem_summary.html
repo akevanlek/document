@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexum Ecosystem — สรุปโครงสร้าง</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --p: #7C3AED; --p2: #6D28D9; --p3: #4C1D95;
+  --pl: #EDE9FE; --pm: #DDD6FE; --pll: #F5F3FF;
+  --ink: #18181B; --ink2: #3F3F46; --ink3: #71717A; --ink4: #A1A1AA; --ink5: #E4E4E7;
+  --bg: #FAFAFA; --bg2: #FFFFFF; --bg3: #F4F4F5;
+  --border: #E4E4E7; --border2: #D4D4D8;
+  --green: #059669; --green-l: #ECFDF5; --green-2: #D1FAE5;
+  --amber: #D97706; --amber-l: #FFFBEB; --amber-2: #FEF3C7;
+  --blue: #2563EB; --blue-l: #EFF6FF; --blue-2: #DBEAFE;
+  --red: #DC2626; --red-l: #FEF2F2;
+  --teal: #0891B2; --teal-l: #ECFEFF; --teal-2: #CFFAFE;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Sarabun', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.7;
+  font-size: 15px;
+}
+
+/* ── LAYOUT ── */
+.page { max-width: 860px; margin: 0 auto; padding: 48px 32px 80px; }
+
+/* ── HEADER ── */
+.doc-header { margin-bottom: 48px; padding-bottom: 32px; border-bottom: 1px solid var(--border); }
+.doc-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--p); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+.doc-eyebrow::before { content:''; width: 20px; height: 2px; background: var(--p); border-radius: 2px; display: inline-block; }
+.doc-title { font-family: 'DM Sans', sans-serif; font-size: 32px; font-weight: 600; color: var(--ink); letter-spacing: -.02em; line-height: 1.2; margin-bottom: 12px; }
+.doc-desc { font-size: 14px; color: var(--ink3); max-width: 540px; }
+.doc-meta { display: flex; gap: 16px; margin-top: 18px; flex-wrap: wrap; }
+.meta-chip { font-size: 11px; padding: 4px 12px; border-radius: 99px; border: 1px solid var(--border2); color: var(--ink3); background: var(--bg2); font-weight: 500; }
+
+/* ── SECTION ── */
+.section { margin-bottom: 40px; }
+.section-label { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--ink4); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+.section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* ── MANA PLATFORM CONTAINER ── */
+.platform-shell {
+  border: 1.5px dashed var(--border2);
+  border-radius: 20px;
+  padding: 24px;
+  background: var(--bg2);
+  margin-bottom: 32px;
+  position: relative;
+}
+.platform-tag {
+  position: absolute; top: -11px; left: 24px;
+  background: var(--bg2); padding: 0 10px;
+  font-size: 11px; font-weight: 700; color: var(--ink3);
+  letter-spacing: .06em; text-transform: uppercase;
+  display: flex; align-items: center; gap: 6px;
+}
+.mana-dot { width: 8px; height: 8px; border-radius: 2px; background: #ED1C24; display: inline-block; }
+.platform-desc { font-size: 13px; color: var(--ink3); margin-bottom: 20px; line-height: 1.6; }
+
+.nexum-shell {
+  background: var(--pll);
+  border: 1.5px solid var(--pm);
+  border-radius: 14px;
+  padding: 20px 22px 22px;
+}
+.nexum-tag { font-size: 12px; font-weight: 700; color: var(--p2); margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+.nexum-dot { width: 8px; height: 8px; border-radius: 2px; background: var(--p); display: inline-block; }
+.nexum-desc { font-size: 13px; color: var(--p2); opacity: .75; margin-bottom: 18px; }
+
+/* ── TOOLS GRID ── */
+.tools-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.tool-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  transition: box-shadow .15s, transform .15s;
+}
+.tool-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.07); transform: translateY(-1px); }
+.tc-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.tc-icon { width: 32px; height: 32px; border-radius: 9px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.tc-icon svg { width: 14px; height: 14px; }
+.ic-p { background: var(--pl); color: var(--p2); }
+.ic-b { background: var(--blue-l); color: var(--blue); }
+.ic-t { background: var(--teal-l); color: var(--teal); }
+.ic-g { background: var(--green-l); color: var(--green); }
+.tc-name { font-size: 13px; font-weight: 700; color: var(--ink); }
+.tc-user { font-size: 11px; color: var(--ink4); }
+.tc-items { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+.tc-items li { font-size: 12px; color: var(--ink2); display: flex; gap: 7px; align-items: flex-start; line-height: 1.5; }
+.tc-items li::before { content: '·'; color: var(--ink4); flex-shrink: 0; margin-top: 0; }
+
+/* ── CONCEPT CARDS ── */
+.concepts-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.concept-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+.concept-card:hover { border-color: var(--pm); }
+.cc-badge { font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 99px; margin-bottom: 10px; display: inline-flex; }
+.cc-b-p { background: var(--pl); color: var(--p2); }
+.cc-b-t { background: var(--teal-l); color: var(--teal); }
+.cc-b-b { background: var(--blue-l); color: var(--blue); }
+.cc-name { font-size: 13px; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
+.cc-desc { font-size: 12px; color: var(--ink3); line-height: 1.6; }
+.cc-note { font-size: 11px; color: var(--ink4); margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
+
+/* ── ROLES TABLE ── */
+.roles-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.roles-table th { background: var(--bg3); padding: 9px 14px; text-align: left; font-size: 11px; font-weight: 700; color: var(--ink3); text-transform: uppercase; letter-spacing: .05em; border-bottom: 1px solid var(--border); }
+.roles-table td { padding: 12px 14px; border-bottom: 1px solid var(--border); vertical-align: top; color: var(--ink2); }
+.roles-table tr:last-child td { border-bottom: none; }
+.roles-table tr:hover td { background: var(--pll); }
+.role-name { font-weight: 700; color: var(--ink); margin-bottom: 3px; }
+.role-desc { font-size: 12px; color: var(--ink3); }
+.badge { font-size: 10px; padding: 3px 9px; border-radius: 99px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+.badge::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; opacity: .6; }
+.b-p { background: var(--pl); color: var(--p2); }
+.b-t { background: var(--teal-l); color: var(--teal); }
+
+/* ── FORM FIELDS TABLE ── */
+.tw { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+.ftbl { width: 100%; border-collapse: collapse; font-size: 12px; }
+.ftbl th { background: linear-gradient(135deg, var(--p), var(--p2)); color: #fff; padding: 9px 13px; text-align: left; font-size: 10px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
+.ftbl td { padding: 10px 13px; border-bottom: 1px solid var(--border); vertical-align: middle; color: var(--ink); }
+.ftbl tr:last-child td { border-bottom: none; }
+.ftbl tr:nth-child(even) td { background: var(--bg3); }
+.fname { font-weight: 600; font-size: 12px; }
+.tag { font-size: 10px; padding: 2px 8px; border-radius: 99px; font-weight: 600; white-space: nowrap; }
+.t-range { background: var(--blue-l); color: var(--blue); }
+.t-ceil  { background: var(--amber-l); color: var(--amber); }
+.t-lock  { background: var(--red-l); color: var(--red); }
+.fuse { font-size: 10px; padding: 2px 8px; border-radius: 99px; font-weight: 600; }
+.fu-all { background: var(--pl); color: var(--p2); }
+.fu-c2c { background: var(--blue-l); color: var(--blue); }
+.fu-c2m { background: var(--teal-l); color: var(--teal); }
+.fu-pay { background: var(--green-l); color: var(--green); }
+
+/* ── FLOW ── */
+.flow-list { display: flex; flex-direction: column; gap: 0; }
+.flow-item { display: flex; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--border); align-items: flex-start; }
+.flow-item:last-child { border-bottom: none; }
+.flow-num { width: 26px; height: 26px; border-radius: 50%; background: var(--pl); color: var(--p2); font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; font-family: 'DM Sans', sans-serif; }
+.flow-body { flex: 1; }
+.flow-action { font-size: 13px; font-weight: 600; color: var(--ink); }
+.flow-who { font-size: 11px; color: var(--ink4); margin-top: 2px; }
+
+/* ── PERM LEGEND ── */
+.perm-legend { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px; }
+.perm-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--ink3); }
+
+/* ── CARD SHELL ── */
+.card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 20px 22px; margin-bottom: 16px; }
+.card-title { font-size: 13px; font-weight: 700; color: var(--ink); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+.card-title svg { width: 14px; height: 14px; color: var(--p); }
+
+/* ── NOTE ── */
+.note { background: var(--pll); border: 1px solid var(--pm); border-radius: 10px; padding: 11px 14px; font-size: 12px; color: var(--p2); display: flex; gap: 9px; align-items: flex-start; margin-top: 14px; font-weight: 500; }
+.note svg { width: 13px; height: 13px; flex-shrink: 0; margin-top: 2px; }
+
+@media print {
+  body { background: #fff; }
+  .tool-card:hover, .concept-card:hover { transform: none; box-shadow: none; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="doc-header">
+    <div class="doc-eyebrow">เอกสารภายใน · Nexum Team</div>
+    <div class="doc-title">Nexum Ecosystem</div>
+    <div class="doc-desc">สรุปโครงสร้างระบบ Nexum Credit Service ทั้งหมด — สำหรับทีมงานทุกส่วน</div>
+    <div class="doc-meta">
+      <span class="meta-chip">อัปเดต มี.ค. 2568</span>
+      <span class="meta-chip">ภาษาไทย</span>
+      <span class="meta-chip">Internal Only</span>
+    </div>
+  </div>
+
+  <!-- SECTION 1: PLATFORM OVERVIEW -->
+  <div class="section">
+    <div class="section-label">โครงสร้างหลัก</div>
+
+    <div class="platform-shell">
+      <div class="platform-tag"><span class="mana-dot"></span>Mana Platform · Parent Platform</div>
+      <div class="platform-desc">Financial Platform กลาง · ให้ 3rd party เข้ามาสร้าง Service ภายใต้กติกาของ Platform · User มี 2 ประเภทคือ PA (Personal Account) และ BA (Business Account) พร้อม Multi-currency Wallet</div>
+
+      <div class="nexum-shell">
+        <div class="nexum-tag"><span class="nexum-dot"></span>Nexum · 3rd Party Credit Service</div>
+        <div class="nexum-desc">เข้ามาสร้าง Credit Service บน Mana · หา BA มาเป็น I/A เพื่อปล่อยกู้เครดิตให้ User ของ Mana</div>
+
+        <div class="tools-grid">
+
+          <!-- Nexum Core -->
+          <div class="tool-card">
+            <div class="tc-head">
+              <div class="tc-icon ic-p">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg>
+              </div>
+              <div>
+                <div class="tc-name">Nexum Core</div>
+                <div class="tc-user">Dev Team ใช้งาน</div>
+              </div>
+            </div>
+            <ul class="tc-items">
+              <li>สร้าง Form กำหนดกรอบเงื่อนไขแต่ละ field</li>
+              <li>C2C — กดเงินสด มีค่าธรรมเนียม</li>
+              <li>C2M — จ่ายร้านค้า MDR แบ่ง 3 ส่วน</li>
+              <li>IBC — หักชำระอัตโนมัติจาก income-tagged</li>
+              <li>Acquirer Management, Rewarding, IGS</li>
+            </ul>
+          </div>
+
+          <!-- Nexum BackOffice -->
+          <div class="tool-card">
+            <div class="tc-head">
+              <div class="tc-icon ic-b">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="5.5" r="2.5"/><path d="M2.5 13.5c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/></svg>
+              </div>
+              <div>
+                <div class="tc-name">Nexum BackOffice</div>
+                <div class="tc-user">Marketing Team ใช้งาน</div>
+              </div>
+            </div>
+            <ul class="tc-items">
+              <li>หา BA ที่สนใจ เชิญมาเป็น I/A</li>
+              <li>เลือก Form ที่เหมาะสมแล้วส่งให้ I/A</li>
+              <li>I/A consent ใน Mana App</li>
+              <li>ติดตาม status: Pending → Active → Suspended</li>
+              <li>Form Library (read-only), Staff, Audit Log</li>
+            </ul>
+          </div>
+
+          <!-- I/A BackOffice -->
+          <div class="tool-card">
+            <div class="tc-head">
+              <div class="tc-icon ic-t">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="2"/><path d="M5 6h6M5 9.5h4"/></svg>
+              </div>
+              <div>
+                <div class="tc-name">I/A BackOffice (NexumCredit)</div>
+                <div class="tc-user">Issuer / Acquirer ใช้งาน</div>
+              </div>
+            </div>
+            <ul class="tc-items">
+              <li><strong>Issuer:</strong> สร้าง Contract Template · ส่งให้ User · monitor ลูกหนี้ · P&L · MCB</li>
+              <li><strong>Acquirer:</strong> จัดการร้านค้า · ดูรายได้ MDR</li>
+              <li>เว็บเดียวกัน แยก 2 section ตามบทบาท</li>
+            </ul>
+          </div>
+
+          <!-- Nexum Payroll -->
+          <div class="tool-card">
+            <div class="tc-head">
+              <div class="tc-icon ic-g">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 5v3.2l2 1.5"/></svg>
+              </div>
+              <div>
+                <div class="tc-name">Nexum Payroll</div>
+                <div class="tc-user">นายจ้าง / HR ใช้งาน · เว็บแยก</div>
+              </div>
+            </div>
+            <ul class="tc-items">
+              <li>จ่ายเงินเดือนพร้อม income tag → IBC หักอัตโนมัติ</li>
+              <li>จัดการพนักงาน · Operator · Manager</li>
+              <li>Action สำคัญ → Manager ต้อง consent ใน Mana App ก่อน</li>
+              <li>Use case แรกของ IBC</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: ROLES -->
+  <div class="section">
+    <div class="section-label">I/A คือใคร</div>
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6" cy="5" r="2"/><circle cx="11" cy="5" r="2"/><path d="M1.5 13.5c0-2.5 2-4 4.5-4M8.5 9.5c2.5 0 4.5 1.5 4.5 4"/></svg>
+        I/A (Issuer / Acquirer)
+      </div>
+      <div style="font-size:13px;color:var(--ink3);margin-bottom:14px">BA ที่สมัครกับ Nexum มี 2 บทบาท · สามารถเป็นได้ทั้งสองพร้อมกัน หรือบทบาทใดบทบาทหนึ่งก็ได้</div>
+      <div class="tw">
+        <table class="roles-table">
+          <thead><tr><th>บทบาท</th><th>หน้าที่หลัก</th><th>เครื่องมือ</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><span class="badge b-p">Issuer</span></td>
+              <td>
+                <div class="role-desc">ปล่อยกู้เครดิตให้ User · จัดการ Contract Template · monitor ลูกหนี้ · ดูผลกำไร P&L</div>
+              </td>
+              <td><div class="role-desc">I/A BackOffice<br>Issuer section</div></td>
+            </tr>
+            <tr>
+              <td><span class="badge b-t">Acquirer</span></td>
+              <td>
+                <div class="role-desc">หาร้านค้ามาเข้าร่วมรับชำระด้วยเครดิต · จัดการร้านค้า · ดูรายได้จาก MDR</div>
+              </td>
+              <td><div class="role-desc">I/A BackOffice<br>Acquirer section</div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: KEY CONCEPTS -->
+  <div class="section">
+    <div class="section-label">Concept หลักที่ควรรู้</div>
+    <div class="concepts-grid">
+      <div class="concept-card">
+        <span class="cc-badge cc-b-p">IBC</span>
+        <div class="cc-name">Income-Backed Credit</div>
+        <div class="cc-desc">หักชำระหนี้อัตโนมัติจากเงินที่ถูก tag ว่า income เท่านั้น ผ่าน Smart Contract ไม่แตะเงินโอนทั่วไป</div>
+        <div class="cc-note">Platform cap รวมทุก Issuer ≤ XX% · Payroll คือ use case แรก</div>
+      </div>
+      <div class="concept-card">
+        <span class="cc-badge cc-b-t">MDR</span>
+        <div class="cc-name">Merchant Discount Rate</div>
+        <div class="cc-desc">ค่าธรรมเนียมจาก C2M transaction แบ่ง 3 ส่วนอัตโนมัติ: Interchange Fee + Network Fee + Acquirer Fee</div>
+        <div class="cc-note">ใช้เฉพาะ C2M · อัตราตามสัญญาที่ตกลงกัน</div>
+      </div>
+      <div class="concept-card">
+        <span class="cc-badge cc-b-b">MCB</span>
+        <div class="cc-name">Mana Credit Bureau</div>
+        <div class="cc-desc">ระบบ credit scoring กลาง Issuer ขอดู credit history ของ User ได้ก่อนปล่อยกู้ User ต้อง consent ก่อน</div>
+        <div class="cc-note">ระยะเวลา: one-time / 30 วัน / 90 วัน · ทุก access ถูก log</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 4: FLOW -->
+  <div class="section">
+    <div class="section-label">Flow การทำงานทั้งระบบ</div>
+    <div class="card">
+      <div class="flow-list">
+        <div class="flow-item">
+          <div class="flow-num">1</div>
+          <div class="flow-body">
+            <div class="flow-action">Dev สร้าง Form กำหนดกรอบเงื่อนไขทุก field</div>
+            <div class="flow-who">Nexum Core · Dev Team</div>
+          </div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">2</div>
+          <div class="flow-body">
+            <div class="flow-action">Marketing invite BA ที่สนใจ เลือก Form แล้วส่งให้</div>
+            <div class="flow-who">Nexum BackOffice · Marketing Team</div>
+          </div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">3</div>
+          <div class="flow-body">
+            <div class="flow-action">I/A consent ใน Mana App → สร้าง Contract Template เองในกรอบที่ได้รับ</div>
+            <div class="flow-who">I/A BackOffice · Issuer</div>
+          </div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">4</div>
+          <div class="flow-body">
+            <div class="flow-action">I/A ตรวจ credit ผ่าน MCB (ถ้าต้องการ) ก่อนส่ง Contract</div>
+            <div class="flow-who">I/A BackOffice · ผ่าน MCB · User ต้อง consent</div>
+          </div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">5</div>
+          <div class="flow-body">
+            <div class="flow-action">I/A ส่ง Contract ให้ User ยืนยันใน Mana App → User ได้รับเครดิต</div>
+            <div class="flow-who">Mana App · User</div>
+          </div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">6</div>
+          <div class="flow-body">
+            <div class="flow-action">User ใช้เครดิต C2C (กดเงินสด) หรือ C2M (จ่ายร้านค้า)</div>
+            <div class="flow-who">Mana App · User</div>
+          </div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">7</div>
+          <div class="flow-body">
+            <div class="flow-action">User มีรายได้ถูก tag → IBC หักชำระอัตโนมัติ → เงินกลับ Issuer</div>
+            <div class="flow-who">Smart Contract · อัตโนมัติ</div>
+          </div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-num">8</div>
+          <div class="flow-body">
+            <div class="flow-action">C2M transaction → MDR ถูกแบ่ง 3 ส่วนอัตโนมัติ</div>
+            <div class="flow-who">Smart Contract · Interchange + Network + Acquirer Fee</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 5: FORM FIELDS -->
+  <div class="section">
+    <div class="section-label">I/A Form Fields</div>
+    <div class="tw">
+      <table class="ftbl">
+        <thead>
+          <tr>
+            <th style="width:34%">Field</th>
+            <th style="width:16%">Permission</th>
+            <th style="width:26%">Dev กำหนด</th>
+            <th style="width:24%">ใช้กับ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="fname">วงเงินเครดิต</span></td><td><span class="tag t-range">⇔ ช่วง</span></td><td style="font-size:11px;color:var(--ink3)">I/A เลือกในช่วง</td><td><span class="fuse fu-all">C2C + C2M</span></td></tr>
+          <tr><td><span class="fname">อัตราดอกเบี้ย (APR)</span></td><td><span class="tag t-range">⇔ ช่วง</span></td><td style="font-size:11px;color:var(--ink3)">I/A เลือกในช่วง</td><td><span class="fuse fu-all">C2C + C2M</span></td></tr>
+          <tr><td><span class="fname">วงเงินกดเงินสดสูงสุดต่อครั้ง</span></td><td><span class="tag t-ceil">↑ ceiling</span></td><td style="font-size:11px;color:var(--ink3)">I/A ตั้งไม่เกิน max</td><td><span class="fuse fu-c2c">C2C</span></td></tr>
+          <tr><td><span class="fname">ค่าธรรมเนียมกดเงินสด</span></td><td><span class="tag t-range">⇔ ช่วง</span></td><td style="font-size:11px;color:var(--ink3)">I/A เลือกรูปแบบ + ค่า</td><td><span class="fuse fu-c2c">C2C</span></td></tr>
+          <tr><td><span class="fname">วันตัดรอบ</span></td><td><span class="tag t-range">⇔ ช่วง</span></td><td style="font-size:11px;color:var(--ink3)">1–28 ของเดือน → ล็อคใน Contract</td><td><span class="fuse fu-all">C2C + C2M</span></td></tr>
+          <tr><td><span class="fname">วันกำหนดชำระ</span></td><td><span class="tag t-ceil">↑ ceiling</span></td><td style="font-size:11px;color:var(--ink3)">≤30 วันหลังตัดรอบ → ล็อคใน Contract</td><td><span class="fuse fu-all">C2C + C2M</span></td></tr>
+          <tr><td><span class="fname">อัตราหักชำระ IBC</span></td><td><span class="tag t-range">⇔ ช่วง</span></td><td style="font-size:11px;color:var(--ink3)">I/A เลือก % ในช่วง</td><td><span class="fuse fu-all">C2C + C2M</span></td></tr>
+          <tr><td><span class="fname">MDR</span></td><td><span class="tag t-range">⇔ ช่วง</span></td><td style="font-size:11px;color:var(--ink3)">I/A เลือก % ในช่วง</td><td><span class="fuse fu-c2m">C2M เท่านั้น</span></td></tr>
+          <tr><td><span class="fname">ค่าธรรมเนียม Payroll</span></td><td><span class="tag t-lock">🔒 ล็อค</span></td><td style="font-size:11px;color:var(--red)">เปลี่ยนไม่ได้ · Nexum กำหนด</td><td><span class="fuse fu-pay">Payroll</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="perm-legend">
+      <div class="perm-item"><span class="tag t-range">⇔ ช่วง</span> Dev กำหนด min–max · I/A เลือกในช่วง</div>
+      <div class="perm-item"><span class="tag t-ceil">↑ ceiling</span> Dev กำหนด max · I/A ตั้งไม่เกิน</div>
+      <div class="perm-item"><span class="tag t-lock">🔒 ล็อค</span> เปลี่ยนไม่ได้</div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
