@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexum Wallet</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#F4F3EF;
+  --surface:#FFFFFF;
+  --surface2:#EFEDE7;
+  --surface3:#E8E6DF;
+  --border:#E2DFD7;
+  --text:#1A1916;
+  --text2:#6A6861;
+  --text3:#AEACA6;
+  --red:#C0311A;--red-l:#FBF0ED;--red-b:#F0C4BA;
+  --teal:#0C6B6B;--teal-l:#E6F4F4;--teal-b:#A8D8D8;
+  --navy:#1B3080;--navy-l:#EBF0FA;--navy-b:#B8CAF0;
+  --green:#1A7239;--green-l:#E8F5EE;--green-b:#A8D8BC;
+  --amber:#A85E0A;--amber-l:#FDF4E7;--amber-b:#F0D4A8;
+  --mono:'IBM Plex Mono',monospace;
+  --font:'Sarabun',sans-serif;
+  --r:12px;--rl:20px;--rxl:28px;
+}
+
+body{font-family:var(--font);background:var(--bg);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:28px 16px 40px;gap:16px;}
+
+.app-label{font-size:11px;font-weight:500;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;}
+
+/* ── Phone shell ── */
+.phone{
+  width:360px;height:750px;
+  background:var(--surface);
+  border-radius:44px;
+  box-shadow:0 12px 48px rgba(0,0,0,.12),0 0 0 1px rgba(0,0,0,.06);
+  overflow:hidden;display:flex;flex-direction:column;position:relative;
+}
+
+/* ── Screens container ── */
+.screens{flex:1;position:relative;overflow:hidden;}
+.screen{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;
+  transition:transform .32s cubic-bezier(.4,0,.2,1),opacity .32s;
+  background:var(--surface);
+}
+.screen.hidden-left {transform:translateX(-100%);opacity:0;pointer-events:none;}
+.screen.hidden-right{transform:translateX(100%);opacity:0;pointer-events:none;}
+.screen.visible    {transform:translateX(0);opacity:1;}
+
+/* ── Status bar ── */
+.status{display:flex;justify-content:space-between;align-items:center;padding:13px 22px 0;flex-shrink:0;}
+.status .t{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--text);}
+.status .i{font-size:11px;color:var(--text2);}
+
+/* ── Nav ── */
+.nav{display:flex;align-items:center;justify-content:space-between;padding:8px 18px 10px;flex-shrink:0;}
+.nav-back{display:flex;align-items:center;gap:4px;font-size:14px;font-weight:500;color:var(--red);cursor:pointer;background:none;border:none;font-family:var(--font);}
+.nav-back svg{width:16px;height:16px;}
+.nav-title{font-size:15px;font-weight:600;color:var(--text);}
+.nav-dot{width:30px;height:30px;border-radius:50%;background:var(--surface2);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.nav-dot svg{width:13px;height:13px;color:var(--text2);}
+
+/* ── Scroll area ── */
+.scroll{flex:1;overflow-y:auto;display:flex;flex-direction:column;}
+.scroll::-webkit-scrollbar{display:none;}
+
+/* ── Bottom nav ── */
+.bnav{height:58px;border-top:1px solid var(--border);display:flex;background:var(--surface);flex-shrink:0;}
+.bnav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;border:none;background:none;font-family:var(--font);}
+.bnav-btn svg{width:20px;height:20px;}
+.bnav-btn span{font-size:9px;font-weight:500;letter-spacing:.03em;}
+.bnav-btn.on svg,.bnav-btn.on span{color:var(--red);}
+.bnav-btn:not(.on) svg,.bnav-btn:not(.on) span{color:var(--text3);}
+
+/* ── Divider ── */
+.div8{height:8px;background:var(--surface2);flex-shrink:0;}
+
+/* ── Hero card ── */
+.hero{margin:0 14px;border-radius:var(--rxl);padding:20px 20px 22px;position:relative;overflow:hidden;flex-shrink:0;}
+.hero-c1{position:absolute;right:-28px;top:-28px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,.07);pointer-events:none;}
+.hero-c2{position:absolute;right:24px;bottom:-44px;width:96px;height:96px;border-radius:50%;background:rgba(255,255,255,.04);pointer-events:none;}
+.hero-eye{font-size:11px;font-weight:500;color:rgba(255,255,255,.55);display:flex;align-items:center;gap:6px;margin-bottom:12px;}
+.hero-eye svg{width:13px;height:13px;}
+.hero-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;padding:2px 9px;border-radius:20px;margin-bottom:10px;letter-spacing:.04em;}
+.badge-active{background:var(--green-l);color:var(--green);}
+.badge-pending{background:var(--amber-l);color:var(--amber);}
+.hero-lbl{font-size:11px;color:rgba(255,255,255,.5);margin-bottom:3px;}
+.hero-amt{font-family:var(--mono);font-size:30px;font-weight:500;color:#fff;line-height:1;display:flex;align-items:baseline;gap:7px;}
+.hero-amt .cu{font-size:13px;font-weight:400;opacity:.5;}
+.hero-bar-wrap{margin-top:14px;}
+.hero-track{height:5px;border-radius:3px;background:rgba(255,255,255,.15);overflow:hidden;}
+.hero-fill{height:100%;border-radius:3px;}
+.hero-bar-lbl{display:flex;justify-content:space-between;margin-top:6px;}
+.hbl{font-size:10px;color:rgba(255,255,255,.5);}
+.hbl.hi{color:rgba(255,255,255,.9);font-weight:500;}
+.hero-hr{margin:14px 0;border:none;border-top:1px solid rgba(255,255,255,.12);}
+.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.hgi{display:flex;flex-direction:column;gap:2px;}
+.hgi-l{font-size:10px;color:rgba(255,255,255,.45);}
+.hgi-v{font-size:12px;font-weight:500;color:rgba(255,255,255,.9);}
+
+/* hero colors */
+.h-red  {background:var(--red);}
+.h-teal {background:var(--teal);}
+.h-navy {background:var(--navy);}
+.h-green{background:var(--green);}
+
+/* ── Section ── */
+.sec{padding:0 14px;}
+.sec-head{display:flex;justify-content:space-between;align-items:center;padding:14px 0 10px;}
+.sec-title{font-size:14px;font-weight:600;color:var(--text);}
+.sec-action{font-size:12px;font-weight:500;color:var(--red);cursor:pointer;background:none;border:none;font-family:var(--font);}
+
+/* ── Summary table ── */
+.sum-table{border:1px solid var(--border);border-radius:var(--rl);overflow:hidden;}
+.sum-row{display:flex;justify-content:space-between;align-items:center;padding:11px 14px;border-bottom:1px solid var(--border);}
+.sum-row:last-child{border-bottom:none;}
+.sum-lbl{font-size:12px;color:var(--text2);display:flex;align-items:center;gap:7px;}
+.sum-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.sum-val{font-family:var(--mono);font-size:13px;font-weight:500;}
+.sum-val.pos{color:var(--green);}
+.sum-val.neg{color:var(--text2);}
+.sum-val.neu{color:var(--text);}
+.sum-row.highlight{background:var(--green-l);}
+
+/* ── Wallet list card ── */
+.wcard{
+  display:flex;align-items:center;gap:12px;
+  padding:13px 14px;margin-bottom:8px;
+  border:1px solid var(--border);border-radius:var(--rl);
+  cursor:pointer;transition:box-shadow .15s,transform .1s;
+  background:var(--surface);
+}
+.wcard:active{transform:scale(.98);}
+.wcard:hover{box-shadow:0 2px 12px rgba(0,0,0,.07);}
+.wcard-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.wcard-icon svg{width:20px;height:20px;}
+.wi-red  {background:var(--red-l);}  .wi-red  svg{stroke:var(--red);}
+.wi-teal {background:var(--teal-l);} .wi-teal svg{stroke:var(--teal);}
+.wi-navy {background:var(--navy-l);} .wi-navy svg{stroke:var(--navy);}
+.wi-green{background:var(--green-l);}.wi-green svg{stroke:var(--green);}
+.wcard-info{flex:1;min-width:0;}
+.wcard-name{font-size:14px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.wcard-sub{font-size:11px;color:var(--text2);margin-top:2px;display:flex;align-items:center;gap:6px;}
+.wcard-tag{font-size:10px;font-weight:500;padding:2px 7px;border-radius:20px;}
+.tag-red  {background:var(--red-l);  color:var(--red);}
+.tag-teal {background:var(--teal-l); color:var(--teal);}
+.tag-navy {background:var(--navy-l); color:var(--navy);}
+.tag-green{background:var(--green-l);color:var(--green);}
+.tag-amber{background:var(--amber-l);color:var(--amber);}
+.wcard-right{text-align:right;flex-shrink:0;}
+.wcard-amt{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--text);}
+.wcard-cu{font-size:10px;color:var(--text3);margin-top:1px;}
+.wcard-mini-bar{margin-top:5px;height:3px;background:var(--surface3);border-radius:2px;overflow:hidden;}
+.wcard-mini-fill{height:100%;border-radius:2px;}
+
+/* ── Total bar (wallet list top) ── */
+.total-bar{
+  margin:4px 14px 14px;
+  background:var(--text);border-radius:var(--rl);
+  padding:16px 18px;display:flex;justify-content:space-between;align-items:center;
+}
+.tb-l{font-size:11px;color:rgba(255,255,255,.45);margin-bottom:3px;}
+.tb-amt{font-family:var(--mono);font-size:22px;font-weight:500;color:#fff;}
+.tb-r{font-size:10px;color:rgba(255,255,255,.35);text-align:right;}
+
+/* ── Breakdown mini cards ── */
+.bc-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.bc{border-radius:var(--r);padding:12px 13px;border:1px solid var(--border);}
+.bc-lbl{font-size:10px;font-weight:500;margin-bottom:4px;}
+.bc-amt{font-family:var(--mono);font-size:16px;font-weight:500;}
+.bc-cu{font-size:10px;opacity:.6;}
+.bc-sub{font-size:10px;margin-top:3px;}
+.bc-neu{background:var(--surface2);}.bc-neu .bc-lbl{color:var(--text2);}.bc-neu .bc-amt{color:var(--text);}.bc-neu .bc-sub{color:var(--text3);}
+.bc-g  {background:var(--green-l);border-color:var(--green-b);}.bc-g  .bc-lbl,.bc-g  .bc-amt,.bc-g  .bc-sub{color:var(--green);}
+.bc-r  {background:var(--red-l);  border-color:var(--red-b);  }.bc-r  .bc-lbl,.bc-r  .bc-amt,.bc-r  .bc-sub{color:var(--red);}
+.bc-a  {background:var(--amber-l);border-color:var(--amber-b);}.bc-a  .bc-lbl,.bc-a  .bc-amt,.bc-a  .bc-sub{color:var(--amber);}
+.bc-n  {background:var(--navy-l); border-color:var(--navy-b); }.bc-n  .bc-lbl,.bc-n  .bc-amt,.bc-n  .bc-sub{color:var(--navy);}
+.bc-t  {background:var(--teal-l); border-color:var(--teal-b); }.bc-t  .bc-lbl,.bc-t  .bc-amt,.bc-t  .bc-sub{color:var(--teal);}
+
+/* ── Info card ── */
+.info-card{border:1px solid var(--border);border-radius:var(--rl);overflow:hidden;}
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid var(--border);}
+.info-row:last-child{border-bottom:none;}
+.ir-l{font-size:12px;color:var(--text2);}
+.ir-v{font-size:12px;font-weight:500;color:var(--text);}
+.chip{font-size:11px;font-weight:500;padding:2px 9px;border-radius:20px;}
+.chip-on {background:var(--green-l);color:var(--green);}
+.chip-off{background:var(--surface2);color:var(--text2);}
+
+/* ── Action bar ── */
+.act-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:0;padding:12px 14px 4px;}
+.act-btn{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;background:none;border:none;font-family:var(--font);padding:4px 2px;}
+.act-ico{width:44px;height:44px;border-radius:13px;background:var(--surface2);display:flex;align-items:center;justify-content:center;transition:background .12s;}
+.act-btn:hover .act-ico{background:var(--border);}
+.act-ico svg{width:18px;height:18px;color:var(--text);}
+.act-lbl{font-size:10px;font-weight:500;color:var(--text2);}
+
+/* ── Tx list ── */
+.tx-list{display:flex;flex-direction:column;}
+.tx{display:flex;align-items:center;gap:11px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;}
+.tx:last-child{border-bottom:none;}
+.tx-ico{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.tx-ico.in {background:var(--green-l);}
+.tx-ico.out{background:var(--red-l);}
+.tx-ico.sys{background:var(--surface2);}
+.tx-ico svg{width:15px;height:15px;}
+.tx-i{flex:1;}
+.tx-name{font-size:13px;font-weight:500;color:var(--text);}
+.tx-sub{font-size:11px;color:var(--text2);margin-top:1px;}
+.tx-date{font-size:10px;color:var(--text3);font-family:var(--mono);margin-top:2px;}
+.tx-a{text-align:right;}
+.tx-a .v{font-family:var(--mono);font-size:13px;font-weight:500;}
+.tx-a .v.in {color:var(--green);}
+.tx-a .v.out{color:var(--red);}
+.tx-a .v.sys{color:var(--text2);}
+.tx-a .cu{font-size:10px;color:var(--text3);}
+
+/* ── Primary CTA ── */
+.cta{margin:10px 14px 0;padding:13px;border-radius:var(--rl);border:none;font-size:14px;font-weight:600;font-family:var(--font);cursor:pointer;width:calc(100% - 28px);display:block;}
+.cta-r{background:var(--red);color:#fff;}
+.cta-t{background:var(--teal);color:#fff;}
+.cta-n{background:var(--navy);color:#fff;}
+.cta-g{background:var(--green);color:#fff;}
+.cta-2{background:var(--surface2);color:var(--text);border:1px solid var(--border);}
+
+/* ── Timeline ── */
+.timeline{border:1px solid var(--border);border-radius:var(--rl);padding:13px 14px;}
+.tl-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.tl-title{font-size:12px;font-weight:600;color:var(--text);}
+.tl-date{font-size:11px;font-family:var(--mono);color:var(--text2);}
+.tl-track{height:5px;background:var(--surface2);border-radius:3px;overflow:hidden;}
+.tl-fill{height:100%;border-radius:3px;}
+.tl-lbl{display:flex;justify-content:space-between;margin-top:5px;}
+.tl-l{font-size:10px;color:var(--text3);}
+.tl-l.hi{font-weight:500;}
+
+/* ── Alloc mini card (lending borrowers) ── */
+.bcard{border:1px solid var(--border);border-radius:var(--rl);padding:12px 13px;margin-bottom:8px;display:flex;align-items:center;gap:11px;cursor:pointer;}
+.bcard-av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0;}
+.bcard-info{flex:1;min-width:0;}
+.bcard-name{font-size:13px;font-weight:600;color:var(--text);}
+.bcard-sub{font-size:11px;color:var(--text2);margin-top:1px;}
+.bcard-bar{margin-top:5px;height:3px;background:var(--surface2);border-radius:2px;overflow:hidden;}
+.bcard-fill{height:100%;border-radius:2px;}
+.bcard-r{text-align:right;flex-shrink:0;}
+.bcard-amt{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--text);}
+.bcard-used{font-size:10px;color:var(--text3);margin-top:1px;}
+.bcard-s{font-size:10px;font-weight:500;padding:2px 7px;border-radius:20px;display:inline-block;margin-top:3px;}
+
+/* ── Pending banner ── */
+.p-banner{margin:10px 14px 0;background:var(--amber-l);border:1px solid var(--amber-b);border-radius:var(--rl);padding:12px 14px;display:flex;gap:10px;align-items:flex-start;}
+.p-banner svg{width:14px;height:14px;color:var(--amber);flex-shrink:0;margin-top:2px;}
+.p-banner-text{font-size:11px;color:var(--amber);line-height:1.6;}
+.p-banner-title{font-size:12px;font-weight:600;color:var(--amber);margin-bottom:2px;}
+
+/* ── Section header (list page) ── */
+.list-sec-head{display:flex;justify-content:space-between;align-items:center;padding:4px 14px 8px;}
+.list-sec-lbl{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;}
+.list-sec-add{font-size:12px;font-weight:500;color:var(--red);cursor:pointer;background:none;border:none;font-family:var(--font);display:flex;align-items:center;gap:4px;}
+.list-sec-add svg{width:13px;height:13px;}
+
+/* pad helper */
+.px{padding-left:14px;padding-right:14px;}
+.pb16{padding-bottom:16px;}
+</style>
+</head>
+<body>
+
+<div class="app-label">Nexum Wallet — 5 หน้า · กดได้จริง</div>
+
+<div class="phone">
+
+  <!-- ═══════════════════════════════════════
+       SCREEN 0 — Wallet List
+  ═══════════════════════════════════════ -->
+  <div class="screen visible" id="s0">
+    <div class="status"><span class="t">09:41</span><span class="i">●●● WiFi 100%</span></div>
+    <div class="nav">
+      <span class="nav-title">กระเป๋าของฉัน</span>
+      <button class="nav-dot"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="4" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="8" cy="12" r="1.2"/></svg></button>
+    </div>
+    <div class="scroll" style="padding-bottom:12px;">
+      <!-- total -->
+      <div class="total-bar">
+        <div><div class="tb-l">ยอดรวมทั้งหมด</div><div class="tb-amt">11,000.00 <span style="font-size:12px;opacity:.4">THB</span></div></div>
+        <div class="tb-r">4 กระเป๋า</div>
+      </div>
+
+      <!-- main wallet -->
+      <div class="list-sec-head"><span class="list-sec-lbl">กระเป๋าหลัก</span></div>
+      <div style="padding:0 14px;">
+        <div class="wcard" onclick="goTo(1)">
+          <div class="wcard-icon wi-red">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="3"/><path d="M16 3H8a2 2 0 00-2 2v2h12V5a2 2 0 00-2-2z"/></svg>
+          </div>
+          <div class="wcard-info">
+            <div class="wcard-name">Arnon's wallet</div>
+            <div class="wcard-sub"><span class="wcard-tag tag-red">กระเป๋าหลัก · THB</span></div>
+            <div class="wcard-mini-bar" style="margin-top:6px;">
+              <div class="wcard-mini-fill" style="width:60%;background:var(--teal);"></div>
+            </div>
+            <div style="font-size:10px;color:var(--text3);margin-top:3px;">จองแล้ว 6,000 · ใช้ได้ 4,000</div>
+          </div>
+          <div class="wcard-right">
+            <div class="wcard-amt">10,000.00</div>
+            <div class="wcard-cu">THB</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- my allocations -->
+      <div class="list-sec-head" style="margin-top:6px;">
+        <span class="list-sec-lbl">กระเป๋าที่ฉันสร้าง</span>
+        <button class="list-sec-add"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 3v10M3 8h10"/></svg>เพิ่ม</button>
+      </div>
+      <div style="padding:0 14px;display:flex;flex-direction:column;gap:0;">
+        <!-- lending pool -->
+        <div class="wcard" onclick="goTo(2)" style="margin-bottom:8px;">
+          <div class="wcard-icon wi-navy">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20"/><path d="M6 15h4"/></svg>
+          </div>
+          <div class="wcard-info">
+            <div class="wcard-name">Lending pool</div>
+            <div class="wcard-sub"><span class="wcard-tag tag-navy">ปล่อยเครดิต · THB</span></div>
+            <div class="wcard-mini-bar" style="margin-top:6px;">
+              <div class="wcard-mini-fill" style="width:10%;background:var(--navy);"></div>
+            </div>
+            <div style="font-size:10px;color:var(--text3);margin-top:3px;">ปล่อยไป 100 · พร้อม 900</div>
+          </div>
+          <div class="wcard-right">
+            <div class="wcard-amt" style="color:var(--navy)">900.00</div>
+            <div class="wcard-cu">จาก 1,000</div>
+          </div>
+        </div>
+        <!-- payroll -->
+        <div class="wcard" onclick="goTo(3)">
+          <div class="wcard-icon wi-teal">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="3"/><path d="M16 3H8a2 2 0 00-2 2v2h12V5a2 2 0 00-2-2z"/><path d="M8 14h5"/></svg>
+          </div>
+          <div class="wcard-info">
+            <div class="wcard-name">Payroll alloc</div>
+            <div class="wcard-sub">
+              <span class="wcard-tag tag-amber">pending_refill</span>
+            </div>
+            <div style="font-size:10px;color:var(--text3);margin-top:5px;">เติมวันที่ 25 · จอง 5,000</div>
+          </div>
+          <div class="wcard-right">
+            <div class="wcard-amt" style="color:var(--amber)">0.00</div>
+            <div class="wcard-cu">จาก 5,000</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- received credit -->
+      <div class="list-sec-head" style="margin-top:14px;"><span class="list-sec-lbl">เครดิตที่ได้รับ</span></div>
+      <div style="padding:0 14px;">
+        <div class="wcard" onclick="goTo(4)">
+          <div class="wcard-icon wi-green">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20"/><path d="M6 15h3"/></svg>
+          </div>
+          <div class="wcard-info">
+            <div class="wcard-name">Freedom credit</div>
+            <div class="wcard-sub"><span class="wcard-tag tag-green">เครดิตที่ได้รับ · THB</span></div>
+            <div class="wcard-mini-bar" style="margin-top:6px;">
+              <div class="wcard-mini-fill" style="width:10%;background:var(--red);"></div>
+            </div>
+            <div style="font-size:10px;color:var(--text3);margin-top:3px;">ใช้ไป 100 · ตัดรอบ 25 พ.ย.</div>
+          </div>
+          <div class="wcard-right">
+            <div class="wcard-amt" style="color:var(--green)">900.00</div>
+            <div class="wcard-cu">จาก 1,000</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bnav">
+      <button class="bnav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12L12 4l9 8"/><path d="M5 10v9h4v-5h6v5h4v-9"/></svg><span>หน้าแรก</span></button>
+      <button class="bnav-btn on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="3"/><path d="M16 3H8a2 2 0 00-2 2v2h12V5a2 2 0 00-2-2z"/></svg><span>กระเป๋า</span></button>
+      <button class="bnav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 3"/></svg><span>ประวัติ</span></button>
+      <button class="bnav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg><span>บัญชี</span></button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       SCREEN 1 — Main Wallet
+  ═══════════════════════════════════════ -->
+  <div class="screen hidden-right" id="s1">
+    <div class="status"><span class="t">09:41</span><span class="i">●●● WiFi 100%</span></div>
+    <div class="nav">
+      <button class="nav-back" onclick="goTo(0)"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 3L5 8l5 5"/></svg>กระเป๋า</button>
+      <button class="nav-dot"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="4" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="8" cy="12" r="1.2"/></svg></button>
+    </div>
+    <div class="scroll">
+      <div class="hero h-red">
+        <div class="hero-c1"></div><div class="hero-c2"></div>
+        <div class="hero-eye"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="3"/><path d="M16 3H8a2 2 0 00-2 2v2h12V5a2 2 0 00-2-2z"/></svg>Arnon's wallet · กระเป๋าหลัก</div>
+        <div class="hero-lbl">ยอดเงินทั้งหมด</div>
+        <div class="hero-amt">10,000.00 <span class="cu">THB</span></div>
+        <div class="hero-bar-wrap">
+          <div class="hero-track"><div class="hero-fill" style="width:60%;background:rgba(255,255,255,.6);"></div></div>
+          <div class="hero-bar-lbl"><span class="hbl">จองแล้ว 6,000</span><span class="hbl hi">ใช้ได้ทันที 4,000 THB</span></div>
+        </div>
+        <hr class="hero-hr">
+        <div class="hero-grid">
+          <div class="hgi"><span class="hgi-l">Payroll จอง</span><span class="hgi-v">5,000 THB</span></div>
+          <div class="hgi"><span class="hgi-l">Lending pool จอง</span><span class="hgi-v">1,000 THB</span></div>
+          <div class="hgi"><span class="hgi-l">ใช้ได้ทันที</span><span class="hgi-v">4,000 THB</span></div>
+          <div class="hgi"><span class="hgi-l">Allocation ทั้งหมด</span><span class="hgi-v">2 รายการ</span></div>
+        </div>
+      </div>
+
+      <div class="act-bar">
+        <button class="act-btn"><div class="act-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12l7-7 7 7"/></svg></div><span class="act-lbl">โอนออก</span></button>
+        <button class="act-btn"><div class="act-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 19V5M5 12l7 7 7-7"/></svg></div><span class="act-lbl">รับเงิน</span></button>
+        <button class="act-btn"><div class="act-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/></svg></div><span class="act-lbl">ชำระบิล</span></button>
+        <button class="act-btn"><div class="act-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 3"/></svg></div><span class="act-lbl">ประวัติ</span></button>
+      </div>
+
+      <div class="div8" style="margin-top:8px;"></div>
+
+      <!-- allocation breakdown table -->
+      <div class="sec">
+        <div class="sec-head"><span class="sec-title">การจัดสรรเงิน</span><button class="sec-action">จัดการ</button></div>
+        <div class="sum-table">
+          <div class="sum-row"><span class="sum-lbl"><span class="sum-dot" style="background:var(--text);"></span>ยอดทั้งหมด</span><span class="sum-val neu">10,000.00 THB</span></div>
+          <div class="sum-row" onclick="goTo(3)" style="cursor:pointer;">
+            <span class="sum-lbl"><span class="sum-dot" style="background:var(--teal);"></span>Payroll alloc <span style="font-size:10px;background:var(--amber-l);color:var(--amber);padding:1px 6px;border-radius:20px;font-weight:500;">pending</span></span>
+            <span class="sum-val neg">− 5,000.00</span>
+          </div>
+          <div class="sum-row" onclick="goTo(2)" style="cursor:pointer;">
+            <span class="sum-lbl"><span class="sum-dot" style="background:var(--navy);"></span>Lending pool</span>
+            <span class="sum-val neg">− 1,000.00</span>
+          </div>
+          <div class="sum-row highlight"><span class="sum-lbl" style="font-weight:600;color:var(--text);"><span class="sum-dot" style="background:var(--green);"></span>ใช้ได้ทันที</span><span class="sum-val pos" style="font-size:15px;">4,000.00 THB</span></div>
+        </div>
+      </div>
+
+      <div class="div8" style="margin-top:12px;"></div>
+
+      <div class="sec">
+        <div class="sec-head"><span class="sec-title">ประวัติธุรกรรม</span><button class="sec-action">ดูเพิ่ม</button></div>
+        <div class="tx-list">
+          <div class="tx"><div class="tx-ico in"><svg viewBox="0 0 24 24" fill="none" stroke="#1A7239" stroke-width="1.8"><path d="M12 19V5M5 12l7 7 7-7"/></svg></div><div class="tx-i"><div class="tx-name">เงินเข้า</div><div class="tx-sub">อานน บางสาน</div><div class="tx-date">31/10/2025 · 23:59</div></div><div class="tx-a"><div class="v in">+100.00</div><div class="cu">THB</div></div></div>
+          <div class="tx"><div class="tx-ico sys"><svg viewBox="0 0 24 24" fill="none" stroke="#6A6861" stroke-width="1.8"><path d="M12 5v14M5 12l7-7 7 7"/></svg></div><div class="tx-i"><div class="tx-name">Payroll refill</div><div class="tx-sub">เติมกระเป๋า Payroll alloc</div><div class="tx-date">25/09/2025 · 00:00</div></div><div class="tx-a"><div class="v sys">5,000.00</div><div class="cu">THB</div></div></div>
+        </div>
+      </div>
+      <div style="height:16px;"></div>
+    </div>
+    <div class="bnav">
+      <button class="bnav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12L12 4l9 8"/><path d="M5 10v9h4v-5h6v5h4v-9"/></svg><span>หน้าแรก</span></button>
+      <button class="bnav-btn on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="3"/><path d="M16 3H8a2 2 0 00-2 2v2h12V5a2 2 0 00-2-2z"/></svg><span>กระเป๋า</span></button>
+      <button class="bnav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 3"/></svg><span>ประวัติ</span></button>
+      <button class="bnav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg><span>บัญชี</span></button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       SCREEN 2 — Lending Pool
+  ═══════════════════════════════════════ -->
+  <div class="screen hidden-right" id="s2">
+    <div class="status"><span class="t">09:41</span><span class="i">●●● WiFi 100%</span></div>
+    <div class="nav">
+      <button class="nav-back" onclick="goTo(0)"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 3L5 8l5 5"/></svg>กระเป๋า</button>
+      <button class="nav-dot"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="4" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="8" cy="12" r="1.2"/></svg></button>
+    </div>
+    <div class="scroll">
+      <div class="hero h-navy">
+        <div class="hero-c1"></div><div class="hero-c2"></div>
+        <div class="hero-eye"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20"/><path d="M6 15h4"/></svg>Lending pool · ปล่อยเครดิต</div>
+        <div class="hero-badge badge-active">● active</div>
+        <div class="hero-lbl">วงเงิน pool ทั้งหมด</div>
+        <div class="hero-amt">1,000.00 <span class="cu">THB</span></div>
+        <div class="hero-bar-wrap">
+          <div class="hero-track"><div class="hero-fill" style="width:10%;background:rgba(255,255,255,.85);"></div></div>
+          <div class="hero-bar-lbl"><span class="hbl">ปล่อยไป 100</span><span class="hbl hi">พร้อมปล่อย 900 THB</span></div>
+        </div>
+        <hr class="hero-hr">
+        <div class="hero-grid">
+          <div class="hgi"><span class="hgi-l">พร้อมปล่อย</span><span class="hgi-v">900.00 THB</span></div>
+          <div class="hgi"><span class="hgi-l">ค้างชำระ</span><span class="hgi-v">100.00 THB</span></div>
+          <div class="hgi"><span class="hgi-l">ลูกค้าทั้งหมด</span><span class="hgi-v">2 ราย</span></div>
+          <div class="hgi"><span class="hgi-l">Trigger เติม</span><span class="hgi-v">Repayment</span></div>
+        </div>
+      </div>
+
+      <div class="act-bar" style="grid-template-columns:repeat(3,1fr);">
+        <button class="act-btn"><div class="act-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12l7-7 7 7"/></svg></div><span class="act-lbl">ปล่อยกู้ใหม่</span></button>
+        <button class="act-btn"><div class="act-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 3"/></svg></div><span class="act-lbl">ประวัติ</span></button>
+        <button class="act-btn"><div class="act-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4z"/></svg></div><span class="act-lbl">แก้ไข pool</span></button>
+      </div>
+
+      <div class="div8" style="margin-top:8px;"></div>
+
+      <div class="sec">
+        <div class="sec-head"><span class="sec-title">สถานะ pool</span></div>
+        <div class="bc-grid">
+          <div class="bc bc-neu"><div class="bc-lbl">วงเงิน pool</div><div class="bc-amt">1,000 <span class="bc-cu">THB</span></div><div class="bc-sub">Restricted</div></div>
+          <div class="bc bc-g"><div class="bc-lbl">พร้อมปล่อย</div><div class="bc-amt">900 <span class="bc-cu">THB</span></div><div class="bc-sub">ปล่อยได้ทันที</div></div>
+          <div class="bc bc-r" style="margin-top:8px;"><div class="bc-lbl">ค้างชำระ</div><div class="bc-amt">100 <span class="bc-cu">THB</span></div><div class="bc-sub">รอ repay</div></div>
+          <div class="bc bc-n" style="margin-top:8px;"><div class="bc-lbl">ลูกค้า</div><div class="bc-amt">2 <span class="bc-cu" style="font-size:12px;">ราย</span></div><div class="bc-sub">credit alloc</div></div>
+        </div>
+      </div>
+
+      <div class="div8" style="margin-top:12px;"></div>
+
+      <div class="sec">
+        <div class="sec-head"><span class="sec-title">Credit alloc รายบุคคล</span><button class="sec-action">+ ปล่อยกู้ใหม่</button></div>
+        <div class="bcard">
+          <div class="bcard-av" style="background:var(--navy-l);color:var(--navy);">อ</div>
+          <div class="bcard-info">
+            <div class="bcard-name">อานน บางสาน</div>
+            <div class="bcard-sub">วงเงิน 500 · ตัดรอบ 25 พ.ย.</div>
+            <div class="bcard-bar"><div class="bcard-fill" style="width:20%;background:var(--navy);"></div></div>
+          </div>
+          <div class="bcard-r">
+            <div class="bcard-amt">400.00</div>
+            <div class="bcard-used">ใช้ไป 100</div>
+            <span class="bcard-s" style="background:var(--green-l);color:var(--green);">active</span>
+          </div>
+        </div>
+        <div class="bcard">
+          <div class="bcard-av" style="background:var(--green-l);color:var(--green);">ส</div>
+          <div class="bcard-info">
+            <div class="bcard-name">สมศรี ใจดี</div>
+            <div class="bcard-sub">วงเงิน 500 · ตัดรอบ 25 พ.ย.</div>
+            <div class="bcard-bar"><div class="bcard-fill" style="width:0%;background:var(--navy);"></div></div>
+          </div>
+          <div class="bcard-r">
+            <div class="bcard-amt">500.00</div>
+            <div class="bcard-used">ใช้ไป 0</div>
+            <span class="bcard-s" style="background:var(--green-l);color:var(--green);">active</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="div8"></div>
+      <div class="sec">
+        <div class="sec-head"><span class="sec-title">การตั้งค่า</span></div>
+        <div class="info-card">
+          <div class="info-row"><span class="ir-l">Revolving</span><span class="chip chip-on">เปิด — เติมเมื่อ repay</span></div>
+          <div class="info-row"><span class="ir-l">Restricted</span><span class="chip chip-on">เปิด — ถอนไม่ได้</span></div>
+          <div class="info-row"><span class="ir-l">Duration</span><span class="ir-v">Ongoing</span></div>
+        </div>
+      </div>
+
+      <div class="div8"></div>
+      <div class="sec">
+        <div class="sec-head"><span class="sec-title">ประวัติ</span><button class="sec-action">ดูทั้งหมด</button></div>
+        <div class="tx-list">
+          <div class="tx"><div class="tx-ico out"><svg viewBox="0 0 24 24" fill="none" stroke="#C0311A" stroke-width="1.8"><path d="M12 5v14M5 12l7-7 7 7"/></svg></div><div class="tx-i"><div class="tx-name">ปล่อยกู้</div><div class="tx-sub">อานน บางสาน</div><div class="tx-date">31/10/2025 · 10:22</div></div><div class="tx-a"><div class="v out">−100.00</div><div class="cu">THB</div></div></div>
+          <div class="tx"><div class="tx-ico sys"><svg viewBox="0 0 24 24" fill="none" stroke="#6A6861" stroke-width="1.8"><path d="M12 5v14M5 12l7-7 7 7"/></svg></div><div class="tx-i"><div class="tx-name">ตั้ง pool</div><div class="tx-sub">สร้าง lending pool alloc</div><div class="tx-date">01/10/2025 · 09:00</div></div><div class="tx-a"><div class="v sys">1,000.00</div><div class="cu">THB</div></div></div>
+        </div>
+      </div>
+      <button class="cta cta-n" style="margin-top:14px;">ปล่อยกู้ใหม่</button>
+      <div style="height:16px;"></div>
+    </div>
+    <div class="bnav">
+      <button class="bnav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12L12 4l9 8"/><path d="M5 10v9h4v-5h6v5h4v-9"/></svg><span>หน้าแรก</span></button>
+      <button class="bnav-btn on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="3"/><path d="M16 3H8a2 2 0 00-2 2v2h12V5a2 2 0 00-2-2z"/></svg><span>กระเป๋า</span></button>
+      <button class="bnav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 3"/></svg><span>ประวัติ</span></button>
+      <button class="bnav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg><span>บัญชี</span></button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       SCREEN 3 — Payroll Alloc
+  ═══════════════════════════════════════ -->
+  <div class="screen hidden-right" id="s3">
+    <div class="status"><span class="t">09:41</span><span class="i">●●● WiFi 100%</span></div>
+    <div class="nav">
+      <button class="nav-back" onclick="goTo(0)"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 3L5 8l5 5"/></svg>กระเป๋า</button>
+      <button class="nav-dot"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="4" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="8" cy="12" r="1.2"/></svg></button>
+    </div>
+    <div class="scroll">
+      <div class="hero h-teal">
+        <div class="hero-c1"></div><div class="hero-c2"></div>
+        <div class="hero-eye"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="3"/><path d="M16 3H8a2 2 0 00-2 2v2h12V5a2 2 0 00-2-2z"/><path d="M8 14h5"/></svg>Payroll alloc · จ่ายเงินเดือน</div>
+        <div class="hero-badge badge-pending">⏸ pending_refill</div>
+        <div class="hero-lbl">วงเงินที่จอง</div>
+        <div class="hero-amt">5,000.00 <span class="cu">THB</span></div>
+        <div class="hero-bar-wrap">
+          <div class="hero-track"><div class="hero-fill" style="width:0%;background:rgba(255,255,255,.8);"></div></div>
+          <div class="hero-bar-lbl"><span class="hbl">ใช้ได้ทันที</span><span class="hbl hi">0.00 / 5,000.00 THB</span></div>
+        </div>
+        <hr class="hero-hr">
+        <div class="hero-grid">
+          <div class="hgi"><span class="hgi-l">เติมทุกวันที่</span><span class="hgi-v">25 ของเดือน</span></div>
+          <div class="hgi"><span class="hgi-l">รอบถัดไป</span><span class="hgi-v">25 พ.ย. 2568</span></div>
+          <div class="hgi"><span class="hgi-l">แหล่งเงิน</span><span class="hgi-v">Arnon's wallet</span></div>
+          <div class="hgi"><span class="hgi-l">ขาด</span><span class="hgi-v">4,900 THB</span></div>
+        </div>
+      </div>
+
+      <!-- pending banner -->
+      <div class="p-banner">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/></svg>
+        <div>
+          <div class="p-banner-title">เติมไม่ได้ — รอบวันที่ 25 ต.ค.</div>
+          <div class="p-banner-text">กระเป๋าหลักมี 100 THB ไม่พอ refill 5,000 THB<br>เติมเงินอีก 4,900 THB เพื่อให้ระบบดำเนินการ</div>
+        </div>
+      </div>
+
+      <div class="div8" style="margin-top:12px;"></div>
+
+      <div class="sec">
+        <div class="sec-head"><span class="sec-title">วงเงิน</span></div>
+        <div class="bc-grid">
+          <div class="bc bc-neu"><div class="bc-lbl">จองทั้งหมด</div><div class="bc-amt">5,000 <span class="bc-cu">THB</span></div><div class="bc-sub">ต่อรอบ</div></div>
+          <div class="bc bc-a"><div class="bc-lbl">รอเติม</div><div class="bc-amt">5,000 <span class="bc-cu">THB</span></div><div class="bc-sub">เงินไม่พอ</div></div>
+        </div>
+      </div>
+
+      <div class="sec" style="margin-top:12px;">
+        <div class="sec-head" style="padding-top:0;"><span class="sec-title">รอบถัดไป</span></div>
+        <div class="timeline">
+          <div class="tl-head"><span class="tl-title">เติมอัตโนมัติ</span><span class="tl-date">25 พ.ย. 2568</span></div>
+          <div class="tl-track"><div class="tl-fill" style="width:68%;background:var(--teal);"></div></div>
+          <div class="tl-lbl"><span class="tl-l">25 ต.ค.</span><span class="tl-l hi" style="color:var(--teal);">เหลืออีก 9 วัน</span><span class="tl-l">25 พ.ย.</span></div>
+        </div>
+      </div>
+
+      <div class="div8" style="margin-top:12px;"></div>
+
+      <div class="sec">
+        <div class="sec-head"><span class="sec-title">การตั้งค่า</span></div>
+        <div class="info-card">
+          <div class="info-row"><span class="ir-l">Revolving</span><span class="chip chip-on">เปิด — เติมตาม schedule</span></div>
+          <div class="info-row"><span class="ir-l">Restricted</span><span class="chip chip-on">เปิด — ถอนไม่ได้</span></div>
+          <div class="info-row"><span class="ir-l">Trigger</span><span class="ir-v">Schedule · วันที่ 25</span></div>
+          <div class="info-row"><span class="ir-l">Duration</span><span class="ir-v">Ongoing</span></div>
+        </div>
+      </div>
+
+      <div class="div8"></div>
+      <div class="sec">
+        <div class="sec-head"><span class="sec-title">ประวัติการเติม</span><button class="sec-action">ดูทั้งหมด</button></div>
+        <div class="tx-list">
+          <div class="tx"><div class="tx-ico sys"><svg viewBox="0 0 24 24" fill="none" stroke="#A85E0A" stroke-width="1.8"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/></svg></div><div class="tx-i"><div class="tx-name">เติมไม่สำเร็จ</div><div class="tx-sub">เงินไม่พอ — รอเจ้าของเติม</div><div class="tx-date">25/10/2025 · 00:00</div></div><div class="tx-a"><div class="v sys">5,000.00</div><div class="cu">THB</div></div></div>
+          <div class="tx"><div class="tx-ico in"><svg viewBox="0 0 24 24" fill="none" stroke="#1A7239" stroke-width="1.8"><path d="M12 19V5M5 12l7 7 7-7"/></svg></div><div class="tx-i"><div class="tx-name">เติมสำเร็จ</div><div class="tx-sub">จาก Arnon's wallet</div><div class="tx-date">25/09/2025 · 00:00</div></div><div class="tx-a"><div class="v in">+5,000.00</div><div class="cu">THB</div></div></div>
+        </div>
+      </div>
+
+      <button class="cta cta-r" style="margin-top:14px;">เติมเงินเข้ากระเป๋าหลักทันที</button>
+      <div style="height:16px;"></div>
+    </div>
+    <div class="bnav">
+      <button class="bnav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12L12 4l9 8"/><path d="M5 10v9h4v-5h6v5h4v-9"/></svg><span>หน้าแรก</span></button>
+      <button class="bnav-btn on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="3"/><path d="M16 3H8a2 2 0 00-2 2v2h12V5a2 2 0 00-2-2z"/></svg><span>กระเป๋า</span></button>
+      <button class="bnav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 3"/></svg><span>ประวัติ</span></button>
+      <button class="bnav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg><span>บัญชี</span></button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       SCREEN 4 — Received Credit
+  ═══════════════════════════════════════ -->
+  <div class="screen hidden-right" id="s4">
+    <div class="status"><span class="t">09:41</span><span class="i">●●● WiFi 100%</span></div>
+    <div class="nav">
+      <button class="nav-back" onclick="goTo(0)"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 3L5 8l5 5"/></svg>กระเป๋า</button>
+      <button class="nav-dot"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="4" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="8" cy="12" r="1.2"/></svg></button>
+    </div>
+    <div class="scroll">
+      <div class="hero h-green">
+        <div class="hero-c1"></div><div class="hero-c2"></div>
+        <div class="hero-eye"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20"/><path d="M6 15h3"/></svg>Freedom credit · เครดิตที่ได้รับ</div>
+        <div class="hero-badge badge-active">● active</div>
+        <div class="hero-lbl">วงเงินคงเหลือ</div>
+        <div class="hero-amt">900.00 <span class="cu">THB</span></div>
+        <div class="hero-bar-wrap">
+          <div class="hero-track"><div class="hero-fill" style="width:10%;background:rgba(255,255,255,.85);"></div></div>
+          <div class="hero-bar-lbl"><span class="hbl">ใช้ไป 100 (10%)</span><span class="hbl hi">เหลือ 900 THB</span></div>
+        </div>
+        <hr class="hero-hr">
+        <div class="hero-grid">
+          <div class="hgi"><span class="hgi-l">วงเงินทั้งหมด</span><span class="hgi-v">1,000.00 THB</span></div>
+          <div class="hgi"><span class="hgi-l">ใช้ไปแล้ว</span><span class="hgi-v">100.00 THB</span></div>
+          <div class="hgi"><span class="hgi-l">วันตัดรอบ</span><span class="hgi-v">25 พ.ย. 2568</span></div>
+          <div class="hgi"><span class="hgi-l">ผู้ให้เครดิต</span><span class="hgi-v">อานน (Issuer)</span></div>
+        </div>
+      </div>
+
+      <div class="act-bar" style="grid-template-columns:repeat(3,1fr);">
+        <button class="act-btn"><div class="act-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/></svg></div><span class="act-lbl">จ่ายบิล</span></button>
+        <button class="act-btn"><div class="act-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 19V5M5 12l7 7 7-7"/></svg></div><span class="act-lbl">กดเงินสด</span></button>
+        <button class="act-btn"><div class="act-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 3"/></svg></div><span class="act-lbl">ประวัติ</span></button>
+      </div>
+
+      <div class="div8" style="margin-top:8px;"></div>
+
+      <div class="sec">
+        <div class="sec-head"><span class="sec-title">วงเงิน</span></div>
+        <div class="bc-grid">
+          <div class="bc bc-neu"><div class="bc-lbl">วงเงินทั้งหมด</div><div class="bc-amt">1,000 <span class="bc-cu">THB</span></div><div class="bc-sub">จาก issuer</div></div>
+          <div class="bc bc-g"><div class="bc-lbl">คงเหลือ</div><div class="bc-amt">900 <span class="bc-cu">THB</span></div><div class="bc-sub">ใช้ได้ทันที</div></div>
+          <div class="bc bc-r" style="margin-top:8px;"><div class="bc-lbl">ใช้ไปแล้ว</div><div class="bc-amt">100 <span class="bc-cu">THB</span></div><div class="bc-sub">ค้างชำระ</div></div>
+          <div class="bc bc-a" style="margin-top:8px;"><div class="bc-lbl">ตัดรอบ</div><div class="bc-amt" style="font-size:13px;">25 พ.ย.</div><div class="bc-sub">อีก 9 วัน</div></div>
+        </div>
+      </div>
+
+      <div class="div8" style="margin-top:12px;"></div>
+
+      <div class="sec">
+        <div class="sec-head"><span class="sec-title">การตั้งค่า</span></div>
+        <div class="info-card">
+          <div class="info-row"><span class="ir-l">Revolving</span><span class="chip chip-on">เปิด — เติมเมื่อ repay</span></div>
+          <div class="info-row"><span class="ir-l">Restricted</span><span class="chip chip-on">เปิด — ถอนไม่ได้</span></div>
+          <div class="info-row"><span class="ir-l">ผู้ให้เครดิต</span><span class="ir-v">อานน (Lending pool)</span></div>
+          <div class="info-row"><span class="ir-l">Duration</span><span class="ir-v">Ongoing</span></div>
+        </div>
+      </div>
+
+      <div class="div8"></div>
+      <div class="sec">
+        <div class="sec-head"><span class="sec-title">ประวัติธุรกรรม</span><button class="sec-action">ดูเพิ่ม</button></div>
+        <div class="tx-list">
+          <div class="tx"><div class="tx-ico out"><svg viewBox="0 0 24 24" fill="none" stroke="#C0311A" stroke-width="1.8"><path d="M12 5v14M5 12l7-7 7 7"/></svg></div><div class="tx-i"><div class="tx-name">เงินออก</div><div class="tx-sub">บ้านมอ</div><div class="tx-date">31/10/2025 · 23:59</div></div><div class="tx-a"><div class="v out">−100.00</div><div class="cu">THB</div></div></div>
+          <div class="tx"><div class="tx-ico in"><svg viewBox="0 0 24 24" fill="none" stroke="#1A7239" stroke-width="1.8"><path d="M12 19V5M5 12l7 7 7-7"/></svg></div><div class="tx-i"><div class="tx-name">ได้รับเครดิต</div><div class="tx-sub">จาก อานน (issuer)</div><div class="tx-date">01/10/2025 · 09:00</div></div><div class="tx-a"><div class="v in">+1,000.00</div><div class="cu">THB</div></div></div>
+        </div>
+      </div>
+
+      <button class="cta cta-g" style="margin-top:14px;">ชำระยอดค้าง 100.00 THB</button>
+      <div style="height:16px;"></div>
+    </div>
+    <div class="bnav">
+      <button class="bnav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12L12 4l9 8"/><path d="M5 10v9h4v-5h6v5h4v-9"/></svg><span>หน้าแรก</span></button>
+      <button class="bnav-btn on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="3"/><path d="M16 3H8a2 2 0 00-2 2v2h12V5a2 2 0 00-2-2z"/></svg><span>กระเป๋า</span></button>
+      <button class="bnav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 3"/></svg><span>ประวัติ</span></button>
+      <button class="bnav-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg><span>บัญชี</span></button>
+    </div>
+  </div>
+
+</div><!-- /phone -->
+
+<script>
+let cur = 0;
+function goTo(n) {
+  const prev = document.getElementById('s'+cur);
+  const next = document.getElementById('s'+n);
+  if (cur === n) return;
+  const goingForward = n > cur;
+  prev.classList.remove('visible');
+  prev.classList.add(goingForward ? 'hidden-left' : 'hidden-right');
+  next.classList.remove('hidden-left','hidden-right');
+  next.classList.add('visible');
+  // reset scroll
+  const sc = next.querySelector('.scroll');
+  if (sc) sc.scrollTop = 0;
+  cur = n;
+}
+</script>
+</body>
+</html>
