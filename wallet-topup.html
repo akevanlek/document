@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>เติมเงิน Wallet</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --color-background-primary: #ffffff;
+    --color-background-secondary: #f5f4f0;
+    --color-background-tertiary: #ebebeb;
+    --color-background-info: #e6f1fb;
+    --color-background-success: #eaf3de;
+    --color-text-primary: #1a1a1a;
+    --color-text-secondary: #5f5e5a;
+    --color-text-tertiary: #888780;
+    --color-text-info: #185fa5;
+    --color-text-success: #3b6d11;
+    --color-border-tertiary: rgba(0,0,0,0.12);
+    --color-border-secondary: rgba(0,0,0,0.22);
+    --color-border-primary: rgba(0,0,0,0.35);
+    --color-border-info: #85b7eb;
+    --color-border-success: #97c459;
+    --font-sans: system-ui, -apple-system, sans-serif;
+    --font-mono: ui-monospace, monospace;
+    --border-radius-md: 8px;
+    --border-radius-lg: 12px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-background-primary: #1c1c1a;
+      --color-background-secondary: #252523;
+      --color-background-tertiary: #2e2e2b;
+      --color-background-info: #042c53;
+      --color-background-success: #173404;
+      --color-text-primary: #e8e7e2;
+      --color-text-secondary: #b4b2a9;
+      --color-text-tertiary: #888780;
+      --color-text-info: #85b7eb;
+      --color-text-success: #97c459;
+      --color-border-tertiary: rgba(255,255,255,0.10);
+      --color-border-secondary: rgba(255,255,255,0.20);
+      --color-border-primary: rgba(255,255,255,0.32);
+      --color-border-info: #185fa5;
+      --color-border-success: #3b6d11;
+    }
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background: var(--color-background-tertiary);
+    color: var(--color-text-primary);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 2rem 1rem;
+  }
+
+  .page { width: 100%; max-width: 560px; }
+
+  .tabs { display: flex; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; margin-bottom: 1.5rem; }
+  .tab { flex: 1; padding: 10px 16px; font-size: 13px; font-weight: 500; cursor: pointer; background: transparent; border: none; color: var(--color-text-secondary); transition: background 0.15s, color 0.15s; font-family: var(--font-sans); }
+  .tab.active { background: var(--color-background-secondary); color: var(--color-text-primary); }
+  .tab:not(:last-child) { border-right: 0.5px solid var(--color-border-tertiary); }
+
+  .card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem; }
+
+  .section-label { font-size: 11px; font-weight: 500; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
+  .field { margin-bottom: 1rem; }
+  .field label { display: block; font-size: 13px; color: var(--color-text-secondary); margin-bottom: 6px; }
+  .field input, .field textarea, .field select {
+    width: 100%; padding: 9px 12px; font-size: 14px;
+    border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md);
+    background: var(--color-background-primary); color: var(--color-text-primary); font-family: var(--font-sans);
+  }
+  .field textarea { resize: vertical; min-height: 72px; }
+  .field input:focus, .field textarea:focus { outline: none; border-color: var(--color-border-primary); }
+
+  .amount-row { display: flex; align-items: center; gap: 8px; }
+  .currency { font-size: 14px; color: var(--color-text-secondary); flex-shrink: 0; }
+  .amount-row input { flex: 1; }
+
+  .presets { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+  .preset-btn { padding: 5px 12px; font-size: 12px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); background: transparent; color: var(--color-text-secondary); cursor: pointer; transition: background 0.1s; font-family: var(--font-sans); }
+  .preset-btn:hover { background: var(--color-background-secondary); }
+
+  .submit-btn { width: 100%; padding: 11px; font-size: 14px; font-weight: 500; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); background: var(--color-background-secondary); color: var(--color-text-primary); cursor: pointer; transition: background 0.15s; margin-top: 0.25rem; font-family: var(--font-sans); }
+  .submit-btn:hover { background: var(--color-background-tertiary); }
+  .submit-btn:disabled { opacity: 0.5; cursor: default; }
+
+  .divider { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 1rem 0; }
+
+  .qr-area { display: flex; flex-direction: column; align-items: center; padding: 1.5rem; gap: 12px; background: var(--color-background-secondary); border-radius: var(--border-radius-md); }
+  .qr-placeholder { width: 140px; height: 140px; border: 0.5px solid var(--color-border-secondary); border-radius: 8px; display: flex; align-items: center; justify-content: center; background: var(--color-background-primary); overflow: hidden; }
+  .qr-label { font-size: 13px; color: var(--color-text-secondary); }
+  .qr-amount { font-size: 22px; font-weight: 500; color: var(--color-text-primary); }
+  .qr-note { font-size: 11px; color: var(--color-text-tertiary); }
+
+  .info-banner { background: var(--color-background-info); border: 0.5px solid var(--color-border-info); border-radius: var(--border-radius-md); padding: 10px 14px; font-size: 13px; color: var(--color-text-info); margin-bottom: 1rem; line-height: 1.6; }
+
+  .bank-box { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 12px 14px; margin-bottom: 1rem; }
+  .bank-row { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; }
+  .bank-key { font-size: 12px; color: var(--color-text-tertiary); }
+  .bank-val { font-size: 13px; font-weight: 500; color: var(--color-text-primary); font-family: var(--font-mono); }
+
+  .success-banner { display: none; background: var(--color-background-success); border: 0.5px solid var(--color-border-success); border-radius: var(--border-radius-md); padding: 10px 14px; font-size: 13px; color: var(--color-text-success); margin-top: 1rem; line-height: 1.6; }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  h1 { font-size: 16px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 4px; }
+  .subtitle { font-size: 13px; color: var(--color-text-secondary); margin-bottom: 1.25rem; }
+</style>
+</head>
+<body>
+<div class="page">
+  <h1>เติมเงิน Wallet</h1>
+  <p class="subtitle">เลือกวิธีการชำระเงิน</p>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('qr')">ชำระผ่าน QR Code</button>
+    <button class="tab" onclick="switchTab('manual')">โอนเงินแล้วแจ้ง</button>
+  </div>
+
+  <!-- QR Panel -->
+  <div id="panel-qr" class="panel active">
+    <div class="card">
+      <div class="section-label">ข้อมูลการชำระ</div>
+
+      <div class="field">
+        <label>BA ID</label>
+        <input type="text" id="ba-id" placeholder="เช่น BA-0001234" />
+      </div>
+
+      <div class="field">
+        <label>จำนวนเงิน</label>
+        <div class="amount-row">
+          <span class="currency">THB</span>
+          <input type="number" id="qr-amount" placeholder="0.00" min="1" step="1" />
+        </div>
+        <div class="presets">
+          <button class="preset-btn" onclick="setAmount(500)">500</button>
+          <button class="preset-btn" onclick="setAmount(1000)">1,000</button>
+          <button class="preset-btn" onclick="setAmount(2000)">2,000</button>
+          <button class="preset-btn" onclick="setAmount(5000)">5,000</button>
+          <button class="preset-btn" onclick="setAmount(10000)">10,000</button>
+        </div>
+      </div>
+
+      <button class="submit-btn" onclick="genQR()">สร้าง QR Code</button>
+
+      <div id="qr-result" style="display:none;">
+        <hr class="divider" />
+        <div class="qr-area">
+          <div class="qr-placeholder">
+            <canvas id="qr-canvas" width="120" height="120"></canvas>
+          </div>
+          <div class="qr-label">สแกนเพื่อชำระเงิน</div>
+          <div class="qr-amount" id="qr-display-amount">฿0</div>
+          <div class="qr-note" id="qr-display-ba">BA ID: —</div>
+          <div class="qr-note">QR นี้หมดอายุใน 15 นาที</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Manual Panel -->
+  <div id="panel-manual" class="panel">
+    <div class="card">
+      <div class="info-banner">
+        บัญชีบริษัทไม่รองรับการยิง QR — กรุณาโอนเข้าบัญชีด้านล่าง แล้วแจ้งรายการในฟอร์มนี้
+      </div>
+
+      <div class="section-label">บัญชีปลายทาง</div>
+      <div class="bank-box">
+        <div class="bank-row">
+          <span class="bank-key">ธนาคาร</span>
+          <span class="bank-val">กสิกรไทย</span>
+        </div>
+        <div class="bank-row">
+          <span class="bank-key">เลขบัญชี</span>
+          <span class="bank-val">xxx-x-xxxxx-x</span>
+        </div>
+        <div class="bank-row">
+          <span class="bank-key">ชื่อบัญชี</span>
+          <span class="bank-val">บริษัท ABC จำกัด</span>
+        </div>
+      </div>
+
+      <hr class="divider" />
+      <div class="section-label">แจ้งรายการโอน</div>
+
+      <div class="field">
+        <label>BA ID</label>
+        <input type="text" id="m-ba-id" placeholder="เช่น BA-0001234" />
+      </div>
+
+      <div class="field">
+        <label>จำนวนที่โอน</label>
+        <div class="amount-row">
+          <span class="currency">THB</span>
+          <input type="number" id="m-amount" placeholder="0.00" min="1" step="1" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label>วันและเวลาที่โอน</label>
+        <input type="datetime-local" id="m-datetime" />
+      </div>
+
+      <div class="field">
+        <label>หมายเหตุ / เลขอ้างอิง</label>
+        <textarea id="m-note" placeholder="เช่น โอนจาก SCB xxxxxx เวลา 14:32 / เลข ref ..."></textarea>
+      </div>
+
+      <button class="submit-btn" id="manual-btn" onclick="submitManual()">แจ้งรายการโอน</button>
+
+      <div class="success-banner" id="manual-success">
+        ส่งข้อมูลเรียบร้อยแล้ว — ทีม Backoffice จะตรวจสอบและเติม Wallet ภายใน 1 ชั่วโมงในเวลาทำการ
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach((t, i) => {
+    t.classList.toggle('active', (i === 0 && tab === 'qr') || (i === 1 && tab === 'manual'));
+  });
+  document.getElementById('panel-qr').classList.toggle('active', tab === 'qr');
+  document.getElementById('panel-manual').classList.toggle('active', tab === 'manual');
+}
+
+function setAmount(v) {
+  document.getElementById('qr-amount').value = v;
+}
+
+function drawFakeQR(canvas) {
+  const ctx = canvas.getContext('2d');
+  const size = 120;
+  const cells = 17;
+  const cell = size / cells;
+  const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const fg = isDark ? '#e5e5e5' : '#1a1a1a';
+  const bg = isDark ? '#1c1c1a' : '#ffffff';
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, size, size);
+  const pattern = [];
+  for (let r = 0; r < cells; r++) {
+    pattern[r] = [];
+    for (let c = 0; c < cells; c++) {
+      pattern[r][c] = Math.random() > 0.5 ? 1 : 0;
+    }
+  }
+  const corner = (rx, ry) => {
+    ctx.fillStyle = fg;
+    ctx.fillRect(rx * cell, ry * cell, 7 * cell, 7 * cell);
+    ctx.fillStyle = bg;
+    ctx.fillRect((rx + 1) * cell, (ry + 1) * cell, 5 * cell, 5 * cell);
+    ctx.fillStyle = fg;
+    ctx.fillRect((rx + 2) * cell, (ry + 2) * cell, 3 * cell, 3 * cell);
+  };
+  corner(0, 0); corner(cells - 7, 0); corner(0, cells - 7);
+  ctx.fillStyle = fg;
+  for (let r = 0; r < cells; r++) {
+    for (let c = 0; c < cells; c++) {
+      const inCorner = (r < 8 && c < 8) || (r < 8 && c >= cells - 8) || (r >= cells - 8 && c < 8);
+      if (!inCorner && pattern[r][c]) {
+        ctx.fillRect(c * cell + 1, r * cell + 1, cell - 1, cell - 1);
+      }
+    }
+  }
+}
+
+function genQR() {
+  const ba = document.getElementById('ba-id').value.trim();
+  const amt = parseFloat(document.getElementById('qr-amount').value);
+  if (!ba) { alert('กรุณากรอก BA ID'); return; }
+  if (!amt || amt <= 0) { alert('กรุณากรอกจำนวนเงิน'); return; }
+  document.getElementById('qr-display-amount').textContent = '฿' + amt.toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  document.getElementById('qr-display-ba').textContent = 'BA ID: ' + ba;
+  document.getElementById('qr-result').style.display = 'block';
+  drawFakeQR(document.getElementById('qr-canvas'));
+}
+
+function submitManual() {
+  const ba = document.getElementById('m-ba-id').value.trim();
+  const amt = parseFloat(document.getElementById('m-amount').value);
+  const dt = document.getElementById('m-datetime').value;
+  if (!ba) { alert('กรุณากรอก BA ID'); return; }
+  if (!amt || amt <= 0) { alert('กรุณากรอกจำนวนเงิน'); return; }
+  if (!dt) { alert('กรุณาระบุวันและเวลาที่โอน'); return; }
+  document.getElementById('manual-success').style.display = 'block';
+  document.getElementById('manual-btn').disabled = true;
+}
+</script>
+</body>
+</html>
