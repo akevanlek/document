@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mana OS — Product Flow v4</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f4f0;
+  --bg2: #ffffff;
+  --bg3: #eeedea;
+  --bg4: #e8e6e1;
+  --line: rgba(0,0,0,0.07);
+  --line2: rgba(0,0,0,0.13);
+  --text: #1c1c1a;
+  --muted: #5c5c57;
+  --hint: #a0a099;
+  --blue: #1d6fd8;
+  --blue-dim: rgba(29,111,216,0.08);
+  --blue-mid: rgba(29,111,216,0.18);
+  --green: #1a7a4a;
+  --green-dim: rgba(26,122,74,0.08);
+  --amber: #92610a;
+  --amber-dim: rgba(146,97,10,0.08);
+  --red: #b83232;
+  --red-dim: rgba(184,50,50,0.08);
+  --purple: #5b3fa8;
+  --purple-dim: rgba(91,63,168,0.08);
+  --r: 10px;
+  --r-sm: 6px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 14px; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-weight: 400; min-height: 100vh; line-height: 1.6; }
+
+/* HEADER */
+header { border-bottom: 1px solid var(--line); padding: 16px 28px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: rgba(245,244,240,0.94); backdrop-filter: blur(12px); z-index: 100; }
+.logo { display: flex; align-items: center; gap: 10px; }
+.logo-mark { width: 28px; height: 28px; background: #1d6fd8; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500; color: #fff; }
+.logo-text { font-size: 13px; font-weight: 500; color: var(--text); }
+.logo-sub { font-size: 11px; color: var(--hint); font-family: 'DM Mono', monospace; }
+.header-right { display: flex; align-items: center; gap: 6px; }
+.badge { font-size: 11px; font-family: 'DM Mono', monospace; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--line2); color: var(--muted); }
+.status-badge { font-size: 11px; padding: 3px 9px; border-radius: 999px; font-weight: 500; }
+.status-stable { background: rgba(26,122,74,0.1); border: 1px solid rgba(26,122,74,0.25); color: #145c37; }
+.status-draft  { background: rgba(146,97,10,0.1); border: 1px solid rgba(146,97,10,0.25); color: #7a5008; }
+
+/* LAYOUT */
+.layout { display: grid; grid-template-columns: 252px 1fr; min-height: calc(100vh - 61px); }
+
+/* SIDEBAR */
+aside { border-right: 1px solid var(--line); padding: 20px 0; position: sticky; top: 61px; height: calc(100vh - 61px); overflow-y: auto; display: flex; flex-direction: column; gap: 0; }
+.sidebar-section { padding: 0 0 8px; }
+.sidebar-label { font-size: 10px; font-weight: 500; letter-spacing: .1em; color: var(--hint); text-transform: uppercase; padding: 0 18px 8px; }
+.step-btn { width: 100%; display: flex; align-items: center; gap: 10px; padding: 9px 18px; border: none; background: transparent; cursor: pointer; text-align: left; transition: background .15s; position: relative; }
+.step-btn:hover { background: rgba(0,0,0,0.03); }
+.step-btn.active { background: var(--blue-dim); }
+.step-btn.active::before { content: ''; position: absolute; left: 0; top: 5px; bottom: 5px; width: 2px; background: #1d6fd8; border-radius: 0 2px 2px 0; }
+.step-num { width: 24px; height: 24px; border-radius: 5px; background: var(--bg3); border: 1px solid var(--line2); display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); flex-shrink: 0; transition: all .15s; }
+.step-btn.active .step-num { background: #1d6fd8; border-color: #1d6fd8; color: #fff; }
+.step-meta { flex: 1; min-width: 0; }
+.step-title { font-size: 12px; font-weight: 500; color: var(--muted); display: block; transition: color .15s; }
+.step-btn.active .step-title { color: var(--text); }
+.step-hint { font-size: 11px; color: var(--hint); display: block; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.gov-pip { width: 5px; height: 5px; border-radius: 50%; background: #92610a; flex-shrink: 0; opacity: 0; }
+.has-gov .gov-pip { opacity: 1; }
+.sidebar-divider { height: 1px; background: var(--line); margin: 8px 18px; }
+
+/* Sidebar extra panels */
+.sidebar-extra { padding: 12px 18px; }
+.sidebar-extra-title { font-size: 10px; font-weight: 500; letter-spacing: .08em; color: var(--hint); text-transform: uppercase; margin-bottom: 8px; }
+.sidebar-kv { display: flex; flex-direction: column; gap: 4px; }
+.sidebar-kv-row { display: flex; justify-content: space-between; align-items: center; font-size: 11px; }
+.sidebar-kv-key { color: var(--muted); }
+.sidebar-kv-val { font-family: 'DM Mono', monospace; font-size: 10px; padding: 2px 6px; border-radius: 999px; }
+.kv-stable { background: rgba(26,122,74,0.1); color: #145c37; }
+.kv-draft  { background: rgba(146,97,10,0.1); color: #7a5008; }
+.tier-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+.tier-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+
+/* MAIN */
+main { padding: 28px 32px; max-width: 900px; }
+
+/* HERO */
+.hero { display: flex; align-items: flex-start; gap: 18px; margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--line); }
+.hero-num { font-size: 44px; font-weight: 300; font-family: 'DM Mono', monospace; color: #1d6fd8; line-height: 1; opacity: .4; flex-shrink: 0; min-width: 48px; }
+.hero-name { font-size: 20px; font-weight: 500; color: var(--text); margin-bottom: 5px; }
+.hero-desc { font-size: 13px; color: var(--muted); line-height: 1.7; max-width: 560px; }
+
+/* SECTION HEADER */
+.sec-head { font-size: 10px; font-weight: 500; letter-spacing: .1em; color: var(--hint); text-transform: uppercase; margin: 20px 0 8px; }
+
+/* CARD */
+.card { background: var(--bg2); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; margin-bottom: 12px; }
+.card-head { padding: 10px 14px; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 7px; }
+.card-icon { font-size: 13px; color: var(--hint); }
+.card-label { font-size: 10px; font-weight: 500; letter-spacing: .09em; color: var(--hint); text-transform: uppercase; }
+.card-body { padding: 12px 14px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+
+/* ROLES */
+.role-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 7px; }
+.role-row:last-child { margin-bottom: 0; }
+.role-key { font-size: 11px; color: var(--hint); min-width: 78px; padding-top: 3px; flex-shrink: 0; }
+.tags { display: flex; flex-wrap: wrap; gap: 4px; }
+.tag { font-size: 12px; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--line2); color: var(--muted); background: var(--bg3); white-space: nowrap; }
+.tag.owner    { background: var(--blue-dim);   border-color: var(--blue-mid);            color: #0f4fa3; }
+.tag.approver { background: var(--green-dim);  border-color: rgba(26,122,74,0.22);       color: #145c37; }
+.tag.escalate { background: var(--amber-dim);  border-color: rgba(146,97,10,0.22);       color: #7a5008; }
+
+/* DECISION AUTHORITY */
+.da-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.da-table th { font-size: 10px; font-weight: 500; letter-spacing: .07em; color: var(--hint); text-transform: uppercase; text-align: left; padding: 0 0 6px; border-bottom: 1px solid var(--line); }
+.da-table th:last-child { text-align: right; }
+.da-table td { padding: 7px 0; border-bottom: 1px solid var(--line); vertical-align: middle; }
+.da-table tr:last-child td { border-bottom: none; }
+.da-area { color: var(--muted); font-size: 12px; }
+.da-who { text-align: right; }
+.da-tag { font-size: 12px; padding: 2px 9px; border-radius: 999px; font-weight: 500; }
+.da-po      { background: rgba(91,63,168,0.09);  color: #4a2e9a; border: 1px solid rgba(91,63,168,0.2); }
+.da-pl      { background: var(--blue-dim);        color: #0f4fa3;  border: 1px solid var(--blue-mid); }
+.da-cto     { background: var(--red-dim);          color: #8c2020;  border: 1px solid rgba(184,50,50,0.2); }
+.da-coo     { background: var(--amber-dim);        color: #7a5008;  border: 1px solid rgba(146,97,10,0.2); }
+.da-backendtl { background: var(--green-dim);     color: #145c37;  border: 1px solid rgba(26,122,74,0.22); }
+
+/* OUTPUTS */
+.output-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 20px; }
+.output-block { padding: 10px 0; border-bottom: 1px solid var(--line); }
+.output-block:nth-child(odd):last-child { grid-column: 1 / -1; }
+.output-block:last-of-type { border-bottom: none; }
+.output-block:first-child, .output-block:nth-child(2) { padding-top: 0; }
+.output-header { display: flex; align-items: center; gap: 7px; margin-bottom: 3px; }
+.output-dot { width: 4px; height: 4px; border-radius: 50%; background: #1d6fd8; flex-shrink: 0; }
+.output-label { font-size: 13px; font-weight: 500; color: var(--text); }
+.output-desc { font-size: 12px; color: var(--muted); margin-bottom: 5px; padding-left: 11px; line-height: 1.5; }
+.output-example { font-size: 12px; color: var(--muted); background: var(--bg3); border-left: 2px solid #1d6fd8; border-radius: 0 var(--r-sm) var(--r-sm) 0; padding: 6px 10px; line-height: 1.6; margin-left: 11px; }
+.example-tag { display: inline-block; font-size: 10px; font-weight: 500; letter-spacing: .05em; color: #1d6fd8; background: rgba(29,111,216,0.1); border-radius: 3px; padding: 1px 5px; margin-right: 5px; vertical-align: middle; }
+.rollback { display: flex; align-items: center; gap: 7px; margin-top: 10px; padding: 7px 10px; background: var(--bg3); border-radius: var(--r-sm); font-size: 12px; color: var(--muted); }
+
+/* COMMON FAILURES */
+.failure-list { display: flex; flex-direction: column; gap: 6px; }
+.failure-item { display: flex; align-items: flex-start; gap: 8px; padding: 7px 10px; background: rgba(184,50,50,0.05); border: 1px solid rgba(184,50,50,0.12); border-radius: var(--r-sm); font-size: 12px; color: #7a2020; line-height: 1.5; }
+.failure-icon { font-size: 12px; flex-shrink: 0; margin-top: 1px; color: #b83232; }
+
+/* REAL EXAMPLE */
+.real-example-box { background: var(--bg3); border-radius: var(--r-sm); overflow: hidden; }
+.real-example-title { font-size: 12px; font-weight: 500; color: var(--text); padding: 9px 12px; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 7px; }
+.real-example-title-icon { font-size: 12px; color: var(--hint); }
+.real-example-body { padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; }
+.re-row { display: flex; align-items: flex-start; gap: 8px; font-size: 12px; }
+.re-label { min-width: 130px; flex-shrink: 0; color: var(--hint); }
+.re-val { color: var(--text); line-height: 1.5; }
+.re-highlight { display: inline-block; font-size: 11px; padding: 1px 7px; border-radius: 999px; font-weight: 500; margin-right: 4px; margin-bottom: 3px; }
+.re-fin  { background: rgba(184,50,50,0.09);  color: #8c2020; border: 1px solid rgba(184,50,50,0.18); }
+.re-gov  { background: var(--amber-dim);       color: #7a5008; border: 1px solid rgba(146,97,10,0.22); }
+.re-con  { background: rgba(91,63,168,0.09);  color: #4a2e9a; border: 1px solid rgba(91,63,168,0.2); }
+.re-tec  { background: var(--green-dim);       color: #145c37; border: 1px solid rgba(26,122,74,0.22); }
+
+/* CRITERIA */
+.crit-item { display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--line); font-size: 13px; color: var(--text); }
+.crit-item:last-child { border-bottom: none; padding-bottom: 0; }
+.crit-item:first-child { padding-top: 0; }
+.crit-icon { color: #1a7a4a; font-size: 12px; flex-shrink: 0; margin-top: 2px; }
+
+/* GOVERNANCE */
+.gov-alert { background: rgba(146,97,10,0.07); border: 1px solid rgba(146,97,10,0.18); border-radius: var(--r-sm); padding: 10px 12px; font-size: 13px; color: #7a5008; line-height: 1.6; }
+.gov-none  { font-size: 13px; color: var(--hint); }
+
+/* TIER */
+.tier-chips { display: flex; gap: 8px; }
+.tier-chip { flex: 1; text-align: center; padding: 10px 6px 8px; border-radius: var(--r-sm); border: 1px solid var(--line2); background: var(--bg3); }
+.tier-chip-val { display: block; font-size: 12px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
+.tier-chip-lbl { display: block; font-size: 10px; color: var(--hint); letter-spacing: .05em; }
+.tier-chip.fast { background: rgba(26,122,74,0.07);  border-color: rgba(26,122,74,0.2); }
+.tier-chip.fast .tier-chip-val { color: #145c37; }
+.tier-chip.std  { background: rgba(29,111,216,0.07); border-color: rgba(29,111,216,0.2); }
+.tier-chip.std  .tier-chip-val { color: #1050a0; }
+.tier-chip.full { background: rgba(146,97,10,0.07);  border-color: rgba(146,97,10,0.2); }
+.tier-chip.full .tier-chip-val { color: #7a5008; }
+
+/* FAST TRACK EXAMPLE */
+.ft-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.ft-table th { font-size: 10px; font-weight: 500; letter-spacing: .07em; color: var(--hint); text-transform: uppercase; text-align: left; padding: 0 0 6px; border-bottom: 1px solid var(--line); }
+.ft-table th:last-child { text-align: right; }
+.ft-table td { padding: 6px 0; border-bottom: 1px solid var(--line); color: var(--muted); vertical-align: middle; }
+.ft-table tr:last-child td { border-bottom: none; }
+.ft-table td:last-child { text-align: right; }
+.ft-chip { font-size: 11px; padding: 2px 8px; border-radius: 999px; font-weight: 500; }
+.ft-fast { background: rgba(26,122,74,0.09);  color: #145c37; border: 1px solid rgba(26,122,74,0.22); }
+.ft-std  { background: rgba(29,111,216,0.09); color: #0f4fa3;  border: 1px solid rgba(29,111,216,0.22); }
+.ft-full { background: rgba(146,97,10,0.09);  color: #7a5008;  border: 1px solid rgba(146,97,10,0.22); }
+
+/* NAV */
+.nav-bar { display: flex; align-items: center; justify-content: space-between; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--line); }
+.nav-btn { display: flex; align-items: center; gap: 7px; padding: 8px 16px; border-radius: var(--r-sm); border: 1px solid var(--line2); background: transparent; color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; transition: all .15s; }
+.nav-btn:hover { background: var(--bg3); color: var(--text); }
+.nav-btn:disabled { opacity: .3; cursor: default; }
+.nav-progress { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--hint); }
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 4px; }
+
+
+/* OVERVIEW */
+.ov-goal{display:flex;flex-direction:column;gap:4px}
+.ov-goal-icon{font-size:16px;color:var(--hint);margin-bottom:2px}
+.ov-goal-title{font-size:13px;font-weight:500;color:var(--text)}
+.ov-goal-desc{font-size:12px;color:var(--muted);line-height:1.5}
+.ov-flow-chain{display:flex;align-items:flex-start;gap:0;flex-wrap:wrap}
+.ov-step-node{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:10px 8px;border-radius:var(--r-sm);transition:background .15s;text-align:center;min-width:90px}
+.ov-step-node:hover{background:var(--bg3)}
+.ov-step-num{width:28px;height:28px;border-radius:6px;background:var(--blue-dim);border:1px solid var(--blue-mid);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:12px;color:#1050a0;font-weight:500}
+.ov-has-gov .ov-step-num{background:var(--amber-dim);border-color:rgba(146,97,10,.22);color:#7a5008}
+.ov-step-name{font-size:11px;font-weight:500;color:var(--text);line-height:1.3}
+.ov-step-hint{font-size:10px;color:var(--hint);line-height:1.3}
+.ov-gov-mark{color:#92610a;margin-left:3px}
+.ov-arrow{font-size:14px;color:var(--hint);padding:0 2px;align-self:center;padding-bottom:14px}
+.ov-principle-list{display:flex;flex-direction:column;gap:6px}
+.ov-principle-item{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--text);line-height:1.5}
+.ov-pi-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:6px}
+.ov-tier-card{border-radius:var(--r-sm);padding:12px 14px;border:1px solid var(--line2)}
+.ov-tier-fast{background:rgba(26,122,74,.06);border-color:rgba(26,122,74,.2)}
+.ov-tier-std{background:rgba(29,111,216,.06);border-color:rgba(29,111,216,.2)}
+.ov-tier-full{background:rgba(146,97,10,.06);border-color:rgba(146,97,10,.2)}
+.ov-tier-label{font-size:13px;font-weight:500;margin-bottom:3px}
+.ov-tier-fast .ov-tier-label{color:#145c37}
+.ov-tier-std .ov-tier-label{color:#1050a0}
+.ov-tier-full .ov-tier-label{color:#7a5008}
+.ov-tier-example{font-size:11px;color:var(--hint);margin-bottom:8px;font-style:italic}
+.ov-tier-rules{font-size:12px;color:var(--muted);display:flex;flex-direction:column;gap:3px}
+.ov-tier-upgrade{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px 0 0;border-top:1px solid var(--line);margin-top:4px}
+.ov-up-chip{font-size:11px;padding:2px 8px;border-radius:999px;background:var(--bg3);border:1px solid var(--line2);color:var(--muted)}
+
+
+/* IMPACT ANALYSIS */
+.ia-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px 20px; }
+.ia-row { display:flex; flex-direction:column; gap:3px; padding:8px 0; border-bottom:1px solid var(--line); }
+.ia-row:last-child { border-bottom:none; padding-bottom:0; }
+.ia-row:first-child { padding-top:0; }
+.ia-key { font-size:10px; font-weight:500; letter-spacing:.07em; text-transform:uppercase; color:var(--hint); }
+.ia-val { font-size:13px; color:var(--text); line-height:1.5; }
+.ia-tags { display:flex; flex-wrap:wrap; gap:4px; margin-top:3px; }
+.ia-tag { font-size:11px; padding:2px 7px; border-radius:999px; border:1px solid var(--line2); background:var(--bg3); color:var(--muted); }
+.ia-fin { border-color:rgba(184,50,50,.2); background:rgba(184,50,50,.06); color:#7a2020; }
+.ia-ops { border-color:rgba(29,111,216,.2); background:rgba(29,111,216,.06); color:#0f4fa3; }
+.ia-com { border-color:rgba(146,97,10,.2); background:rgba(146,97,10,.06); color:#7a5008; }
+.ia-sys { border-color:rgba(26,122,74,.2); background:rgba(26,122,74,.06); color:#145c37; }
+/* overview impact table */
+.ov-ia-table { width:100%; border-collapse:collapse; font-size:12px; }
+.ov-ia-table th { font-size:10px; font-weight:500; letter-spacing:.07em; color:var(--hint); text-transform:uppercase; text-align:left; padding:0 8px 6px 0; border-bottom:1px solid var(--line); }
+.ov-ia-table td { padding:7px 8px 7px 0; border-bottom:1px solid var(--line); vertical-align:top; color:var(--muted); line-height:1.5; }
+.ov-ia-table tr:last-child td { border-bottom:none; }
+.ov-ia-table td:first-child { font-weight:500; color:var(--text); white-space:nowrap; min-width:160px; }
+.ov-ia-table td:nth-child(2) { color:#7a2020; }
+.ov-ia-table td:nth-child(3) { color:#0f4fa3; }
+.ov-ia-table td:nth-child(4) { color:#7a5008; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+.fade-in { animation: fadeIn .18s ease forwards; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-mark">MOS</div>
+    <div>
+      <div class="logo-text">Mana Operating System</div>
+      <div class="logo-sub">Product Flow v4</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="badge">8 steps</span>
+    <span class="status-badge status-stable">Product Flow: Stable</span>
+    <span class="status-badge status-draft">Delivery Flow: Draft</span>
+    <span class="status-badge status-draft">Operation Flow: Draft</span>
+  </div>
+</header>
+
+<div class="layout">
+  <aside>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Overview</div>
+      <button class="step-btn" id="overview-btn" onclick="showOverview()">
+        <span class="step-num" style="font-size:13px">⊞</span>
+        <span class="step-meta">
+          <span class="step-title">ภาพรวม</span>
+          <span class="step-hint">เป้าหมาย · หลักการ · tier</span>
+        </span>
+      </button>
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Flow</div>
+      <div id="sidebar"></div>
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <div class="sidebar-extra">
+      <div class="sidebar-extra-title">Document Status</div>
+      <div class="sidebar-kv">
+        <div class="sidebar-kv-row"><span class="sidebar-kv-key">Product Flow</span><span class="sidebar-kv-val kv-stable">Stable</span></div>
+        <div class="sidebar-kv-row"><span class="sidebar-kv-key">Delivery Flow</span><span class="sidebar-kv-val kv-draft">Draft</span></div>
+        <div class="sidebar-kv-row"><span class="sidebar-kv-key">Operation Flow</span><span class="sidebar-kv-val kv-draft">Draft</span></div>
+        <div class="sidebar-kv-row"><span class="sidebar-kv-key">Support Flow</span><span class="sidebar-kv-val kv-draft">Draft</span></div>
+      </div>
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <div class="sidebar-extra">
+      <div class="sidebar-extra-title">Process Tier</div>
+      <div class="tier-item"><div class="tier-dot" style="background:#1a7a4a"></div>Fast Track — async, lightweight</div>
+      <div class="tier-item"><div class="tier-dot" style="background:#1d6fd8"></div>Standard — full process</div>
+      <div class="tier-item"><div class="tier-dot" style="background:#92610a"></div>Full Process — COO required</div>
+      <div class="tier-item"><div class="tier-dot" style="background:#92610a; opacity:.45"></div><span style="color:var(--hint)">● = compliance trigger</span></div>
+    </div>
+  </aside>
+
+  <main id="main"></main>
+</div>
+
+<script>
+const STEPS = [
+  {
+    num:"0", name:"Trigger", hint:"Entry point",
+    desc:"จุดเริ่มต้นของงาน — เหตุผลที่ต้องเริ่ม process อาจมาจาก CEO direction, business need, customer request, compliance requirement, production incident, support pain point, operational problem หรือ scaling problem",
+    owner:null, approver:null, escalation:null, contribs:[],
+    decisionAuthority:[],
+    outputs:[
+      { label:"Trigger Source", desc:"ระบุว่า trigger มาจากใครหรือเหตุการณ์อะไร", example:"ลูกค้า Enterprise ร้องขอให้จ่ายเงินเดือนผ่าน Mana Wallet ได้โดยตรง (แจ้งผ่าน Account Manager)" },
+      { label:"Problem / Opportunity", desc:"ระบุปัญหาหรือ opportunity ที่ต้องแก้", example:"ระบบปัจจุบัน export bank file อย่างเดียว ลูกค้าต้องโอนเองทุกเดือน เพิ่ม error และเสียเวลา" },
+      { label:"Initial Priority", desc:"ระดับ priority เบื้องต้นก่อนเข้า validation", example:"High — กระทบ retention ลูกค้า Enterprise 3 ราย มูลค่า ARR รวม 2.4M THB" }
+    ],
+    rollback:"— (entry point)", gov:null,
+    failures:[], realExample:null,
+    criteria:["มีเหตุผลที่ชัดเจนว่าทำไมต้องเริ่มงานนี้","ระบุ trigger source ได้"],
+    tier:{ fast:"—", std:"—", full:"—" },
+    ftExamples:[]
+  },
+  {
+    num:"1", name:"Trigger Validation", hint:"กัน assumption ผิด",
+    desc:"ตรวจว่า trigger นี้ควรเริ่ม process จริงไหม — validate source, confirm priority, assign process tier และ identify compliance trigger ตั้งแต่ต้น",
+    owner:"PM / PL", approver:"PO หรือ CEO", escalation:"COO", contribs:[],
+    decisionAuthority:[
+      { area:"ควรเริ่ม process?", who:"PO / CEO", cls:"da-po" },
+      { area:"Process tier", who:"PL", cls:"da-pl" },
+      { area:"Compliance trigger", who:"PL", cls:"da-pl" },
+      { area:"Strategic priority", who:"CEO", cls:"da-coo" }
+    ],
+    outputs:[
+      { label:"Validated Trigger", desc:"trigger ที่ผ่านการตรวจสอบแล้วว่าถูกต้องและควรเริ่ม", example:"ยืนยันแล้ว: ลูกค้า 3 รายร้องขอจริง + CEO อนุมัติเป็น Q3 priority" },
+      { label:"Assigned Process Tier", desc:"tier ที่ถูก assign ณ จุดนี้ (อาจ upgrade ได้ภายหลัง)", example:"Full Process — เพราะกระทบ financial flow และ settlement" },
+      { label:"Compliance Trigger", desc:"รายการ compliance condition ที่เข้า trigger", example:"เข้า trigger: กระทบเงินจริง, เปลี่ยน settlement flow, อาจกระทบ compliance BOT" }
+    ],
+    rollback:"Trigger",
+    gov:"assign process tier + identify compliance trigger ที่ step นี้",
+    failures:[
+      "trigger มาจาก PO แต่ยังไม่ได้ validate กับ CEO — งานเริ่มแล้วค่อยรู้ว่า direction ผิด",
+      "ไม่ assign tier ตั้งแต่ต้น — ทำ Full Process ทั้งหมดทั้งที่เป็นแค่ Fast Track",
+      "ลืม identify compliance trigger — รู้ทีหลังว่ากระทบ financial flow ตอน Architecture Review แล้ว"
+    ],
+    impactAnalysis: null,
+    realExample:{ scenario:"Payroll ผ่าน Mana", highlights:[
+      { label:"Financial flow", cls:"re-fin", note:"กระทบโดยตรง → Full Process tier" },
+      { label:"Compliance trigger", cls:"re-gov", note:"เข้า trigger ทันที → notify COO" },
+      { label:"Settlement impact", cls:"re-gov", note:"BOT window ต้องตรวจก่อนเริ่ม" }
+    ], rows:[
+      { label:"Trigger source", val:"ลูกค้า Enterprise 3 ราย + Account Manager escalate" },
+      { label:"Problem", val:"export bank file เท่านั้น ทำให้ manual โอนทุกเดือน" },
+      { label:"Tier assigned", val:"Full Process (financial + compliance)" },
+      { label:"Gov trigger", val:"กระทบเงินจริง / settlement flow / อาจต้องทำ consent" }
+    ]},
+    criteria:["trigger ถูกต้อง","priority ชัด","process tier ถูก assign แล้ว","compliance impact ถูก evaluate แล้ว"],
+    tier:{ fast:"Simplified", std:"Full", full:"Full" },
+    ftExamples:[
+      { ex:"เปลี่ยน wording ปุ่มใน app", tier:"Fast", cls:"ft-fast" },
+      { ex:"เพิ่ม filter ใน report screen", tier:"Fast", cls:"ft-fast" },
+      { ex:"เพิ่ม notification type ใหม่", tier:"Standard", cls:"ft-std" },
+      { ex:"เปลี่ยน approval workflow", tier:"Standard", cls:"ft-std" },
+      { ex:"เพิ่ม payment method ใหม่", tier:"Full", cls:"ft-full" },
+      { ex:"เปลี่ยน consent flow", tier:"Full", cls:"ft-full" }
+    ]
+  },
+  {
+    num:"2", name:"Business Intake", hint:"แปลง direction → scope",
+    desc:"แปลง business direction ให้เป็น scope ที่เริ่มทำงานต่อได้ — ระบุ affected system, business impact, priority และแยก in/out of scope ให้ชัด",
+    owner:"PM / PL", approver:"CEO (strategic) / PO (feature)", escalation:"COO",
+    contribs:["PO / Business"],
+    decisionAuthority:[
+      { area:"Business goal", who:"PO", cls:"da-po" },
+      { area:"Scope boundary", who:"PO + PL", cls:"da-po" },
+      { area:"Priority", who:"CEO / PO", cls:"da-po" },
+      { area:"Resource conflict", who:"COO", cls:"da-coo" }
+    ],
+    outputs:[
+      { label:"Business Goal", desc:"เป้าหมายทางธุรกิจที่ชัดเจนและวัดได้", example:"ให้นายจ้างจ่ายเงินเดือนผ่าน Mana Wallet ได้ภายใน 2 click โดยไม่ต้องทำ manual bank transfer" },
+      { label:"Scope + Priority", desc:"ขอบเขตงานและระดับ priority ที่ confirm แล้ว", example:"In scope: THB disbursement, status tracking, slip gen. Priority: P1, target Q3" },
+      { label:"Affected System", desc:"ระบบที่ได้รับผลกระทบทั้งหมด", example:"Nexum Payroll (calc), Mana App (wallet + notif), Mana Backend (disbursement API), Compliance module" },
+      { label:"In / Out of Scope", desc:"แบ่งชัดว่าอะไรทำ อะไรไม่ทำใน cycle นี้", example:"In: THB disbursement. Out: multi-currency, auto-tax, payroll advance, third-party bank direct" }
+    ],
+    rollback:"Trigger Validation", gov:null,
+    failures:[
+      "scope กว้างเกินไป — ไม่แยก in/out อย่างชัดเจน dev ตีความเพิ่มเองระหว่างทาง",
+      "affected system หาย — ไม่รู้ว่ากระทบ Compliance module จนถึง Architecture Review",
+      "PO approve scope แต่ CEO ไม่รู้ — สุดท้าย reprioritize กลางทาง"
+    ],
+    impactAnalysis: { system:[], financial:"ไม่กระทบ", operation:"ไม่กระทบ", compliance:"identify เท่านั้น ยังไม่ประเมินจริง", team:[] },
+    realExample:{ scenario:"Payroll ผ่าน Mana", highlights:[
+      { label:"Affected: Nexum + Mana", cls:"re-tec", note:"2 system ต้องคุยกัน" },
+      { label:"Out of scope: multi-currency", cls:"re-fin", note:"ตัดออกชัดตั้งแต่ต้น" }
+    ], rows:[
+      { label:"Business goal", val:"จ่ายเงินเดือนผ่าน Mana ได้ใน 2 click ไม่มี manual transfer" },
+      { label:"Scope", val:"THB only, single employer → multiple employee wallets" },
+      { label:"Affected system", val:"Nexum Payroll → Mana Backend → Mana Wallet → Notification" },
+      { label:"Out of scope", val:"multi-currency, tax deduction auto, payroll advance" }
+    ]},
+    criteria:["ทุกคนเข้าใจว่าทำเพื่ออะไร","scope ชัดพอเริ่มเก็บ requirement","affected system ชัด"],
+    tier:{ fast:"Simplified", std:"Full", full:"Full" },
+    ftExamples:[
+      { ex:"แก้ label หน้า dashboard", tier:"Fast", cls:"ft-fast" },
+      { ex:"เพิ่ม export format ใหม่", tier:"Fast", cls:"ft-fast" },
+      { ex:"เพิ่มหน้า report ใหม่", tier:"Standard", cls:"ft-std" },
+      { ex:"เปลี่ยน pricing model", tier:"Full", cls:"ft-full" }
+    ]
+  },
+  {
+    num:"3", name:"Requirement Discovery", hint:"แตก feature + flow",
+    desc:"แตก requirement จริงของระบบ — feature, workflow, financial flow, dependency, edge case ครบทุกมิติ โดย QA และ Designer เข้าร่วมตั้งแต่ขั้นตอนนี้",
+    owner:"PM / PL", approver:"PO", escalation:"COO",
+    contribs:["Backend TL","Designer","QA","Operation / Support","Compliance (เมื่อเข้า compliance trigger)"],
+    decisionAuthority:[
+      { area:"Requirement final", who:"PO", cls:"da-po" },
+      { area:"Financial flow", who:"PL + Compliance", cls:"da-coo" },
+      { area:"Technical feasibility", who:"Backend TL", cls:"da-backendtl" },
+      { area:"Compliance escalation", who:"COO", cls:"da-coo" }
+    ],
+    outputs:[
+      { label:"Requirement + Feature List", desc:"รายการ requirement และ feature ทั้งหมดที่ต้องทำ", example:"1) Employer กด Disburse 2) ตรวจ wallet balance 3) หัก fee 4) โอนเข้า employee wallet 5) ส่ง slip notification" },
+      { label:"Financial Flow", desc:"การเดินของเงินจาก source ถึง destination ทุก step", example:"Employer Wallet → deduct payroll + fee → credit employee wallets → update ledger → generate settlement record" },
+      { label:"Main Workflow", desc:"workflow หลักที่ user และ system ต้องทำ", example:"Employer: Upload list → Review → Confirm → Pay. Employee: รับ notif → เปิด app → เห็น balance เพิ่ม" },
+      { label:"Dependency + Edge Case", desc:"สิ่งที่ระบบอื่น depend และ case พิเศษที่ต้องรองรับ", example:"Dep: Nexum API, BOT window. Edge: wallet ไม่พอ, employee ไม่มี Mana account, partial fail" }
+    ],
+    rollback:"Requirement Discovery",
+    gov:"PL ต้อง check: financial / compliance / consent impact → notify COO ถ้าเข้า trigger",
+    failures:[
+      "financial flow ไม่ครบ — ไม่ได้คิดว่าเงินเดินยังไงตอน partial fail → ต้อง rollback ทั้ง task",
+      "edge case ไม่ถูกพูดถึง — employee ไม่มี Mana account รู้ตอน UAT สายเกินไป",
+      "support impact หาย — operation ไม่รู้ว่าจะ handle case ไหนยังไง ไม่มี runbook",
+      "dependency ไม่ชัด — รู้ตอน dev ว่า Nexum API ยังไม่รองรับ bulk export"
+    ],
+    impactAnalysis: { system:["Nexum Payroll","Mana App","Mana Backend","Compliance module"], financial:"ยังไม่ระบุ — ต้องชัดใน Requirement Discovery", operation:"HR / Payroll team ต้องเปลี่ยน workflow การโอน", compliance:"อาจกระทบ BOT / consent — ต้อง review ต่อ", team:["Backend","Frontend","Compliance","Operation"] },
+    realExample:{ scenario:"Payroll ผ่าน Mana", highlights:[
+      { label:"Financial flow", cls:"re-fin", note:"เงินเดินผ่าน 4 จุด ต้องชัดทุก step" },
+      { label:"Compliance trigger", cls:"re-gov", note:"PL notify COO ที่ step นี้" },
+      { label:"Consent impact", cls:"re-con", note:"employee ต้อง consent รับเงินผ่าน Mana?" },
+      { label:"BOT dependency", cls:"re-tec", note:"settlement window 23:00–01:00" }
+    ], rows:[
+      { label:"Key features", val:"Disburse, status track, slip gen, partial retry, history log" },
+      { label:"Financial flow", val:"Employer Wallet → fee deduct → employee wallets → ledger → settlement" },
+      { label:"Critical edge case", val:"employee ไม่มี Mana account → ต้องมี fallback (invite / skip?)" },
+      { label:"Dependency", val:"Nexum bulk export API (ต้อง confirm contract), BOT window" }
+    ]},
+    criteria:["PO เข้าใจ flow ตรงกัน","Backend ประเมิน impact ได้","QA เข้าใจ test scope","Financial flow ชัด","External dependency ถูก identify แล้ว"],
+    tier:{ fast:"Simplified", std:"Full", full:"Full" },
+    ftExamples:[
+      { ex:"เพิ่ม tooltip ใน form", tier:"Fast", cls:"ft-fast" },
+      { ex:"เพิ่มหน้า history", tier:"Standard", cls:"ft-std" },
+      { ex:"เพิ่ม disbursement feature", tier:"Full", cls:"ft-full" },
+      { ex:"เปลี่ยน fee structure", tier:"Full", cls:"ft-full" }
+    ]
+  },
+  {
+    num:"4", name:"Architecture Review", hint:"จัดโครง + boundary",
+    desc:"จัดโครงระบบและ system boundary — state flow, permission matrix, service impact, external dependency feasibility ก่อนที่ Designer จะเริ่มออกแบบ UX",
+    owner:"PL", approver:"Backend TL (normal) / CTO (high risk)", escalation:"COO",
+    contribs:["Backend TL","Designer","Compliance (ถ้าเกี่ยว)"],
+    decisionAuthority:[
+      { area:"Architecture direction", who:"Backend TL", cls:"da-backendtl" },
+      { area:"State + permission", who:"PL", cls:"da-pl" },
+      { area:"High-risk architecture", who:"CTO", cls:"da-cto" },
+      { area:"Compliance risk", who:"COO", cls:"da-coo" }
+    ],
+    outputs:[
+      { label:"Sitemap + UserFlow", desc:"แผนผังหน้าจอและ flow การเดินทางของ user", example:"Payroll List → Review → [PIN confirm] → Processing → Success/Fail Summary. Admin: Disbursement Log → Export" },
+      { label:"State Flow", desc:"สถานะทั้งหมดของ transaction และเงื่อนไขการเปลี่ยน state", example:"Draft → Submitted → Processing → Partial_Disbursed / Completed / Failed → Retry (24h) / Refund" },
+      { label:"Permission Matrix", desc:"ระบุว่า role ไหนเห็นและทำอะไรได้", example:"Employer: disburse, view log. Employee: view slip. HR Admin: view all. Backoffice: override, refund. Compliance: audit read-only" },
+      { label:"System Boundary", desc:"ระบุว่าแต่ละส่วนอยู่ใน system ไหน interface กันยังไง", example:"Nexum: calc payroll → payload ให้ Mana Backend. Mana Backend: disbursement, ledger. Mana App: UI + notification" }
+    ],
+    rollback:"Requirement Discovery",
+    gov:"PL + Backend TL check: financial risk / production risk / compliance risk",
+    failures:[
+      "State flow ไม่ครบ — ไม่มี Partial_Disbursed state → dev handle ไม่ถูกตอน partial fail",
+      "Permission matrix หาย — backoffice ไม่รู้ว่ามีสิทธิ์ override หรือเปล่า จนถึง UAT",
+      "System boundary ไม่ชัด — Frontend ต่อ API ผิด service เพราะคิดว่าอยู่ใน Mana ทั้งหมด"
+    ],
+    impactAnalysis: { system:["Nexum Payroll (bulk export API)","Mana Backend (disbursement)","Mana Wallet","Notification Service","Ledger"], financial:"กระทบ: Employer Wallet deduct, employee wallet credit, settlement record, fee deduct", operation:"Operation ต้อง handle: wallet ไม่พอ, employee ไม่มี Mana account, partial fail", compliance:"BOT settlement window, consent flow (employee รับเงินผ่าน Mana?), KYC check", team:["Backend TL","QA","Compliance","Operation","Support"] },
+    realExample:{ scenario:"Payroll ผ่าน Mana", highlights:[
+      { label:"State: Partial_Disbursed", cls:"re-tec", note:"state พิเศษที่ต้องออกแบบ" },
+      { label:"Permission: Compliance read-only", cls:"re-gov", note:"audit trail requirement" },
+      { label:"Boundary: Nexum → Mana", cls:"re-tec", note:"2 system คุยกันผ่าน API" }
+    ], rows:[
+      { label:"Key states", val:"Draft → Processing → Completed / Partial_Disbursed / Failed" },
+      { label:"Permission highlight", val:"Compliance: read-only audit. Backoffice: override + refund" },
+      { label:"System boundary", val:"Nexum ส่ง payroll payload → Mana Backend process → Mana App แสดงผล" },
+      { label:"High-risk flag", val:"bulk credit operation → CTO review required" }
+    ]},
+    criteria:["Backend confirm ว่าทำได้จริง","State Flow ชัด","Permission Matrix ชัด","ทุกทีมเข้าใจ system impact"],
+    tier:{ fast:"Optional", std:"Full", full:"Full" },
+    ftExamples:[
+      { ex:"เพิ่ม UI component ใหม่", tier:"Fast", cls:"ft-fast" },
+      { ex:"เพิ่ม API endpoint ใหม่ (low risk)", tier:"Standard", cls:"ft-std" },
+      { ex:"เพิ่ม service ใหม่ / เปลี่ยน architecture", tier:"Full", cls:"ft-full" }
+    ]
+  },
+  {
+    num:"5", name:"UX / Workflow Lock", hint:"ล็อก screen + state",
+    desc:"ล็อก flow การใช้งานก่อนเริ่ม implement — screen direction, state behavior, error/empty state และ operation flow ต้องชัดก่อน frontend เริ่มลงมือ",
+    owner:"PL", approver:"Frontend TL (normal) / COO + Frontend TL (gov impact)", escalation:"COO",
+    contribs:["Designer","Frontend TL","Backend TL"],
+    decisionAuthority:[
+      { area:"UX direction final", who:"PL", cls:"da-pl" },
+      { area:"Frontend feasibility", who:"Frontend TL", cls:"da-backendtl" },
+      { area:"Backend API support", who:"Backend TL", cls:"da-backendtl" },
+      { area:"Operation / gov impact", who:"COO", cls:"da-coo" }
+    ],
+    outputs:[
+      { label:"UX Final Low Level", desc:"wireframe ที่ lock แล้ว พร้อม annotation ครบ", example:"Figma: Payroll Disburse Flow v3 — annotated พร้อม state, permission, API field mapping ทุกหน้า" },
+      { label:"Screen Flow", desc:"ลำดับหน้าจอและ navigation path ทั้งหมด", example:"List → [Review] → [PIN] → Processing overlay → Result. Error path: insufficient balance → top-up prompt → retry" },
+      { label:"State Behavior", desc:"พฤติกรรมของ UI แต่ละ state ว่าแสดงอะไร ทำอะไรได้", example:"Processing: disable button + spinner + lock nav. Partial fail: failed list + Retry button สำหรับ failed items เท่านั้น" },
+      { label:"Error / Empty State", desc:"การแสดงผลเมื่อเกิด error หรือไม่มีข้อมูล", example:"Wallet ไม่พอ: inline error + top-up CTA. ไม่มี Mana account: warning row + 'ส่ง invite' button per employee" }
+    ],
+    rollback:"Architecture Review",
+    gov:"COO ต้อง approve เมื่อ approval / consent / operation workflow เปลี่ยนมาก",
+    failures:[
+      "Error state ไม่ออกแบบ — dev handle error เองแต่ละคน ผลลัพธ์ไม่ consistent",
+      "UX conflict กับ backend — designer ออกแบบ real-time update แต่ backend ทำได้แค่ polling",
+      "ไม่มี empty state — หน้า history ว่างแสดง blank ไม่มี guidance ให้ user"
+    ],
+    impactAnalysis: { system:["DisbursementService (new)","WalletService (modify — bulk credit)","LedgerService (modify — payroll entry)","NotificationService (load +40%)","Nexum API (external dependency)"], financial:"Ledger ต้องรองรับ payroll entry type ใหม่, settlement record format เปลี่ยน", operation:"Permission matrix เปลี่ยน — Backoffice: override/refund, Compliance: audit read-only", compliance:"Audit log ทุก disbursement transaction", team:["Backend TL","DevOps","Compliance","QA"] },
+    realExample:{ scenario:"Payroll ผ่าน Mana", highlights:[
+      { label:"Processing overlay", cls:"re-tec", note:"lock UI ระหว่าง disburse" },
+      { label:"Partial fail UI", cls:"re-fin", note:"แสดง failed list + retry" },
+      { label:"Consent screen", cls:"re-con", note:"ถ้า employee ต้อง consent" }
+    ], rows:[
+      { label:"Screen flow", val:"Upload → Review → PIN confirm → Processing → Result summary" },
+      { label:"Key state", val:"Processing: lock all action. Partial: show failed rows only with retry" },
+      { label:"Error highlight", val:"wallet ไม่พอ → inline ทันที. ไม่มี Mana account → warn + invite CTA" },
+      { label:"COO approval", val:"required เพราะ consent flow อาจต้องเพิ่ม" }
+    ]},
+    criteria:["Frontend เริ่ม implement ได้","Backend เข้าใจ workflow","UX ไม่ conflict กับ technical limitation","Operation flow ยังใช้งานได้จริง"],
+    tier:{ fast:"Simplified", std:"Full", full:"Full" },
+    ftExamples:[
+      { ex:"เปลี่ยน icon / สี", tier:"Fast", cls:"ft-fast" },
+      { ex:"เพิ่มหน้าใหม่ที่ไม่มี state complex", tier:"Standard", cls:"ft-std" },
+      { ex:"เปลี่ยน consent / approval flow", tier:"Full", cls:"ft-full" }
+    ]
+  },
+  {
+    num:"6", name:"Technical Direction", hint:"สรุป approach ก่อน dev",
+    desc:"สรุป technical approach ระดับสูงก่อนเข้า development — integration flow, service impact, risk concern, retry/rollback strategy ทุกทีมต้องเห็นภาพเดียวกัน",
+    owner:"Backend TL", approver:"Backend TL (normal) / CTO (high risk)", escalation:"COO",
+    contribs:["PL","Frontend TL","DevOps (ถ้าเกี่ยว)"],
+    decisionAuthority:[
+      { area:"Technical approach", who:"Backend TL", cls:"da-backendtl" },
+      { area:"Integration design", who:"Backend TL", cls:"da-backendtl" },
+      { area:"High-risk tech decision", who:"CTO", cls:"da-cto" },
+      { area:"Operational risk", who:"COO", cls:"da-coo" }
+    ],
+    outputs:[
+      { label:"Technical Direction", desc:"สรุปแนวทาง technical ที่เลือกและเหตุผล", example:"async disbursement queue (RabbitMQ) แทน sync call รองรับ batch 500+ records ไม่ timeout + idempotency key ทุก transaction" },
+      { label:"Integration Flow", desc:"ลำดับการเรียก API และการไหลของข้อมูลระหว่าง service", example:"Nexum POST /payroll/export → DisbursementService.enqueue() → Worker → WalletService.credit() → NotificationService.push()" },
+      { label:"Service Impact", desc:"ระบุว่า service ไหนต้องเปลี่ยน เพิ่ม หรือได้รับผลกระทบ", example:"New: DisbursementService, PayrollWorker. Modified: WalletService (bulk credit), LedgerService (payroll entry). Impacted: NotificationService load +40%" },
+      { label:"Risk / Concern", desc:"ความเสี่ยงและข้อกังวลที่ต้องจัดการก่อน dev", example:"Risk: partial fail ต้องมี rollback ชัด. BOT window 23:00–01:00 อาจ block. Mitigation: queue + retry + alert" }
+    ],
+    rollback:"Technical Direction หรือ Architecture Review ตาม root cause", gov:null,
+    failures:[
+      "ไม่มี retry strategy — partial fail จบที่ stuck state ต้อง manual fix ทุก case",
+      "ไม่ประเมิน load — NotificationService รับ bulk push ไม่ไหว พัง production",
+      "integration flow ไม่ชัด — frontend ต่อ API ผิด endpoint เพราะไม่มี document"
+    ],
+    impactAnalysis: { system:["Mana App (employer flow)","Mana App (employee notification)","Backoffice UI (disbursement log)"], financial:"UX ต้องแสดง fee deduct ชัดก่อน confirm — financial transparency", operation:"Support ต้องเข้าใจ error state ทุก case", compliance:"Consent screen อาจต้องเพิ่มถ้า employee ต้อง opt-in", team:["Designer","Frontend TL","Support","Operation"] },
+    realExample:{ scenario:"Payroll ผ่าน Mana", highlights:[
+      { label:"Async queue", cls:"re-tec", note:"ป้องกัน timeout bulk 500+" },
+      { label:"Idempotency key", cls:"re-fin", note:"ป้องกัน double credit" },
+      { label:"BOT window risk", cls:"re-gov", note:"ต้อง mitigation ชัด" }
+    ], rows:[
+      { label:"Approach", val:"async queue + idempotency key ทุก transaction" },
+      { label:"Integration", val:"Nexum → DisbursementService → PayrollWorker → WalletService → Notification" },
+      { label:"New services", val:"DisbursementService, PayrollWorker" },
+      { label:"Key risk", val:"BOT window block + NotificationService overload → queue + alert" }
+    ]},
+    criteria:["ทุกทีมเข้าใจ technical approach ตรงกัน","Integration impact ชัด","Risk สำคัญถูก identify แล้ว","พร้อมแตก task development ได้"],
+    tier:{ fast:"Simplified", std:"Full", full:"Full" },
+    ftExamples:[
+      { ex:"เพิ่ม field ใน existing API", tier:"Fast", cls:"ft-fast" },
+      { ex:"เพิ่ม endpoint ใหม่", tier:"Standard", cls:"ft-std" },
+      { ex:"เพิ่ม service / queue ใหม่", tier:"Full", cls:"ft-full" }
+    ]
+  },
+  {
+    num:"7", name:"Ready for Development", hint:"Delivery gate",
+    desc:"สถานะที่ทีม dev เริ่มทำงานได้โดยไม่ต้องตีความใหม่ — PL consolidate sign-off จากทุกทีม ถ้ามี team ใด Not Ready ห้ามเข้า phase ถัดไป",
+    owner:"PL (consolidate)", approver:"TL (low) / Backend TL (medium) / CTO + COO (high)", escalation:"COO",
+    contribs:["Backend TL (sign-off)","Frontend TL (sign-off)","QA TL (sign-off)","Operation Owner (sign-off)"],
+    decisionAuthority:[
+      { area:"Gate pass / fail", who:"PL", cls:"da-pl" },
+      { area:"Technical readiness", who:"Backend TL", cls:"da-backendtl" },
+      { area:"High-risk final approve", who:"CTO + COO", cls:"da-cto" },
+      { area:"Compliance clearance", who:"COO", cls:"da-coo" }
+    ],
+    outputs:[
+      { label:"Requirement final", desc:"requirement ที่ lock แล้ว ไม่มี open question เหลือ", example:"Confluence: Payroll Disbursement Spec v1.2 — approved by PO (12 May). ไม่มี TBD เหลือในเอกสาร" },
+      { label:"Task breakdown + estimate", desc:"งานที่แตกเป็น task พร้อม estimate และ assignee", example:"ClickUp: 23 tasks, 34 SP. Backend 18SP/3wk, Frontend 10SP/2wk, QA 6SP/1wk. Critical path: DisbursementService → WalletService → UI" },
+      { label:"All teams: Ready", desc:"sign-off จากทุก team ที่เกี่ยวข้อง", example:"Backend TL ✓ · Frontend TL ✓ · QA TL ✓ · Operation Owner ✓ · Compliance ✓ (Full Process tier)" },
+      { label:"No critical unknown", desc:"ไม่มีข้อสงสัยหรือ blocker ที่ยังไม่ได้ resolve", example:"BOT window confirmed. Nexum API contract signed. Staging environment ready. Consent flow approved by Compliance." }
+    ],
+    rollback:"ดู Gate Fail table (per failure type)",
+    gov:"Final gate: COO review required สำหรับ Full Process tier",
+    failures:[
+      "estimate ไม่มี — dev เริ่มทำแล้วสุดท้าย scope เกิน deadline ไม่มีใครรู้ล่วงหน้า",
+      "QA ไม่ sign-off — dev เข้า phase แต่ QA ยังไม่รู้ test scope ต้องมาทำ test plan ทีหลัง",
+      "มี open question เหลือ — dev ตีความเองทำให้ feature ออกมาไม่ตรง requirement"
+    ],
+    impactAnalysis: { system:["DisbursementService (async queue — new)","PayrollWorker (new)","WalletService (bulk credit)","LedgerService (payroll entry)","NotificationService (load +40%)"], financial:"Idempotency key ป้องกัน double credit, rollback strategy cover partial fail", operation:"Alert system รองรับ BOT window block, queue monitoring dashboard ต้องมี", compliance:"Audit log ทุก transaction step, retry trail ต้อง traceable", team:["Backend TL","DevOps","QA (load test)","Operation (monitoring)"] },
+    realExample:{ scenario:"Payroll ผ่าน Mana", highlights:[
+      { label:"CTO + COO approve", cls:"re-gov", note:"high risk: financial + new service" },
+      { label:"Compliance sign-off", cls:"re-con", note:"consent + BOT confirmed" },
+      { label:"Critical path mapped", cls:"re-tec", note:"DisbursementService ต้องเสร็จก่อน" }
+    ], rows:[
+      { label:"Spec status", val:"Payroll Disbursement Spec v1.2 — approved, no TBD" },
+      { label:"Task total", val:"23 tasks, 34 SP — Backend 3wk critical path" },
+      { label:"Sign-off", val:"Backend ✓ Frontend ✓ QA ✓ Operation ✓ Compliance ✓" },
+      { label:"Cleared blockers", val:"BOT window ✓ Nexum API ✓ Staging env ✓ Consent flow ✓" }
+    ]},
+    criteria:["Task breakdown + estimate เสร็จแล้ว","Dev / TL review spec แล้ว","QA review test scope แล้ว","ไม่มี team ใด Not Ready"],
+    tier:{ fast:"—", std:"Conditional COO", full:"COO Required" },
+    ftExamples:[
+      { ex:"Fast Track: TL approve เท่านั้น", tier:"Fast", cls:"ft-fast" },
+      { ex:"Standard: Backend TL approve", tier:"Standard", cls:"ft-std" },
+      { ex:"Full: CTO + COO approve", tier:"Full", cls:"ft-full" }
+    ]
+  }
+];
+
+
+function buildOverview() {
+  const flowNodes = STEPS.map((s,i) =>
+    "<div class='ov-step-node" + (s.gov?" ov-has-gov":"") + "' onclick='go(" + i + ")' title='" + s.hint + "'>" +
+      "<div class='ov-step-num'>" + s.num + "</div>" +
+      "<div class='ov-step-name'>" + s.name + "</div>" +
+      "<div class='ov-step-hint'>" + s.hint + (s.gov?"<span class='ov-gov-mark'> ⚑</span>":"") + "</div>" +
+    "</div>" + (i < STEPS.length-1 ? "<div class='ov-arrow'>→</div>" : "")
+  ).join("");
+
+  return `<div class="fade-in">
+  <div class="hero">
+    <div class="hero-num" style="font-size:30px;opacity:.3;min-width:44px">⊞</div>
+    <div>
+      <div class="hero-name">Mana OS — Product Flow v4</div>
+      <div class="hero-desc">ระบบที่ทำให้ requirement, workflow, governance และ architecture ชัดก่อนเริ่มพัฒนา — ลด misunderstanding ระหว่าง Business, Product, UX, Tech, QA, Operation และ Support</div>
+    </div>
+  </div>
+
+  <div class="sec-head">เป้าหมาย</div>
+  <div class="card">
+    <div class="card-body" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px 24px">
+      <div class="ov-goal"><div class="ov-goal-icon">◈</div><div class="ov-goal-title">ชัดก่อนเริ่ม</div><div class="ov-goal-desc">ทุกทีมเข้าใจ requirement และ flow ตรงกันก่อน dev เริ่มลงมือ ไม่ตีความเอง</div></div>
+      <div class="ov-goal"><div class="ov-goal-icon">○</div><div class="ov-goal-title">ความรับผิดชอบชัด</div><div class="ov-goal-desc">ทุก step มี owner, approver และ decision authority ที่ไม่คลุมเครือ</div></div>
+      <div class="ov-goal"><div class="ov-goal-icon">◇</div><div class="ov-goal-title">Gate ป้องกัน</div><div class="ov-goal-desc">ทุก step มี success criteria ที่วัดได้ ไม่ผ่านไม่ได้ไปต่อ มี rollback path ชัด</div></div>
+    </div>
+  </div>
+
+  <div class="sec-head">Flow ทั้งหมด — คลิก step เพื่อดูรายละเอียด</div>
+  <div class="card">
+    <div class="card-body">
+      <div class="ov-flow-chain">${flowNodes}</div>
+    </div>
+  </div>
+
+  <div class="sec-head">หลักการ</div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-head"><span class="card-icon">◈</span><span class="card-label">Gate Logic</span></div>
+      <div class="card-body">
+        <div class="ov-principle-list">
+          <div class="ov-principle-item"><span class="ov-pi-dot" style="background:#1d6fd8"></span><span>แต่ละ step มี <b>success criteria</b> ก่อนผ่านไปได้</span></div>
+          <div class="ov-principle-item"><span class="ov-pi-dot" style="background:#1d6fd8"></span><span>ถ้าไม่ผ่าน → <b>rollback</b> ไป step ที่ระบุ ไม่มีการข้าม</span></div>
+          <div class="ov-principle-item"><span class="ov-pi-dot" style="background:#1d6fd8"></span><span>gate fail ต้องระบุ <b>failure type</b> ก่อน rollback</span></div>
+          <div class="ov-principle-item"><span class="ov-pi-dot" style="background:#1d6fd8"></span><span>Ready for Dev = <b>ทุกทีม sign-off</b> แล้ว ไม่ใช่แค่ meeting ผ่าน</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><span class="card-icon">⚑</span><span class="card-label">Compliance Trigger — notify COO เมื่อ</span></div>
+      <div class="card-body">
+        <div class="ov-principle-list">
+          <div class="ov-principle-item"><span class="ov-pi-dot" style="background:#92610a"></span><span>กระทบ <b>เงินจริง</b> หรือ financial / settlement flow</span></div>
+          <div class="ov-principle-item"><span class="ov-pi-dot" style="background:#92610a"></span><span>เปลี่ยน <b>approval / consent</b> flow</span></div>
+          <div class="ov-principle-item"><span class="ov-pi-dot" style="background:#92610a"></span><span>กระทบ <b>compliance / BOT</b> requirement</span></div>
+          <div class="ov-principle-item"><span class="ov-pi-dot" style="background:#92610a"></span><span>กระทบ <b>หลายทีม</b> หรือ production risk สูง</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-head">Process Tier</div>
+  <div class="card">
+    <div class="card-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:14px">
+        <div class="ov-tier-card ov-tier-fast">
+          <div class="ov-tier-label">Fast Track</div>
+          <div class="ov-tier-example">UI · text · low-risk</div>
+          <div class="ov-tier-rules">
+            <div>• Async review ได้</div><div>• Lightweight doc</div>
+            <div>• Architecture: optional</div><div>• COO review: skip</div>
+            <div>• Decision owner: PL + TL</div>
+          </div>
+        </div>
+        <div class="ov-tier-card ov-tier-std">
+          <div class="ov-tier-label">Standard</div>
+          <div class="ov-tier-example">Workflow change · new feature</div>
+          <div class="ov-tier-rules">
+            <div>• Full process</div><div>• Architecture: required</div>
+            <div>• COO review: conditional</div><div>• Decision owner: PL</div>
+          </div>
+        </div>
+        <div class="ov-tier-card ov-tier-full">
+          <div class="ov-tier-label">Full Process</div>
+          <div class="ov-tier-example">Financial · compliance · consent</div>
+          <div class="ov-tier-rules">
+            <div>• Full process ทุก step</div><div>• Compliance check ทุก gate</div>
+            <div>• COO review: required</div><div>• Decision owner: COO</div>
+          </div>
+        </div>
+      </div>
+      <div class="ov-tier-upgrade">
+        <span style="font-size:11px;font-weight:500;color:var(--muted)">Upgrade:</span>
+        <span class="ov-up-chip">Fast → Standard: PL decide</span>
+        <span class="ov-up-chip">Standard → Full: COO decide</span>
+        <span class="ov-up-chip">Fast → Full: COO decide</span>
+        <span style="font-size:12px;color:var(--hint)">— upgrade ได้ทุก step เมื่อ scope / risk เพิ่ม, ต้อง re-evaluate compliance</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-head">Decision Authority — ภาพรวม</div>
+  <div class="card">
+    <div class="card-body">
+      <table class="da-table">
+        <tr><th>Area</th><th style="text-align:left">Final Decision</th><th style="text-align:left">หมายเหตุ</th></tr>
+        <tr><td class="da-area">Business scope &amp; goal</td><td><span class="da-tag da-po">PO</span></td><td style="font-size:12px;color:var(--muted)">CEO approve ถ้าเป็น strategic direction</td></tr>
+        <tr><td class="da-area">Workflow &amp; product design</td><td><span class="da-tag da-pl">PL</span></td><td style="font-size:12px;color:var(--muted)">COO เข้าถ้ากระทบ operation มาก</td></tr>
+        <tr><td class="da-area">Technical architecture</td><td><span class="da-tag da-backendtl">Backend TL</span></td><td style="font-size:12px;color:var(--muted)">CTO approve ถ้า high risk</td></tr>
+        <tr><td class="da-area">Compliance</td><td><span class="da-tag da-coo">COO</span></td><td style="font-size:12px;color:var(--muted)">Final decision ทุก conflict ที่ resolve ไม่ได้</td></tr>
+        <tr><td class="da-area">Process tier</td><td><span class="da-tag da-pl">PL</span></td><td style="font-size:12px;color:var(--muted)">COO decide ถ้า upgrade ไป Full Process</td></tr>
+      </table>
+    </div>
+  </div>
+
+
+  <div class="sec-head">Impact Analysis — ภาพรวมทุก Step</div>
+  <div class="card" style="margin-bottom:0">
+    <div class="card-body" style="overflow-x:auto">
+      <table class="ov-ia-table">
+        <tr>
+          <th>Step</th>
+          <th>Financial Impact</th>
+          <th>Operation Impact</th>
+          <th>Compliance Impact</th>
+        </tr>
+        ${STEPS.filter(x=>x.impactAnalysis && x.impactAnalysis.system.length > 0).map(x=>`
+          <tr>
+            <td onclick="go(${STEPS.indexOf(x)})" style="cursor:pointer;color:var(--blue)">${x.num}. ${x.name}</td>
+            <td>${x.impactAnalysis.financial}</td>
+            <td>${x.impactAnalysis.operation}</td>
+            <td>${x.impactAnalysis.compliance}</td>
+          </tr>`).join("")}
+      </table>
+    </div>
+  </div>
+
+  <div class="sec-head">Gate Fail — Rollback Reference</div>
+  <div class="card" style="margin-bottom:0">
+    <div class="card-body">
+      <table class="ft-table">
+        <tr><th>Failure Type</th><th style="text-align:left">Rollback To</th></tr>
+        <tr><td>Requirement Missing</td><td style="color:var(--blue)">Requirement Discovery</td></tr>
+        <tr><td>Financial Flow Unclear</td><td style="color:var(--blue)">Requirement Discovery</td></tr>
+        <tr><td>UX Conflict</td><td style="color:var(--blue)">UX / Workflow Lock</td></tr>
+        <tr><td>Technical Risk Unresolved</td><td style="color:var(--blue)">Technical Direction</td></tr>
+        <tr><td>Compliance Missing</td><td style="color:var(--blue)">Architecture Review</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="nav-bar" style="margin-top:24px;padding-top:20px;border-top:1px solid var(--line)">
+    <span></span>
+    <span class="nav-progress">Overview</span>
+    <button class="nav-btn" onclick="go(0)">เริ่ม Step 0 →</button>
+  </div>
+</div>`;
+}
+
+function showOverview() {
+  cur = -1;
+  document.querySelectorAll('.step-btn').forEach(b => b.classList.remove('active'));
+  const ob = document.getElementById('overview-btn');
+  if(ob) ob.classList.add('active');
+  document.getElementById('main').innerHTML = buildOverview();
+  window.scrollTo(0,0);
+}
+
+let cur = 0;
+
+function tierClass(v) {
+  if (v==="Simplified"||v==="Optional") return "fast";
+  if (v==="Full") return "std";
+  if (v.includes("COO")||v==="—") return "full";
+  return "";
+}
+
+function buildSidebar() {
+  document.getElementById("sidebar").innerHTML = STEPS.map((s,i) => `
+    <button class="step-btn${i===cur?" active":""}${s.gov?" has-gov":""}" onclick="go(${i})">
+      <span class="step-num">${s.num}</span>
+      <span class="step-meta">
+        <span class="step-title">${s.name}</span>
+        <span class="step-hint">${s.hint}</span>
+      </span>
+      <span class="gov-pip" title="มี compliance trigger"></span>
+    </button>`).join("");
+}
+
+function buildMain() {
+  const s = STEPS[cur];
+  const el = document.getElementById("main");
+
+  const rolesHtml = s.owner ? `
+    <div class="role-row"><span class="role-key">Owner</span><div class="tags"><span class="tag owner">${s.owner}</span></div></div>
+    ${s.approver?`<div class="role-row"><span class="role-key">Approver</span><div class="tags"><span class="tag approver">${s.approver}</span></div></div>`:""}
+    ${s.contribs.length?`<div class="role-row"><span class="role-key">Contributor</span><div class="tags">${s.contribs.map(c=>`<span class="tag">${c}</span>`).join("")}</div></div>`:""}
+    ${s.escalation?`<div class="role-row"><span class="role-key">Escalation</span><div class="tags"><span class="tag escalate">${s.escalation}</span></div></div>`:""}
+  ` : `<div style="color:var(--hint);font-size:13px">— ยังไม่มี owner (entry point)</div>`;
+
+  const daHtml = s.decisionAuthority.length ? `
+    <table class="da-table">
+      <tr><th>Area</th><th>Final Decision</th></tr>
+      ${s.decisionAuthority.map(d=>`
+        <tr>
+          <td class="da-area">${d.area}</td>
+          <td class="da-who"><span class="da-tag ${d.cls}">${d.who}</span></td>
+        </tr>`).join("")}
+    </table>
+  ` : `<div style="color:var(--hint);font-size:13px">— ไม่มี decision ที่ต้องตัดสินใจใน step นี้</div>`;
+
+  const outputsHtml = `
+    <div class="output-grid">
+      ${s.outputs.map(o=>`
+        <div class="output-block">
+          <div class="output-header"><span class="output-dot"></span><span class="output-label">${o.label}</span></div>
+          <div class="output-desc">${o.desc}</div>
+          <div class="output-example"><span class="example-tag">ตัวอย่าง</span>${o.example}</div>
+        </div>`).join("")}
+    </div>
+    <div class="rollback"><span style="color:var(--hint)">↩</span><span>Rollback: ${s.rollback}</span></div>
+  `;
+
+  const failHtml = s.failures.length ? `
+    <div class="failure-list">
+      ${s.failures.map(f=>`<div class="failure-item"><span class="failure-icon">▲</span><span>${f}</span></div>`).join("")}
+    </div>
+  ` : `<div style="color:var(--hint);font-size:13px">— ไม่มี common failure พิเศษสำหรับ entry step นี้</div>`;
+
+  const reHtml = s.realExample ? `
+    <div class="real-example-box">
+      <div class="real-example-title">
+        <span class="real-example-title-icon">◎</span>
+        ${s.realExample.scenario}
+        <span style="margin-left:6px;display:flex;gap:4px;flex-wrap:wrap">
+          ${s.realExample.highlights.map(h=>`<span class="re-highlight ${h.cls}" title="${h.note}">${h.label}</span>`).join("")}
+        </span>
+      </div>
+      <div class="real-example-body">
+        ${s.realExample.rows.map(r=>`<div class="re-row"><span class="re-label">${r.label}</span><span class="re-val">${r.val}</span></div>`).join("")}
+      </div>
+    </div>
+  ` : `<div style="color:var(--hint);font-size:13px">— ดู step ถัดไปสำหรับ real example</div>`;
+
+  const ftHtml = s.ftExamples.length ? `
+    <table class="ft-table">
+      <tr><th>Example</th><th>Tier</th></tr>
+      ${s.ftExamples.map(f=>`
+        <tr>
+          <td>${f.ex}</td>
+          <td><span class="ft-chip ${f.cls}">${f.tier}</span></td>
+        </tr>`).join("")}
+    </table>
+  ` : `<div style="color:var(--hint);font-size:13px">— tier mapping ไม่ apply กับ step นี้</div>`;
+
+  const tc = s.tier;
+  const tierHtml = `
+    <div class="tier-chips">
+      <div class="tier-chip fast"><span class="tier-chip-val">${tc.fast}</span><span class="tier-chip-lbl">Fast Track</span></div>
+      <div class="tier-chip std"><span class="tier-chip-val">${tc.std}</span><span class="tier-chip-lbl">Standard</span></div>
+      <div class="tier-chip ${tierClass(tc.full)}"><span class="tier-chip-val">${tc.full}</span><span class="tier-chip-lbl">Full Process</span></div>
+    </div>
+  `;
+
+
+  const iaHtml = s.impactAnalysis ? (() => {
+    const sysTags = s.impactAnalysis.system.length
+      ? s.impactAnalysis.system.map(x=>`<span class="ia-tag ia-sys">${x}</span>`).join("")
+      : '<span style="color:var(--hint);font-size:12px">ไม่มี</span>';
+    const teamTags = s.impactAnalysis.team.length
+      ? s.impactAnalysis.team.map(x=>`<span class="ia-tag">${x}</span>`).join("")
+      : '<span style="color:var(--hint);font-size:12px">ไม่มี</span>';
+    return `<div class="ia-grid">
+      <div class="ia-row"><span class="ia-key">System ที่กระทบ</span><div class="ia-tags">${sysTags}</div></div>
+      <div class="ia-row"><span class="ia-key">Team ที่เกี่ยวข้อง</span><div class="ia-tags">${teamTags}</div></div>
+      <div class="ia-row"><span class="ia-key">Financial Impact</span><span class="ia-val" style="color:#7a2020">${s.impactAnalysis.financial}</span></div>
+      <div class="ia-row"><span class="ia-key">Operation Impact</span><span class="ia-val" style="color:#0f4fa3">${s.impactAnalysis.operation}</span></div>
+      <div class="ia-row" style="grid-column:1/-1"><span class="ia-key">Compliance Impact</span><span class="ia-val" style="color:#7a5008">${s.impactAnalysis.compliance}</span></div>
+    </div>`;
+  })() : '<div style="color:var(--hint);font-size:13px">— ไม่มี impact ที่ต้องวิเคราะห์ใน step นี้</div>';
+
+  el.innerHTML = `<div class="fade-in">
+    <div class="hero">
+      <div class="hero-num">${s.num}</div>
+      <div>
+        <div class="hero-name">${s.name}</div>
+        <div class="hero-desc">${s.desc}</div>
+      </div>
+    </div>
+
+    <div class="sec-head">Roles & Decision</div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-head"><span class="card-icon">○</span><span class="card-label">Roles</span></div>
+        <div class="card-body">${rolesHtml}</div>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="card-icon">◇</span><span class="card-label">Decision Authority</span></div>
+        <div class="card-body">${daHtml}</div>
+      </div>
+    </div>
+
+    <div class="sec-head">Output</div>
+    <div class="card">
+      <div class="card-head"><span class="card-icon">◈</span><span class="card-label">Output & Deliverable</span></div>
+      <div class="card-body">${outputsHtml}</div>
+    </div>
+
+
+    <div class="sec-head">Impact Analysis</div>
+    <div class="card">
+      <div class="card-head"><span class="card-icon">⊕</span><span class="card-label">Impact Analysis</span></div>
+      <div class="card-body">${iaHtml}</div>
+    </div>
+
+    <div class="sec-head">Real Example & Common Failure</div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-head"><span class="card-icon">◎</span><span class="card-label">Real Example — Payroll ผ่าน Mana</span></div>
+        <div class="card-body">${reHtml}</div>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="card-icon">▲</span><span class="card-label">Common Failure</span></div>
+        <div class="card-body">${failHtml}</div>
+      </div>
+    </div>
+
+    <div class="sec-head">Process Control</div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-head"><span class="card-icon">▤</span><span class="card-label">Process Tier</span></div>
+        <div class="card-body">${tierHtml}</div>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="card-icon">⚑</span><span class="card-label">Compliance</span></div>
+        <div class="card-body">${s.gov?`<div class="gov-alert">${s.gov}</div>`:`<div class="gov-none">ไม่มี compliance check พิเศษในขั้นตอนนี้</div>`}</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:0">
+      <div class="card-head"><span class="card-icon">≡</span><span class="card-label">Fast Track Examples</span></div>
+      <div class="card-body">${ftHtml}</div>
+    </div>
+
+    <div class="card" style="margin-bottom:0;margin-top:12px">
+      <div class="card-head"><span class="card-icon">✓</span><span class="card-label">Success Criteria</span></div>
+      <div class="card-body">${s.criteria.map(c=>`<div class="crit-item"><span class="crit-icon">✓</span><span>${c}</span></div>`).join("")}</div>
+    </div>
+
+    <div class="nav-bar">
+      <button class="nav-btn" onclick="nav(-1)" ${cur===0?"disabled":""}>← ก่อนหน้า</button>
+      <span class="nav-progress">${cur+1} / ${STEPS.length}</span>
+      <button class="nav-btn" onclick="nav(1)" ${cur===STEPS.length-1?"disabled":""}>ถัดไป →</button>
+    </div>
+  </div>`;
+}
+
+function go(i) {
+  cur=i;
+  const ob=document.getElementById('overview-btn');
+  if(ob) ob.classList.remove('active');
+  buildSidebar(); buildMain(); window.scrollTo(0,0);
+}
+function nav(d) { const n=cur+d; if(n>=0&&n<STEPS.length) go(n); }
+
+buildSidebar();
+showOverview();
+
+document.addEventListener("keydown", e => {
+  if (e.key==="ArrowRight"||e.key==="ArrowDown") nav(1);
+  if (e.key==="ArrowLeft" ||e.key==="ArrowUp")   nav(-1);
+});
+</script>
+</body>
+</html>
