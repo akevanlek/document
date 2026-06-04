@@ -1,1017 +1,923 @@
 // Mana BackOffice — HTML to Figma Plugin
-// Run this in Figma: Plugins > Development > New Plugin (use manifest.json)
 
 // ── Design Tokens ──────────────────────────────────────────────────────────
 const C = {
-  navy:       { r: 0,    g: 0.278, b: 0.396 },  // #004765
-  navy2:      { r: 0,    g: 0.204, b: 0.290 },  // #00334a
-  navyLight:  { r: 0.902,g: 0.941, b: 0.961 },  // #e6f0f5
-  navyMid:    { r: 0.702,g: 0.812, b: 0.851 },  // #b3cfd9
-  accent:     { r: 0.969,g: 0.851, b: 0.118 },  // #F7D91E
-  bg:         { r: 0.961,g: 0.969, b: 0.980 },  // #F5F7FA
-  card:       { r: 1,    g: 1,     b: 1     },  // #fff
-  bdr:        { r: 0.847,g: 0.886, b: 0.918 },  // #D8E2EA
-  bdr2:       { r: 0.918,g: 0.941, b: 0.961 },  // #eaf0f5
-  ink:        { r: 0.059,g: 0.090, b: 0.165 },  // #0F172A
-  ink2:       { r: 0.200,g: 0.255, b: 0.353 },  // #334155
-  ink3:       { r: 0.392,g: 0.455, b: 0.545 },  // #64748B
-  ink4:       { r: 0.580,g: 0.635, b: 0.722 },  // #94A3B8
-  white:      { r: 1,    g: 1,     b: 1     },
-  // status
-  gBg:        { r: 0.941,g: 0.992, b: 0.957 },  // #f0fdf4
-  gTx:        { r: 0.086,g: 0.396, b: 0.204 },  // #166534
-  gBd:        { r: 0.733,g: 0.969, b: 0.816 },  // #bbf7d0
-  aBg:        { r: 1,    g: 0.984, b: 0.922 },  // #fffbeb
-  aTx:        { r: 0.573,g: 0.251, b: 0.055 },  // #92400e
-  aBd:        { r: 0.992,g: 0.906, b: 0.541 },  // #fde68a
-  rBg:        { r: 0.996,g: 0.949, b: 0.949 },  // #fef2f2
-  rTx:        { r: 0.600,g: 0.106, b: 0.106 },  // #991b1b
-  rBd:        { r: 0.996,g: 0.792, b: 0.792 },  // #fecaca
-  bBg:        { r: 0.937,g: 0.965, b: 1     },  // #eff6ff
-  bTx:        { r: 0.118,g: 0.251, b: 0.690 },  // #1e40af
-  bBd:        { r: 0.749,g: 0.859, b: 0.996 },  // #bfdbfe
-  pBg:        { r: 0.961,g: 0.953, b: 1     },  // #f5f3ff
-  pTx:        { r: 0.357,g: 0.129, b: 0.714 },  // #5b21b6
-  pBd:        { r: 0.867,g: 0.839, b: 0.996 },  // #ddd6fe
-  grayBg:     { r: 0.945,g: 0.961, b: 0.980 },  // #f1f5f9
+  navy:      { r: 0,     g: 0.278, b: 0.396 },
+  navyLight: { r: 0.902, g: 0.941, b: 0.961 },
+  navyMid:   { r: 0.702, g: 0.812, b: 0.851 },
+  accent:    { r: 0.969, g: 0.851, b: 0.118 },
+  bg:        { r: 0.961, g: 0.969, b: 0.980 },
+  card:      { r: 1,     g: 1,     b: 1     },
+  bdr:       { r: 0.847, g: 0.886, b: 0.918 },
+  bdr2:      { r: 0.918, g: 0.941, b: 0.961 },
+  ink:       { r: 0.059, g: 0.090, b: 0.165 },
+  ink2:      { r: 0.200, g: 0.255, b: 0.353 },
+  ink3:      { r: 0.392, g: 0.455, b: 0.545 },
+  ink4:      { r: 0.580, g: 0.635, b: 0.722 },
+  white:     { r: 1,     g: 1,     b: 1     },
+  grayBg:    { r: 0.945, g: 0.961, b: 0.980 },
+  gBg:       { r: 0.941, g: 0.992, b: 0.957 },
+  gTx:       { r: 0.086, g: 0.396, b: 0.204 },
+  gBd:       { r: 0.733, g: 0.969, b: 0.816 },
+  aBg:       { r: 1,     g: 0.984, b: 0.922 },
+  aTx:       { r: 0.573, g: 0.251, b: 0.055 },
+  aBd:       { r: 0.992, g: 0.906, b: 0.541 },
+  rBg:       { r: 0.996, g: 0.949, b: 0.949 },
+  rTx:       { r: 0.600, g: 0.106, b: 0.106 },
+  rBd:       { r: 0.996, g: 0.792, b: 0.792 },
+  bBg:       { r: 0.937, g: 0.965, b: 1     },
+  bTx:       { r: 0.118, g: 0.251, b: 0.690 },
+  bBd:       { r: 0.749, g: 0.859, b: 0.996 },
+  pBg:       { r: 0.961, g: 0.953, b: 1     },
+  pTx:       { r: 0.357, g: 0.129, b: 0.714 },
 };
 
-function rgb(c, a = 1) { return { ...c, a }; }
-
-// ── Helpers ────────────────────────────────────────────────────────────────
-async function loadFont(family = "Inter", style = "Regular") {
-  await figma.loadFontAsync({ family, style });
+// ── Load all fonts once ────────────────────────────────────────────────────
+async function loadAllFonts() {
+  await Promise.all([
+    figma.loadFontAsync({ family: "Inter", style: "Regular" }),
+    figma.loadFontAsync({ family: "Inter", style: "Medium" }),
+    figma.loadFontAsync({ family: "Inter", style: "Semi Bold" }),
+    figma.loadFontAsync({ family: "Inter", style: "Bold" }),
+  ]);
 }
 
-function frame(name, w, h) {
+// ── Helpers ────────────────────────────────────────────────────────────────
+function mkFrame(name, w, h) {
   const f = figma.createFrame();
-  f.name = name; f.resize(w, h);
+  f.name = name;
+  f.resize(w, h);
+  f.clipsContent = false;
   return f;
 }
 
-function rect(name, w, h, fill) {
+function mkRect(name, w, h, color, opacity) {
   const r = figma.createRectangle();
-  r.name = name; r.resize(w, h);
-  r.fills = [{ type: "SOLID", color: fill }];
+  r.name = name;
+  r.resize(w, h);
+  r.fills = [{ type: "SOLID", color, opacity: opacity !== undefined ? opacity : 1 }];
   return r;
 }
 
-async function text(content, size, color, weight = "Regular", w = null) {
-  await loadFont("Inter", weight);
+function mkText(content, size, color, style, opacity) {
   const t = figma.createText();
-  t.fontName = { family: "Inter", style: weight };
+  t.fontName = { family: "Inter", style: style || "Regular" };
   t.characters = content;
   t.fontSize = size;
-  t.fills = [{ type: "SOLID", color }];
-  if (w) { t.textAutoResize = "HEIGHT"; t.resize(w, 20); }
+  t.fills = [{ type: "SOLID", color, opacity: opacity !== undefined ? opacity : 1 }];
+  t.textAutoResize = "WIDTH_AND_HEIGHT";
   return t;
 }
 
-function setFill(node, color, opacity = 1) {
-  node.fills = [{ type: "SOLID", color, opacity }];
+function solidFill(color, opacity) {
+  return [{ type: "SOLID", color, opacity: opacity !== undefined ? opacity : 1 }];
 }
 
-function setStroke(node, color, weight = 1) {
-  node.strokes = [{ type: "SOLID", color }];
-  node.strokeWeight = weight;
+function solidStroke(color) {
+  return [{ type: "SOLID", color }];
 }
 
-function setBorderRadius(node, r) {
-  node.cornerRadius = r;
-}
-
-function setAutoLayout(node, dir = "HORIZONTAL", gap = 0, padH = 0, padV = 0) {
-  node.layoutMode = dir;
-  node.itemSpacing = gap;
-  node.paddingLeft = padH; node.paddingRight = padH;
-  node.paddingTop = padV; node.paddingBottom = padV;
-  node.primaryAxisSizingMode = "FIXED";
-  node.counterAxisSizingMode = "AUTO";
-}
+function corner(node, r) { node.cornerRadius = r; }
 
 // ── Badge ──────────────────────────────────────────────────────────────────
-async function badge(label, bgColor, txColor) {
-  const f = frame(`badge-${label}`, 1, 1);
-  setFill(f, bgColor);
-  setBorderRadius(f, 20);
+function mkBadge(label, bgColor, txColor) {
+  const f = mkFrame("badge", 1, 24);
+  f.fills = solidFill(bgColor);
+  corner(f, 20);
   f.layoutMode = "HORIZONTAL";
   f.primaryAxisSizingMode = "AUTO";
   f.counterAxisSizingMode = "AUTO";
   f.paddingLeft = 8; f.paddingRight = 8;
   f.paddingTop = 3; f.paddingBottom = 3;
-  const t = await text(label, 11, txColor, "Medium");
+  const t = mkText(label, 11, txColor, "Medium");
   f.appendChild(t);
   return f;
 }
 
 // ── Sidebar ────────────────────────────────────────────────────────────────
-async function buildSidebar(h) {
-  const sb = frame("Sidebar", 196, h);
-  setFill(sb, C.navy);
+function buildSidebar(h) {
+  const sb = mkFrame("Sidebar", 196, h);
+  sb.fills = solidFill(C.navy);
   sb.clipsContent = true;
 
-  // Brand
-  const brand = frame("Brand", 196, 58);
-  setFill(brand, C.navy);
-  brand.x = 0; brand.y = 0;
+  // Logo
+  const logo = mkFrame("Logo", 28, 28);
+  logo.fills = solidFill(C.accent);
+  corner(logo, 7);
+  logo.x = 18; logo.y = 15;
+  sb.appendChild(logo);
 
-  const logoBox = frame("Logo", 28, 28);
-  setFill(logoBox, C.accent);
-  setBorderRadius(logoBox, 7);
-  logoBox.x = 18; logoBox.y = 15;
+  const logoT = mkText("M", 14, C.navy, "Bold");
+  logoT.x = 8; logoT.y = 6;
+  logo.appendChild(logoT);
 
-  const brandName = await text("Mana BackOffice", 13, C.white, "SemiBold");
-  brandName.x = 55; brandName.y = 15;
+  const brandName = mkText("Mana BackOffice", 13, C.white, "Semi Bold");
+  brandName.x = 54; brandName.y = 14;
+  sb.appendChild(brandName);
 
-  const brandSub = await text("Operator Web", 10, C.white, "Regular");
-  brandSub.fills = [{ type: "SOLID", color: C.white, opacity: 0.4 }];
-  brandSub.x = 55; brandSub.y = 32;
+  const brandSub = mkText("Operator Web", 10, C.white, "Regular", 0.4);
+  brandSub.x = 54; brandSub.y = 31;
+  sb.appendChild(brandSub);
 
-  const brandDiv = rect("divider", 196, 1, C.white);
-  brandDiv.fills = [{ type: "SOLID", color: C.white, opacity: 0.08 }];
-  brandDiv.x = 0; brandDiv.y = 57;
+  // Divider
+  const div1 = mkRect("div", 196, 1, C.white, 0.08);
+  div1.x = 0; div1.y = 56;
+  sb.appendChild(div1);
 
-  brand.appendChild(logoBox);
-  brand.appendChild(brandName);
-  brand.appendChild(brandSub);
-  brand.appendChild(brandDiv);
+  // Section: ภาพรวม
+  const lbl1 = mkText("ภาพรวม", 10, C.white, "Medium", 0.35);
+  lbl1.x = 18; lbl1.y = 70;
+  sb.appendChild(lbl1);
 
-  // Section label
-  async function sectionLabel(lbl, y) {
-    const t = await text(lbl, 10, C.white, "Medium");
-    t.fills = [{ type: "SOLID", color: C.white, opacity: 0.35 }];
-    t.x = 18; t.y = y;
-    return t;
-  }
+  const nav0 = buildNavItem("ภาพรวม", false);
+  nav0.x = 10; nav0.y = 86;
+  sb.appendChild(nav0);
 
-  // Nav item
-  async function navItem(label, y, isActive = false) {
-    const item = frame(`nav-${label}`, 176, 32);
-    item.x = 10; item.y = y;
-    setBorderRadius(item, 7);
-    if (isActive) {
-      setFill(item, C.white);
-      item.fills = [{ type: "SOLID", color: C.white, opacity: 0.13 }];
-    } else {
-      item.fills = [];
-    }
+  // Section: จัดการ
+  const lbl2 = mkText("จัดการ", 10, C.white, "Medium", 0.35);
+  lbl2.x = 18; lbl2.y = 130;
+  sb.appendChild(lbl2);
 
-    const t = await text(label, 12.5, isActive ? C.white : C.white, "Regular");
-    if (!isActive) t.fills = [{ type: "SOLID", color: C.white, opacity: 0.55 }];
-    t.x = 33; t.y = 8;
-    item.appendChild(t);
+  const nav1 = buildNavItem("ผู้ดูแลระบบ", true);
+  nav1.x = 10; nav1.y = 146;
+  sb.appendChild(nav1);
 
-    if (isActive) {
-      const bar = rect("active-bar", 3, 18, C.accent);
-      setBorderRadius(bar, 3);
-      bar.x = 0; bar.y = 7;
-      item.appendChild(bar);
-    }
-    return item;
-  }
+  const nav2 = buildNavItem("คำขอที่ส่งแล้ว", false);
+  nav2.x = 10; nav2.y = 186;
+  sb.appendChild(nav2);
 
-  // Labels & items
-  const lbl1 = await sectionLabel("ภาพรวม", 78);
-  const nav1 = await navItem("ภาพรวม", 94);
-
-  const lbl2 = await sectionLabel("จัดการ", 140);
-  const nav2 = await navItem("ผู้ดูแลระบบ", 156, true);
-  const nav3 = await navItem("คำขอที่ส่งแล้ว", 196);
-  const nav4 = await navItem("ตั้งค่าการทำงาน", 236);
+  const nav3 = buildNavItem("ตั้งค่าการทำงาน", false);
+  nav3.x = 10; nav3.y = 226;
+  sb.appendChild(nav3);
 
   // User bar
-  const userDiv = rect("user-divider", 196, 1, C.white);
-  userDiv.fills = [{ type: "SOLID", color: C.white, opacity: 0.08 }];
-  userDiv.x = 0; userDiv.y = h - 53;
+  const div2 = mkRect("div-user", 196, 1, C.white, 0.08);
+  div2.x = 0; div2.y = h - 54;
+  sb.appendChild(div2);
 
-  const avBg = frame("avatar", 28, 28);
-  setFill(avBg, C.white);
-  avBg.fills = [{ type: "SOLID", color: C.white, opacity: 0.12 }];
-  setBorderRadius(avBg, 14);
-  avBg.x = 18; avBg.y = h - 40;
+  const av = mkFrame("av", 28, 28);
+  av.fills = solidFill(C.white, 0.12);
+  corner(av, 14);
+  av.x = 18; av.y = h - 42;
+  sb.appendChild(av);
 
-  const avTxt = await text("OP", 10, C.white, "SemiBold");
-  avTxt.x = 22; avTxt.y = h - 34;
+  const avT = mkText("OP", 10, C.white, "Semi Bold");
+  avT.x = 4; avT.y = 8;
+  av.appendChild(avT);
 
-  const uname = await text("Operator", 12, C.white, "Medium");
-  uname.fills = [{ type: "SOLID", color: C.white, opacity: 0.75 }];
-  uname.x = 54; uname.y = h - 42;
+  const uname = mkText("Operator", 12, C.white, "Medium", 0.75);
+  uname.x = 54; uname.y = h - 44;
+  sb.appendChild(uname);
 
-  const urole = await text("ผู้ใช้งานเว็บ", 10, C.white, "Regular");
-  urole.fills = [{ type: "SOLID", color: C.white, opacity: 0.35 }];
-  urole.x = 54; urole.y = h - 28;
-
-  [brand, lbl1, nav1, lbl2, nav2, nav3, nav4, userDiv, avBg, avTxt, uname, urole]
-    .forEach(n => sb.appendChild(n));
+  const urole = mkText("ผู้ใช้งานเว็บ", 10, C.white, "Regular", 0.35);
+  urole.x = 54; urole.y = h - 30;
+  sb.appendChild(urole);
 
   return sb;
 }
 
+function buildNavItem(label, isActive) {
+  const item = mkFrame("nav-" + label, 176, 32);
+  corner(item, 7);
+  if (isActive) {
+    item.fills = solidFill(C.white, 0.13);
+    const bar = mkRect("active-bar", 3, 18, C.accent);
+    corner(bar, 3);
+    bar.x = 0; bar.y = 7;
+    item.appendChild(bar);
+  } else {
+    item.fills = [];
+  }
+  const t = mkText(label, 12.5, C.white, "Regular", isActive ? 1 : 0.55);
+  t.x = 14; t.y = 8;
+  item.appendChild(t);
+  return item;
+}
+
 // ── Topbar ─────────────────────────────────────────────────────────────────
-async function buildTopbar(w, title, showCta = false, ctaLabel = "") {
-  const tb = frame("Topbar", w, 50);
-  setFill(tb, C.card);
-  setStroke(tb, C.bdr);
-  tb.strokeAlign = "INSIDE";
-  tb.strokes = []; // bottom only simulation via rect
+function buildTopbar(w, title, showCta, ctaLabel) {
+  const tb = mkFrame("Topbar", w, 50);
+  tb.fills = solidFill(C.card);
 
-  const div = rect("border-bottom", w, 1, C.bdr);
+  const div = mkRect("border-bottom", w, 1, C.bdr);
   div.x = 0; div.y = 49;
-
-  const ttl = await text(title, 14, C.ink, "SemiBold");
-  ttl.x = 20; ttl.y = 17;
-
   tb.appendChild(div);
+
+  const ttl = mkText(title, 14, C.ink, "Semi Bold");
+  ttl.x = 20; ttl.y = 16;
   tb.appendChild(ttl);
 
   if (showCta) {
-    const btn = frame("btn-primary", 120, 30);
-    setFill(btn, C.navy);
-    setBorderRadius(btn, 7);
-    btn.x = w - 140; btn.y = 10;
-
-    const btnTxt = await text(`+ ${ctaLabel}`, 12.5, C.white, "Regular");
-    btnTxt.x = 14; btnTxt.y = 7;
-    btn.appendChild(btnTxt);
+    const btn = mkFrame("cta", 150, 30);
+    btn.fills = solidFill(C.navy);
+    corner(btn, 7);
+    btn.x = w - 162; btn.y = 10;
+    const btnT = mkText("+ " + ctaLabel, 12.5, C.white, "Regular");
+    btnT.x = 14; btnT.y = 7;
+    btn.appendChild(btnT);
     tb.appendChild(btn);
   }
 
   return tb;
 }
 
-// ── Metric Card ────────────────────────────────────────────────────────────
-async function buildMetric(label, value, sub, barColor, x) {
-  const m = frame(`metric-${label}`, 168, 80);
-  setFill(m, C.card);
-  setStroke(m, C.bdr);
-  setBorderRadius(m, 9);
-  m.x = x;
+// ── Metric card ────────────────────────────────────────────────────────────
+function buildMetric(label, value, sub, barColor) {
+  const m = mkFrame("metric-" + label, 168, 80);
+  m.fills = solidFill(C.card);
+  m.strokes = solidStroke(C.bdr);
+  m.strokeWeight = 1;
+  corner(m, 9);
 
-  const lbl = await text(label, 11, C.ink3, "Regular");
-  lbl.x = 14; lbl.y = 14;
+  const lbl = mkText(label, 11, C.ink3, "Regular");
+  lbl.x = 14; lbl.y = 12;
+  m.appendChild(lbl);
 
-  const val = await text(value, 22, C.ink, "SemiBold");
-  val.x = 14; val.y = 30;
+  const val = mkText(value, 22, C.ink, "Semi Bold");
+  val.x = 14; val.y = 28;
+  m.appendChild(val);
 
-  const subT = await text(sub, 10.5, C.ink4, "Regular");
-  subT.x = 14; subT.y = 57;
+  const subT = mkText(sub, 10.5, C.ink4, "Regular");
+  subT.x = 14; subT.y = 54;
+  m.appendChild(subT);
 
-  const bar = rect("bottom-bar", 168, 3, barColor);
+  const bar = mkRect("bar", 168, 3, barColor);
   bar.x = 0; bar.y = 77;
+  m.appendChild(bar);
 
-  [lbl, val, subT, bar].forEach(n => m.appendChild(n));
   return m;
 }
 
-// ── Table Row ──────────────────────────────────────────────────────────────
-async function buildTableRow(cells, widths, y, isHeader = false) {
-  const totalW = widths.reduce((a, b) => a + b, 0);
-  const rowH = isHeader ? 34 : 46;
-  const row = frame(isHeader ? "thead-row" : `row-${y}`, totalW, rowH);
-  if (isHeader) setFill(row, C.bg);
-  else setFill(row, C.card);
-
-  if (!isHeader) {
-    const div = rect("row-divider", totalW, 1, C.bdr2);
-    div.x = 0; div.y = rowH - 1;
-    row.appendChild(div);
-  }
-
-  let xOff = 0;
-  for (let i = 0; i < cells.length; i++) {
-    const t = await text(cells[i], isHeader ? 11 : 12.5,
-      isHeader ? C.ink3 : C.ink,
-      isHeader ? "Medium" : "Regular");
-    t.x = xOff + 14;
-    t.y = isHeader ? 11 : 15;
-    row.appendChild(t);
-    xOff += widths[i];
-  }
-
-  if (isHeader) {
-    const div = rect("header-divider", totalW, 1, C.bdr2);
-    div.x = 0; div.y = rowH - 1;
-    row.appendChild(div);
-  }
-
-  return row;
-}
-
-// ── Filter Row ─────────────────────────────────────────────────────────────
-async function buildFilterRow(tabs, w) {
-  const fr = frame("FilterRow", w, 33);
+// ── Filter row ─────────────────────────────────────────────────────────────
+function buildFilterRow(tabs, w) {
+  const fr = mkFrame("FilterRow", w, 33);
   fr.fills = [];
   let xOff = 0;
 
-  for (let i = 0; i < tabs.length; i++) {
-    const tab = frame(`tab-${tabs[i]}`, 0, 33);
+  tabs.forEach((label, i) => {
+    const isActive = i === 0;
+    const tab = mkFrame("tab-" + label, 1, 33);
+    tab.fills = solidFill(isActive ? C.navy : C.card);
+    tab.strokes = solidStroke(isActive ? C.navy : C.bdr);
+    tab.strokeWeight = 1;
+    corner(tab, 20);
     tab.layoutMode = "HORIZONTAL";
     tab.primaryAxisSizingMode = "AUTO";
     tab.counterAxisSizingMode = "FIXED";
-    tab.resize(1, 33);
     tab.paddingLeft = 12; tab.paddingRight = 12;
-    setBorderRadius(tab, 20);
-    setStroke(tab, i === 0 ? C.navy : C.bdr);
-
-    if (i === 0) setFill(tab, C.navy);
-    else setFill(tab, C.card);
-
-    const t = await text(tabs[i], 12, i === 0 ? C.white : C.ink3, "Regular");
-    t.y = 8;
+    tab.paddingTop = 0; tab.paddingBottom = 0;
+    const t = mkText(label, 12, isActive ? C.white : C.ink3, "Regular");
     tab.appendChild(t);
     tab.x = xOff; tab.y = 0;
     fr.appendChild(tab);
+    xOff += label.length * 8 + 30;
+  });
 
-    const tabW = tabs[i].length * 8 + 24;
-    xOff += tabW + 6;
-  }
-
-  // Search box
-  const sb = frame("SearchBox", 180, 33);
-  setFill(sb, C.card);
-  setStroke(sb, C.bdr);
-  setBorderRadius(sb, 7);
+  const sb = mkFrame("Search", 180, 33);
+  sb.fills = solidFill(C.card);
+  sb.strokes = solidStroke(C.bdr);
+  sb.strokeWeight = 1;
+  corner(sb, 7);
   sb.x = w - 188; sb.y = 0;
-
-  const sT = await text("🔍  ค้นหา...", 12.5, C.ink4, "Regular");
-  sT.x = 10; sT.y = 8;
-  sb.appendChild(sT);
+  const st = mkText("ค้นหา...", 12.5, C.ink4, "Regular");
+  st.x = 10; st.y = 8;
+  sb.appendChild(st);
   fr.appendChild(sb);
 
   return fr;
 }
 
 // ══════════════════════════════════════════════════════════════════════════
-// PAGE 1 — Dashboard (ภาพรวม)
+// PAGE 1 — ภาพรวม
 // ══════════════════════════════════════════════════════════════════════════
-async function buildDashPage(contentW, contentH) {
-  const page = frame("Page — ภาพรวม", contentW, contentH);
-  setFill(page, C.bg);
+function buildDashPage(cW, cH) {
+  const page = mkFrame("Page-ภาพรวม", cW, cH);
+  page.fills = solidFill(C.bg);
 
-  // Metrics row
   const metrics = [
-    { label: "ผู้ดูแลทั้งหมด", value: "5",  sub: "active ทั้งหมด", bar: C.navy },
-    { label: "รออนุมัติ",      value: "2",  sub: "รอ Mana App",    bar: C.aBd  },
-    { label: "อนุมัติวันนี้",   value: "3",  sub: "เสร็จสิ้น",      bar: C.gBd  },
-    { label: "ถูกปฏิเสธ",      value: "1",  sub: "วันนี้",          bar: C.rBd  },
+    { label: "ผู้ดูแลทั้งหมด", value: "5", sub: "active ทั้งหมด", bar: C.navy },
+    { label: "รออนุมัติ",      value: "2", sub: "รอ Mana App",    bar: C.aBd  },
+    { label: "อนุมัติวันนี้",   value: "3", sub: "เสร็จสิ้น",      bar: C.gBd  },
+    { label: "ถูกปฏิเสธ",      value: "1", sub: "วันนี้",          bar: C.rBd  },
   ];
 
-  for (let i = 0; i < metrics.length; i++) {
-    const m = await buildMetric(
-      metrics[i].label, metrics[i].value, metrics[i].sub,
-      metrics[i].bar, 18 + i * 178
-    );
-    m.y = 18;
-    page.appendChild(m);
-  }
+  metrics.forEach((m, i) => {
+    const card = buildMetric(m.label, m.value, m.sub, m.bar);
+    card.x = 18 + i * 178; card.y = 18;
+    page.appendChild(card);
+  });
 
   // Recent requests card
-  const card = frame("RecentRequests", contentW - 36, 140);
-  setFill(card, C.card);
-  setStroke(card, C.bdr);
-  setBorderRadius(card, 10);
+  const card = mkFrame("RecentRequests", cW - 36, 140);
+  card.fills = solidFill(C.card);
+  card.strokes = solidStroke(C.bdr);
+  card.strokeWeight = 1;
+  corner(card, 10);
   card.x = 18; card.y = 116;
+  card.clipsContent = true;
 
-  const cardTitle = await text("คำขอล่าสุด", 13, C.ink, "SemiBold");
+  const cardTitle = mkText("คำขอล่าสุด", 13, C.ink, "Semi Bold");
   cardTitle.x = 14; cardTitle.y = 14;
+  card.appendChild(cardTitle);
 
   const rows = [
     { id: "REQ-0341 · แต่งตั้งผู้อนุมัติ", badge: "รออนุมัติ 1/2", bg: C.aBg, tx: C.aTx },
-    { id: "REQ-0342 · จ่ายเงินเดือน",      badge: "รออนุมัติ 0/1", bg: C.aBg, tx: C.aTx },
-    { id: "REQ-0340 · เพิ่มวงเงินจัดสรร",  badge: "อนุมัติแล้ว",   bg: C.gBg, tx: C.gTx },
+    { id: "REQ-0342 · จ่ายเงินเดือน",       badge: "รออนุมัติ 0/1", bg: C.aBg, tx: C.aTx },
+    { id: "REQ-0340 · เพิ่มวงเงินจัดสรร",   badge: "อนุมัติแล้ว",   bg: C.gBg, tx: C.gTx },
   ];
 
-  for (let i = 0; i < rows.length; i++) {
-    const row = rows[i];
+  rows.forEach((r, i) => {
     const y = 40 + i * 32;
-    const rowLine = rect(`row-divider-${i}`, contentW - 36, 1, C.bdr2);
-    rowLine.x = 0; rowLine.y = y - 1;
-    card.appendChild(rowLine);
+    const line = mkRect("line-" + i, cW - 36, 1, C.bdr2);
+    line.x = 0; line.y = y - 1;
+    card.appendChild(line);
 
-    const lbl = await text(row.id, 12.5, C.ink3, "Regular");
+    const lbl = mkText(r.id, 12.5, C.ink3, "Regular");
     lbl.x = 14; lbl.y = y + 8;
     card.appendChild(lbl);
 
-    const b = await badge(row.badge, row.bg, row.tx);
-    b.x = (contentW - 36) - b.width - 40;
-    b.y = y + 6;
+    const b = mkBadge(r.badge, r.bg, r.tx);
+    b.x = cW - 36 - 120; b.y = y + 6;
     card.appendChild(b);
-  }
+  });
 
-  card.appendChild(cardTitle);
   page.appendChild(card);
-
   return page;
 }
 
 // ══════════════════════════════════════════════════════════════════════════
-// PAGE 2 — Admins (ผู้ดูแลระบบ)
+// PAGE 2 — ผู้ดูแลระบบ
 // ══════════════════════════════════════════════════════════════════════════
-async function buildAdminsPage(contentW, contentH) {
-  const page = frame("Page — ผู้ดูแลระบบ", contentW, contentH);
-  setFill(page, C.bg);
+function buildAdminsPage(cW, cH) {
+  const page = mkFrame("Page-ผู้ดูแลระบบ", cW, cH);
+  page.fills = solidFill(C.bg);
 
-  const filterRow = await buildFilterRow(["ทั้งหมด", "ใช้งานอยู่", "ถูกระงับ"], contentW - 36);
-  filterRow.x = 18; filterRow.y = 18;
-  page.appendChild(filterRow);
+  const fr = buildFilterRow(["ทั้งหมด", "ใช้งานอยู่", "ถูกระงับ"], cW - 36);
+  fr.x = 18; fr.y = 18;
+  page.appendChild(fr);
 
-  // Table card
-  const tableW = contentW - 36;
-  const card = frame("AdminsTable", tableW, 340);
-  setFill(card, C.card);
-  setStroke(card, C.bdr);
-  setBorderRadius(card, 10);
-  card.x = 18; card.y = 65;
+  const tW = cW - 36;
+  const card = mkFrame("AdminTable", tW, 300);
+  card.fills = solidFill(C.card);
+  card.strokes = solidStroke(C.bdr);
+  card.strokeWeight = 1;
+  corner(card, 10);
   card.clipsContent = true;
+  card.x = 18; card.y = 65;
+  page.appendChild(card);
 
-  const colWidths = [
-    Math.round(tableW * 0.28),
-    Math.round(tableW * 0.15),
-    Math.round(tableW * 0.15),
-    Math.round(tableW * 0.28),
-    Math.round(tableW * 0.14),
+  // Header
+  const hdr = mkFrame("header", tW, 34);
+  hdr.fills = solidFill(C.bg);
+  hdr.x = 0; hdr.y = 0;
+  card.appendChild(hdr);
+
+  const cols = [
+    { label: "ผู้ใช้งาน",    x: 14 },
+    { label: "สิทธิ์",        x: Math.round(tW * 0.28) + 14 },
+    { label: "สถานะ",         x: Math.round(tW * 0.43) + 14 },
+    { label: "คำขอล่าสุด",   x: Math.round(tW * 0.58) + 14 },
+    { label: "จัดการ",        x: Math.round(tW * 0.86) + 14 },
   ];
 
-  const headerRow = await buildTableRow(
-    ["ผู้ใช้งาน", "สิทธิ์", "สถานะ", "คำขอล่าสุด", "จัดการ"],
-    colWidths, 0, true
-  );
-  headerRow.x = 0; headerRow.y = 0;
-  card.appendChild(headerRow);
+  cols.forEach(col => {
+    const t = mkText(col.label, 11, C.ink3, "Medium");
+    t.x = col.x; t.y = 11;
+    hdr.appendChild(t);
+  });
+
+  const hdrDiv = mkRect("hdr-div", tW, 1, C.bdr2);
+  hdrDiv.x = 0; hdrDiv.y = 33;
+  hdr.appendChild(hdrDiv);
 
   const adminData = [
-    { name: "Jirayu Yoodee",  email: "jirayu@mana.co",  role: "ผู้ดูแล",      roleBg: C.bBg, roleTx: C.bTx, st: "แบบร่าง",    stBg: C.grayBg, stTx: C.ink3,  last: "ยังไม่ส่งคำขอ" },
-    { name: "Dao Kaew",        email: "dao@mana.co",     role: "ผู้อนุมัติ",   roleBg: C.gBg, roleTx: C.gTx, st: "รออนุมัติ",  stBg: C.aBg,    stTx: C.aTx,   last: "ส่งไป Mana App แล้ว" },
-    { name: "Somsoke Meboon",  email: "somsoke@mana.co", role: "ผู้ดูแล",      roleBg: C.bBg, roleTx: C.bTx, st: "ใช้งานอยู่", stBg: C.gBg,    stTx: C.gTx,   last: "อนุมัติแล้ว" },
-    { name: "Ek Warin",        email: "ek@mana.co",      role: "ผู้ดูแล",      roleBg: C.bBg, roleTx: C.bTx, st: "ถูกระงับ",   stBg: C.rBg,    stTx: C.rTx,   last: "อนุมัติแล้ว" },
-    { name: "Tong Tadthai",    email: "tong@mana.co",    role: "ผู้ดูแลสูงสุด",roleBg: C.pBg, roleTx: C.pTx, st: "ใช้งานอยู่", stBg: C.gBg,    stTx: C.gTx,   last: "อนุมัติแล้ว" },
+    { init: "JY", name: "Jirayu Yoodee",  email: "jirayu@mana.co",  role: "ผู้ดูแล",       rBg: C.bBg, rTx: C.bTx, st: "แบบร่าง",    sBg: C.grayBg, sTx: C.ink3, last: "ยังไม่ส่งคำขอ" },
+    { init: "DK", name: "Dao Kaew",        email: "dao@mana.co",     role: "ผู้อนุมัติ",    rBg: C.gBg, rTx: C.gTx, st: "รออนุมัติ",  sBg: C.aBg,    sTx: C.aTx,  last: "ส่งไป Mana App แล้ว" },
+    { init: "SM", name: "Somsoke Meboon",  email: "somsoke@mana.co", role: "ผู้ดูแล",       rBg: C.bBg, rTx: C.bTx, st: "ใช้งานอยู่", sBg: C.gBg,    sTx: C.gTx,  last: "อนุมัติแล้ว" },
+    { init: "EW", name: "Ek Warin",        email: "ek@mana.co",      role: "ผู้ดูแล",       rBg: C.bBg, rTx: C.bTx, st: "ถูกระงับ",   sBg: C.rBg,    sTx: C.rTx,  last: "อนุมัติแล้ว" },
+    { init: "TT", name: "Tong Tadthai",    email: "tong@mana.co",    role: "ผู้ดูแลสูงสุด", rBg: C.pBg, rTx: C.pTx, st: "ใช้งานอยู่", sBg: C.gBg,    sTx: C.gTx,  last: "อนุมัติแล้ว" },
   ];
 
-  for (let i = 0; i < adminData.length; i++) {
-    const d = adminData[i];
-    const rowY = 34 + i * 52;
-    const rowH = 52;
+  adminData.forEach((d, i) => {
+    const rH = 52;
+    const rY = 34 + i * rH;
 
-    const row = frame(`row-${i}`, tableW, rowH);
-    setFill(row, C.card);
-    row.x = 0; row.y = rowY;
+    const row = mkFrame("row-" + i, tW, rH);
+    row.fills = solidFill(C.card);
+    row.x = 0; row.y = rY;
 
     if (i < adminData.length - 1) {
-      const div = rect("div", tableW, 1, C.bdr2);
-      div.x = 0; div.y = rowH - 1;
+      const div = mkRect("div", tW, 1, C.bdr2);
+      div.x = 0; div.y = rH - 1;
       row.appendChild(div);
     }
 
-    // Avatar
-    const av = frame(`av-${i}`, 28, 28);
-    setFill(av, C.bBg);
-    setBorderRadius(av, 14);
+    const av = mkFrame("av", 28, 28);
+    av.fills = solidFill(C.bBg);
+    corner(av, 14);
     av.x = 14; av.y = 12;
-    const avT = await text(d.name.split(" ").map(w => w[0]).join("").slice(0,2), 10, C.bTx, "SemiBold");
-    avT.x = 6; avT.y = 8;
+    const avT = mkText(d.init, 10, C.bTx, "Semi Bold");
+    avT.x = 5; avT.y = 8;
     av.appendChild(avT);
     row.appendChild(av);
 
-    // Name + email
-    const nameT = await text(d.name, 12.5, C.ink, "Medium");
+    const nameT = mkText(d.name, 12.5, C.ink, "Medium");
     nameT.x = 50; nameT.y = 10;
-    const emailT = await text(d.email, 11, C.ink3, "Regular");
-    emailT.x = 50; emailT.y = 26;
     row.appendChild(nameT);
+
+    const emailT = mkText(d.email, 11, C.ink3, "Regular");
+    emailT.x = 50; emailT.y = 26;
     row.appendChild(emailT);
 
-    // Role badge
-    const roleBadge = await badge(d.role, d.roleBg, d.roleTx);
-    roleBadge.x = colWidths[0] + 14;
-    roleBadge.y = 16;
+    const roleBadge = mkBadge(d.role, d.rBg, d.rTx);
+    roleBadge.x = Math.round(tW * 0.28) + 14;
+    roleBadge.y = 15;
     row.appendChild(roleBadge);
 
-    // Status badge
-    const stBadge = await badge(d.st, d.stBg, d.stTx);
-    stBadge.x = colWidths[0] + colWidths[1] + 14;
-    stBadge.y = 16;
+    const stBadge = mkBadge(d.st, d.sBg, d.sTx);
+    stBadge.x = Math.round(tW * 0.43) + 14;
+    stBadge.y = 15;
     row.appendChild(stBadge);
 
-    // Last request
-    const lastT = await text(d.last, 12, C.ink3, "Regular");
-    lastT.x = colWidths[0] + colWidths[1] + colWidths[2] + 14;
+    const lastT = mkText(d.last, 12, C.ink3, "Regular");
+    lastT.x = Math.round(tW * 0.58) + 14;
     lastT.y = 18;
     row.appendChild(lastT);
 
-    // Manage button
-    const btn = frame(`btn-manage-${i}`, 56, 28);
-    setFill(btn, C.card);
-    setStroke(btn, C.bdr);
-    setBorderRadius(btn, 7);
-    btn.x = colWidths[0] + colWidths[1] + colWidths[2] + colWidths[3] + 14;
+    const btn = mkFrame("btn", 56, 28);
+    btn.fills = solidFill(C.card);
+    btn.strokes = solidStroke(C.bdr);
+    btn.strokeWeight = 1;
+    corner(btn, 7);
+    btn.x = Math.round(tW * 0.86) + 14;
     btn.y = 12;
-    const btnT = await text("จัดการ", 11.5, C.ink2, "Regular");
+    const btnT = mkText("จัดการ", 11.5, C.ink2, "Regular");
     btnT.x = 10; btnT.y = 7;
     btn.appendChild(btnT);
     row.appendChild(btn);
 
     card.appendChild(row);
-  }
+  });
 
-  page.appendChild(card);
   return page;
 }
 
 // ══════════════════════════════════════════════════════════════════════════
-// PAGE 3 — Requests (คำขอที่ส่งแล้ว)
+// PAGE 3 — คำขอที่ส่งแล้ว
 // ══════════════════════════════════════════════════════════════════════════
-async function buildRequestsPage(contentW, contentH) {
-  const page = frame("Page — คำขอที่ส่งแล้ว", contentW, contentH);
-  setFill(page, C.bg);
+function buildRequestsPage(cW, cH) {
+  const page = mkFrame("Page-คำขอ", cW, cH);
+  page.fills = solidFill(C.bg);
 
-  const filterRow = await buildFilterRow(
-    ["ทั้งหมด", "รออนุมัติ", "อนุมัติแล้ว", "ถูกปฏิเสธ"],
-    contentW - 36
-  );
-  filterRow.x = 18; filterRow.y = 18;
-  page.appendChild(filterRow);
+  const fr = buildFilterRow(["ทั้งหมด", "รออนุมัติ", "อนุมัติแล้ว", "ถูกปฏิเสธ"], cW - 36);
+  fr.x = 18; fr.y = 18;
+  page.appendChild(fr);
 
-  // Info banner
-  const banner = frame("InfoBanner", contentW - 36, 38);
-  setFill(banner, C.navyLight);
-  setStroke(banner, C.navyMid);
-  setBorderRadius(banner, 8);
+  const banner = mkFrame("Banner", cW - 36, 38);
+  banner.fills = solidFill(C.navyLight);
+  banner.strokes = solidStroke(C.navyMid);
+  banner.strokeWeight = 1;
+  corner(banner, 8);
   banner.x = 18; banner.y = 65;
-
-  const bannerT = await text("ℹ  หน้านี้ใช้ติดตามสถานะเท่านั้น — การอนุมัติ/ปฏิเสธทำใน Mana App", 12, C.navy, "Regular");
-  bannerT.x = 12; bannerT.y = 11;
+  const bannerT = mkText("ℹ  หน้านี้ใช้ติดตามสถานะเท่านั้น — การอนุมัติ/ปฏิเสธทำใน Mana App", 12, C.navy, "Regular");
+  bannerT.x = 12; bannerT.y = 10;
   banner.appendChild(bannerT);
   page.appendChild(banner);
 
-  // Table
-  const tableW = contentW - 36;
-  const card = frame("RequestsTable", tableW, 270);
-  setFill(card, C.card);
-  setStroke(card, C.bdr);
-  setBorderRadius(card, 10);
-  card.x = 18; card.y = 117;
+  const tW = cW - 36;
+  const card = mkFrame("RequestsTable", tW, 282);
+  card.fills = solidFill(C.card);
+  card.strokes = solidStroke(C.bdr);
+  card.strokeWeight = 1;
+  corner(card, 10);
   card.clipsContent = true;
+  card.x = 18; card.y = 117;
+  page.appendChild(card);
 
-  const colW = [
-    Math.round(tableW * 0.11),
-    Math.round(tableW * 0.22),
-    Math.round(tableW * 0.18),
-    Math.round(tableW * 0.15),
-    Math.round(tableW * 0.22),
-    Math.round(tableW * 0.12),
+  // Header
+  const hdr = mkFrame("header", tW, 34);
+  hdr.fills = solidFill(C.bg);
+  hdr.x = 0; hdr.y = 0;
+
+  const hCols = [
+    { label: "เลขที่",        xRatio: 0 },
+    { label: "รายการ",        xRatio: 0.11 },
+    { label: "ผู้ส่งคำขอ",   xRatio: 0.33 },
+    { label: "สถานะ",         xRatio: 0.51 },
+    { label: "ความคืบหน้า",  xRatio: 0.66 },
+    { label: "Actions",       xRatio: 0.88 },
   ];
-
-  const headerRow = await buildTableRow(
-    ["เลขที่", "รายการ", "ผู้ส่งคำขอ", "สถานะ", "ความคืบหน้า", "Actions"],
-    colW, 0, true
-  );
-  headerRow.x = 0; headerRow.y = 0;
-  card.appendChild(headerRow);
+  hCols.forEach(col => {
+    const t = mkText(col.label, 11, C.ink3, "Medium");
+    t.x = Math.round(tW * col.xRatio) + 14; t.y = 11;
+    hdr.appendChild(t);
+  });
+  const hdrDiv = mkRect("hdr-div", tW, 1, C.bdr2);
+  hdrDiv.x = 0; hdrDiv.y = 33;
+  hdr.appendChild(hdrDiv);
+  card.appendChild(hdr);
 
   const reqData = [
-    { id: "REQ-0341", name: "แต่งตั้งผู้อนุมัติ",   by: "Somchai P.", stBg: C.aBg, stTx: C.aTx, st: "รออนุมัติ",  prog: 50,  done: "1/2", action: "ติดตาม" },
-    { id: "REQ-0342", name: "จ่ายเงินเดือน",         by: "Priya R.",   stBg: C.aBg, stTx: C.aTx, st: "รออนุมัติ",  prog: 0,   done: "0/1", action: "ติดตาม" },
-    { id: "REQ-0340", name: "เพิ่มวงเงินจัดสรร",     by: "Napat W.",   stBg: C.gBg, stTx: C.gTx, st: "อนุมัติแล้ว",prog: 100, done: "2/2", action: "ดูผล"   },
-    { id: "REQ-0339", name: "ลดวงเงินจัดสรร",        by: "Somchai P.", stBg: C.rBg, stTx: C.rTx, st: "ถูกปฏิเสธ",  prog: 0,   done: "0/2", action: "ดูเหตุผล" },
+    { id: "REQ-0341", name: "แต่งตั้งผู้อนุมัติ",  by: "Somchai P.", sBg: C.aBg, sTx: C.aTx, st: "รออนุมัติ",   prog: 50,  done: "1/2", barColor: C.navy, action: "ติดตาม"   },
+    { id: "REQ-0342", name: "จ่ายเงินเดือน",         by: "Priya R.",   sBg: C.aBg, sTx: C.aTx, st: "รออนุมัติ",   prog: 0,   done: "0/1", barColor: C.navy, action: "ติดตาม"   },
+    { id: "REQ-0340", name: "เพิ่มวงเงินจัดสรร",    by: "Napat W.",   sBg: C.gBg, sTx: C.gTx, st: "อนุมัติแล้ว", prog: 100, done: "2/2", barColor: C.gTx,  action: "ดูผล"     },
+    { id: "REQ-0339", name: "ลดวงเงินจัดสรร",        by: "Somchai P.", sBg: C.rBg, sTx: C.rTx, st: "ถูกปฏิเสธ",   prog: 0,   done: "0/2", barColor: C.rTx,  action: "ดูเหตุผล" },
   ];
 
-  for (let i = 0; i < reqData.length; i++) {
-    const d = reqData[i];
-    const rowY = 34 + i * 58;
-    const rowH = 58;
+  reqData.forEach((d, i) => {
+    const rH = 58;
+    const rY = 34 + i * rH;
 
-    const row = frame(`req-row-${i}`, tableW, rowH);
-    setFill(row, C.card);
-    row.x = 0; row.y = rowY;
+    const row = mkFrame("row-" + i, tW, rH);
+    row.fills = solidFill(C.card);
+    row.x = 0; row.y = rY;
 
     if (i < reqData.length - 1) {
-      const div = rect("div", tableW, 1, C.bdr2);
-      div.x = 0; div.y = rowH - 1;
+      const div = mkRect("div", tW, 1, C.bdr2);
+      div.x = 0; div.y = rH - 1;
       row.appendChild(div);
     }
 
-    // ID
-    const idT = await text(d.id, 12, C.navy, "SemiBold");
+    const idT = mkText(d.id, 12, C.navy, "Semi Bold");
     idT.x = 14; idT.y = 21;
     row.appendChild(idT);
 
-    // Name
-    const nameT = await text(d.name, 12, C.ink, "Regular");
-    nameT.x = colW[0] + 14; nameT.y = 21;
+    const nameT = mkText(d.name, 12, C.ink, "Regular");
+    nameT.x = Math.round(tW * 0.11) + 14; nameT.y = 21;
     row.appendChild(nameT);
 
-    // By
-    const byT = await text(d.by, 12, C.ink, "Regular");
-    byT.x = colW[0] + colW[1] + 14; byT.y = 21;
+    const byT = mkText(d.by, 12, C.ink, "Regular");
+    byT.x = Math.round(tW * 0.33) + 14; byT.y = 21;
     row.appendChild(byT);
 
-    // Status badge
-    const stB = await badge(d.st, d.stBg, d.stTx);
-    stB.x = colW[0] + colW[1] + colW[2] + 14;
-    stB.y = 18;
+    const stB = mkBadge(d.st, d.sBg, d.sTx);
+    stB.x = Math.round(tW * 0.51) + 14; stB.y = 18;
     row.appendChild(stB);
 
     // Progress bar
-    const progContainer = frame(`prog-${i}`, 80, 4);
-    progContainer.fills = [{ type: "SOLID", color: C.bdr2 }];
-    setBorderRadius(progContainer, 4);
-    progContainer.x = colW[0] + colW[1] + colW[2] + colW[3] + 14;
-    progContainer.y = 26;
+    const progBg = mkFrame("prog-bg", 80, 4);
+    progBg.fills = solidFill(C.bdr2);
+    corner(progBg, 4);
+    progBg.x = Math.round(tW * 0.66) + 14; progBg.y = 28;
 
-    const progFill = rect("fill", Math.max(1, Math.round(80 * d.prog / 100)), 4,
-      d.prog === 100 ? C.gTx : d.prog === 0 && d.st === "ถูกปฏิเสธ" ? C.rTx : C.navy);
-    setBorderRadius(progFill, 4);
-    progFill.x = 0; progFill.y = 0;
-    progContainer.appendChild(progFill);
-    row.appendChild(progContainer);
+    const fillW = Math.max(d.prog === 0 ? 0 : 2, Math.round(80 * d.prog / 100));
+    if (fillW > 0) {
+      const fill = mkRect("fill", fillW, 4, d.barColor);
+      corner(fill, 4);
+      fill.x = 0; fill.y = 0;
+      progBg.appendChild(fill);
+    }
+    row.appendChild(progBg);
 
-    const progLbl = await text(d.done, 11, C.ink3, "Regular");
-    progLbl.x = colW[0] + colW[1] + colW[2] + colW[3] + 100;
-    progLbl.y = 23;
-    row.appendChild(progLbl);
+    const doneT = mkText(d.done, 11, C.ink3, "Regular");
+    doneT.x = Math.round(tW * 0.66) + 100; doneT.y = 24;
+    row.appendChild(doneT);
 
-    // Action button
-    const btn = frame(`btn-${i}`, 70, 28);
-    setFill(btn, C.card);
-    setStroke(btn, C.bdr);
-    setBorderRadius(btn, 7);
-    btn.x = colW[0] + colW[1] + colW[2] + colW[3] + colW[4] + 14;
-    btn.y = 15;
-    const btnT = await text(d.action, 11.5, C.ink2, "Regular");
-    btnT.x = 10; btnT.y = 7;
+    const btn = mkFrame("btn", 70, 28);
+    btn.fills = solidFill(C.card);
+    btn.strokes = solidStroke(C.bdr);
+    btn.strokeWeight = 1;
+    corner(btn, 7);
+    btn.x = Math.round(tW * 0.88) + 14; btn.y = 15;
+    const btnT = mkText(d.action, 11.5, C.ink2, "Regular");
+    btnT.x = 8; btnT.y = 7;
     btn.appendChild(btnT);
     row.appendChild(btn);
 
     card.appendChild(row);
-  }
+  });
 
-  page.appendChild(card);
   return page;
 }
 
 // ══════════════════════════════════════════════════════════════════════════
-// PAGE 4 — Settings (ตั้งค่าการทำงาน)
+// PAGE 4 — ตั้งค่าการทำงาน
 // ══════════════════════════════════════════════════════════════════════════
-async function buildSettingsPage(contentW, contentH) {
-  const page = frame("Page — ตั้งค่าการทำงาน", contentW, contentH);
-  setFill(page, C.bg);
+function buildSettingsPage(cW, cH) {
+  const page = mkFrame("Page-Settings", cW, cH);
+  page.fills = solidFill(C.bg);
+  page.clipsContent = true;
 
-  const listW = contentW - 340;
-  const detailW = 340;
+  const listW = cW - 340;
+  const detW = 340;
 
-  // Left: operation list
-  const opList = frame("OperationList", listW, contentH);
-  setFill(opList, C.bg);
+  // Operation list
+  const opList = mkFrame("OpList", listW, cH);
+  opList.fills = solidFill(C.bg);
+  opList.clipsContent = true;
   opList.x = 0; opList.y = 0;
 
-  const ops = [
+  const sections = [
     { cat: "ผู้ดูแลระบบ", items: [
-      { name: "แต่งตั้งผู้ดูแลสูงสุด", code: "Admin.AssignSuperAdmin", from: "เจ้าของร้าน",         to: "เจ้าของร้าน + ผู้ดูแลสูงสุด", toBg: C.pBg, toTx: C.pTx },
-      { name: "แต่งตั้งผู้อนุมัติ",     code: "Admin.AssignAdmin",       from: "เจ้าของร้าน / ผู้ดูแลสูงสุด", to: "เจ้าของร้าน + ผู้อนุมัติ 1 คน", toBg: C.navyLight, toTx: C.navy },
-      { name: "แต่งตั้งผู้ดูแล",        code: "Admin.AssignOperator",    from: "ผู้อนุมัติ",             to: "ผู้อนุมัติ 1 คน",             toBg: C.navyLight, toTx: C.navy },
+      { name: "แต่งตั้งผู้ดูแลสูงสุด",  code: "Admin.AssignSuperAdmin",  from: "เจ้าของร้าน",                  to: "เจ้าของร้าน + ผู้ดูแลสูงสุด",     toBg: C.pBg, toTx: C.pTx },
+      { name: "แต่งตั้งผู้อนุมัติ",      code: "Admin.AssignAdmin",        from: "เจ้าของร้าน / ผู้ดูแลสูงสุด",  to: "เจ้าของร้าน + ผู้อนุมัติ 1 คน",  toBg: C.navyLight, toTx: C.navy },
+      { name: "แต่งตั้งผู้ดูแล",         code: "Admin.AssignOperator",     from: "ผู้อนุมัติ",                    to: "ผู้อนุมัติ 1 คน",                  toBg: C.navyLight, toTx: C.navy },
     ]},
     { cat: "พนักงาน", items: [
       { name: "จัดการพนักงาน", code: "Employee.Manage", from: "ผู้ดูแล", to: "ไม่ต้องอนุมัติ", toBg: C.gBg, toTx: C.gTx },
     ]},
     { cat: "เงินเดือน / Allocation", items: [
-      { name: "จ่ายเงินเดือน",        code: "Payroll.Payout",      from: "ผู้ดูแล", to: "ผู้อนุมัติ 1 คน", toBg: C.aBg, toTx: C.aTx },
-      { name: "เพิ่มวงเงินจัดสรร",    code: "Allocation.Increase", from: "ผู้ดูแล", to: "ผู้อนุมัติ 2 คน", toBg: C.rBg, toTx: C.rTx },
-      { name: "ลดวงเงินจัดสรร",       code: "Allocation.Decrease", from: "ผู้ดูแล", to: "ผู้อนุมัติ 2 คน", toBg: C.rBg, toTx: C.rTx },
+      { name: "จ่ายเงินเดือน",     code: "Payroll.Payout",      from: "ผู้ดูแล", to: "ผู้อนุมัติ 1 คน", toBg: C.aBg, toTx: C.aTx },
+      { name: "เพิ่มวงเงินจัดสรร", code: "Allocation.Increase", from: "ผู้ดูแล", to: "ผู้อนุมัติ 2 คน", toBg: C.rBg, toTx: C.rTx },
+      { name: "ลดวงเงินจัดสรร",    code: "Allocation.Decrease", from: "ผู้ดูแล", to: "ผู้อนุมัติ 2 คน", toBg: C.rBg, toTx: C.rTx },
     ]},
   ];
 
   let yOff = 16;
+  sections.forEach(section => {
+    const catT = mkText(section.cat.toUpperCase(), 11, C.ink3, "Semi Bold");
+    catT.x = 16; catT.y = yOff;
+    opList.appendChild(catT);
 
-  for (const section of ops) {
-    // Category label
-    const catLbl = await text(section.cat.toUpperCase(), 11, C.ink3, "SemiBold");
-    catLbl.x = 16; catLbl.y = yOff;
-    opList.appendChild(catLbl);
-
-    const catLine = rect("cat-line", listW - 70, 1, C.bdr);
-    catLine.x = 70; catLine.y = yOff + 8;
+    const catLine = mkRect("cat-line", listW - 80, 1, C.bdr);
+    catLine.x = 72; catLine.y = yOff + 8;
     opList.appendChild(catLine);
 
     yOff += 26;
 
-    for (let i = 0; i < section.items.length; i++) {
-      const item = section.items[i];
-      const isFirst = i === 0 && section === ops[0];
+    section.items.forEach((item, i) => {
+      const isFirst = i === 0 && section === sections[0];
 
-      const card = frame(`op-${item.code}`, listW - 20, 76);
-      setFill(card, isFirst ? { r: 0.973, g: 0.984, b: 0.992 } : C.card);
-      setBorderRadius(card, 9);
-
-      if (isFirst) {
-        card.strokes = [{ type: "SOLID", color: C.navy }];
-        card.strokeWeight = isFirst ? 1.5 : 1;
-        card.strokeLeftWeight = isFirst ? 3 : 1;
-      } else {
-        setStroke(card, C.bdr);
-      }
-
+      const card = mkFrame("op-" + item.code, listW - 20, 80);
+      card.fills = solidFill(isFirst ? { r: 0.973, g: 0.984, b: 0.992 } : C.card);
+      card.strokes = solidStroke(isFirst ? C.navy : C.bdr);
+      card.strokeWeight = 1;
+      corner(card, 9);
       card.x = 10; card.y = yOff;
 
-      const nameT = await text(item.name, 13, C.ink, "Medium");
-      nameT.x = 50; nameT.y = 12;
+      const nameT = mkText(item.name, 13, C.ink, "Medium");
+      nameT.x = 14; nameT.y = 12;
       card.appendChild(nameT);
 
-      const codeT = await text(item.code, 10.5, C.ink3, "Regular");
-      codeT.x = 50; codeT.y = 30;
+      const codeT = mkText(item.code, 10.5, C.ink3, "Regular");
+      codeT.x = 14; codeT.y = 30;
       card.appendChild(codeT);
 
-      // From badge
-      const fromB = await badge(item.from, C.grayBg, C.ink3);
-      fromB.x = 50; fromB.y = 48;
+      const fromB = mkBadge(item.from, C.grayBg, C.ink3);
+      fromB.x = 14; fromB.y = 50;
       card.appendChild(fromB);
 
-      // Arrow
-      const arrowT = await text("→", 11, C.ink4, "Regular");
-      arrowT.x = 50 + (item.from.length * 7) + 30;
-      arrowT.y = 50;
-      card.appendChild(arrowT);
+      const arrT = mkText("→", 11, C.ink4, "Regular");
+      arrT.x = 14 + item.from.length * 7 + 22; arrT.y = 53;
+      card.appendChild(arrT);
 
-      // To badge
-      const toB = await badge(item.to, item.toBg, item.toTx);
-      toB.x = 50 + (item.from.length * 7) + 48;
-      toB.y = 48;
+      const toB = mkBadge(item.to, item.toBg, item.toTx);
+      toB.x = 14 + item.from.length * 7 + 38; toB.y = 50;
       card.appendChild(toB);
 
-      // Toggle circle (simplified)
-      const toggleBg = frame(`toggle-${i}`, 34, 20);
-      setFill(toggleBg, C.navy);
-      setBorderRadius(toggleBg, 20);
-      toggleBg.x = listW - 54; toggleBg.y = 28;
-
-      const toggleKnob = rect("knob", 14, 14, C.white);
-      setBorderRadius(toggleKnob, 7);
-      toggleKnob.x = 17; toggleKnob.y = 3;
-      toggleBg.appendChild(toggleKnob);
-      card.appendChild(toggleBg);
+      // Toggle
+      const tgl = mkFrame("toggle", 34, 20);
+      tgl.fills = solidFill(C.navy);
+      corner(tgl, 20);
+      tgl.x = listW - 54; tgl.y = 30;
+      const knob = mkRect("knob", 14, 14, C.white);
+      corner(knob, 7);
+      knob.x = 17; knob.y = 3;
+      tgl.appendChild(knob);
+      card.appendChild(tgl);
 
       opList.appendChild(card);
-      yOff += 84;
-    }
-
+      yOff += 88;
+    });
     yOff += 8;
-  }
+  });
 
-  // Right: detail panel
-  const detail = frame("DetailPanel", detailW, contentH);
-  setFill(detail, C.card);
+  // Detail panel
+  const detail = mkFrame("DetailPanel", detW, cH);
+  detail.fills = solidFill(C.card);
   detail.x = listW; detail.y = 0;
 
-  const detBorder = rect("left-border", 1, contentH, C.bdr);
+  const detBorder = mkRect("border", 1, cH, C.bdr);
   detBorder.x = 0; detBorder.y = 0;
   detail.appendChild(detBorder);
 
-  // Empty state
-  const emptyT = await text("เลือก operation\nเพื่อดูและแก้ไข", 12.5, C.ink4, "Regular");
-  emptyT.x = (detailW - 100) / 2;
-  emptyT.y = contentH / 2 - 20;
+  const emptyT = mkText("เลือก operation\nเพื่อดูและแก้ไข", 12.5, C.ink4, "Regular");
+  emptyT.x = 100; emptyT.y = cH / 2 - 20;
   emptyT.textAlignHorizontal = "CENTER";
   detail.appendChild(emptyT);
 
   page.appendChild(opList);
   page.appendChild(detail);
-
   return page;
 }
 
 // ══════════════════════════════════════════════════════════════════════════
 // DRAWER — เพิ่มผู้ดูแล
 // ══════════════════════════════════════════════════════════════════════════
-async function buildAddAdminDrawer() {
-  const drawerW = 360;
-  const drawerH = 540;
-  const drawer = frame("Drawer — เพิ่มผู้ดูแล", drawerW, drawerH);
-  setFill(drawer, C.card);
-  setStroke(drawer, C.bdr);
-  setBorderRadius(drawer, 8);
+function buildDrawer() {
+  const dW = 360;
+  const dH = 560;
+  const drawer = mkFrame("Drawer-เพิ่มผู้ดูแล", dW, dH);
+  drawer.fills = solidFill(C.card);
+  drawer.strokes = solidStroke(C.bdr);
+  drawer.strokeWeight = 1;
+  corner(drawer, 0);
 
-  // Top stripe
-  const stripe = rect("stripe", drawerW, 3, C.navy);
+  // Stripe
+  const stripe = mkRect("stripe", dW, 3, C.navy);
   stripe.x = 0; stripe.y = 0;
   drawer.appendChild(stripe);
 
   // Header
-  const headerDiv = rect("header-div", drawerW, 1, C.bdr);
-  headerDiv.x = 0; headerDiv.y = 56;
-  drawer.appendChild(headerDiv);
-
-  const title = await text("เพิ่มผู้ดูแลระบบ", 14, C.ink, "SemiBold");
-  title.x = 16; title.y = 20;
+  const title = mkText("เพิ่มผู้ดูแลระบบ", 14, C.ink, "Semi Bold");
+  title.x = 16; title.y = 18;
   drawer.appendChild(title);
 
-  const sub = await text("สร้างคำขอแต่งตั้ง → ส่งไป Mana App", 11.5, C.ink3, "Regular");
+  const sub = mkText("สร้างคำขอแต่งตั้ง → ส่งไป Mana App", 11.5, C.ink3, "Regular");
   sub.x = 16; sub.y = 38;
   drawer.appendChild(sub);
 
-  // Fields
-  let yOff = 72;
+  const hdrDiv = mkRect("hdr-div", dW, 1, C.bdr);
+  hdrDiv.x = 0; hdrDiv.y = 58;
+  drawer.appendChild(hdrDiv);
 
-  async function fieldLabel(lbl, y) {
-    const t = await text(lbl, 11, C.ink3, "SemiBold");
-    t.x = 16; t.y = y;
-    return t;
-  }
+  let y = 72;
 
-  async function inputField(placeholder, y) {
-    const input = frame(`input-${y}`, drawerW - 32, 36);
-    setFill(input, C.bg);
-    setStroke(input, C.bdr);
-    setBorderRadius(input, 7);
-    input.x = 16; input.y = y;
-
-    const ph = await text(placeholder, 12.5, C.ink4, "Regular");
-    ph.x = 11; ph.y = 10;
-    input.appendChild(ph);
-    return input;
-  }
-
-  const lbl1 = await fieldLabel("ผู้ใช้งาน", yOff);
+  // Field: ผู้ใช้งาน
+  const lbl1 = mkText("ผู้ใช้งาน", 11, C.ink3, "Semi Bold");
+  lbl1.x = 16; lbl1.y = y;
   drawer.appendChild(lbl1);
-  const inp1 = await inputField("ค้นหาชื่อ / อีเมล...", yOff + 18);
+  y += 18;
+
+  const inp1 = mkFrame("input-user", dW - 32, 36);
+  inp1.fills = solidFill(C.bg);
+  inp1.strokes = solidStroke(C.bdr);
+  inp1.strokeWeight = 1;
+  corner(inp1, 7);
+  inp1.x = 16; inp1.y = y;
+  const ph1 = mkText("ค้นหาชื่อ / อีเมล...", 12.5, C.ink4, "Regular");
+  ph1.x = 11; ph1.y = 10;
+  inp1.appendChild(ph1);
   drawer.appendChild(inp1);
-  yOff += 70;
+  y += 44;
 
-  const lbl2 = await fieldLabel("สิทธิ์ที่ต้องการแต่งตั้ง", yOff);
+  // Field: สิทธิ์
+  const lbl2 = mkText("สิทธิ์ที่ต้องการแต่งตั้ง", 11, C.ink3, "Semi Bold");
+  lbl2.x = 16; lbl2.y = y;
   drawer.appendChild(lbl2);
-  yOff += 18;
+  y += 18;
 
-  const roleOptions = ["ผู้ดูแล (Operator)", "ผู้อนุมัติ (Admin)", "ผู้ดูแลสูงสุด (SuperAdmin)"];
-  for (let i = 0; i < roleOptions.length; i++) {
-    const isSelected = i === 1;
-    const opt = frame(`role-opt-${i}`, drawerW - 32, 36);
-    setFill(opt, isSelected ? C.navy : C.card);
-    setStroke(opt, isSelected ? C.navy : C.bdr);
-    setBorderRadius(opt, 7);
-    opt.x = 16; opt.y = yOff;
+  ["ผู้ดูแล (Operator)", "ผู้อนุมัติ (Admin)", "ผู้ดูแลสูงสุด (SuperAdmin)"].forEach((opt, i) => {
+    const isSel = i === 1;
+    const optF = mkFrame("opt-" + i, dW - 32, 36);
+    optF.fills = solidFill(isSel ? C.navy : C.card);
+    optF.strokes = solidStroke(isSel ? C.navy : C.bdr);
+    optF.strokeWeight = 1;
+    corner(optF, 7);
+    optF.x = 16; optF.y = y;
 
-    const dot = frame(`dot-${i}`, 8, 8);
+    const dot = mkFrame("dot", 8, 8);
     dot.fills = [];
-    dot.strokes = [{ type: "SOLID", color: isSelected ? C.white : C.bdr }];
+    dot.strokes = solidStroke(isSel ? C.white : C.bdr);
     dot.strokeWeight = 1.5;
-    setBorderRadius(dot, 4);
+    corner(dot, 4);
     dot.x = 11; dot.y = 14;
-    opt.appendChild(dot);
+    optF.appendChild(dot);
 
-    const optT = await text(roleOptions[i], 12.5, isSelected ? C.white : C.ink2, "Regular");
+    const optT = mkText(opt, 12.5, isSel ? C.white : C.ink2, "Regular");
     optT.x = 28; optT.y = 10;
-    opt.appendChild(optT);
+    optF.appendChild(optT);
 
-    drawer.appendChild(opt);
-    yOff += 42;
-  }
+    drawer.appendChild(optF);
+    y += 42;
+  });
+  y += 4;
 
-  yOff += 4;
-  const lbl3 = await fieldLabel("เหตุผล", yOff);
+  // Field: เหตุผล
+  const lbl3 = mkText("เหตุผล", 11, C.ink3, "Semi Bold");
+  lbl3.x = 16; lbl3.y = y;
   drawer.appendChild(lbl3);
-  const ta = frame("textarea", drawerW - 32, 70);
-  setFill(ta, C.bg);
-  setStroke(ta, C.bdr);
-  setBorderRadius(ta, 7);
-  ta.x = 16; ta.y = yOff + 18;
+  y += 18;
 
-  const taPh = await text("ระบุเหตุผล...", 12.5, C.ink4, "Regular");
-  taPh.x = 11; taPh.y = 10;
-  ta.appendChild(taPh);
+  const ta = mkFrame("textarea", dW - 32, 70);
+  ta.fills = solidFill(C.bg);
+  ta.strokes = solidStroke(C.bdr);
+  ta.strokeWeight = 1;
+  corner(ta, 7);
+  ta.x = 16; ta.y = y;
+  const taP = mkText("ระบุเหตุผล...", 12.5, C.ink4, "Regular");
+  taP.x = 11; taP.y = 10;
+  ta.appendChild(taP);
   drawer.appendChild(ta);
-
-  yOff += 100;
+  y += 78;
 
   // Rule box
-  const ruleBox = frame("rule-box", drawerW - 32, 60);
-  setFill(ruleBox, C.navyLight);
-  setStroke(ruleBox, C.navyMid);
-  setBorderRadius(ruleBox, 8);
-  ruleBox.x = 16; ruleBox.y = yOff;
+  const ruleBox = mkFrame("rule-box", dW - 32, 62);
+  ruleBox.fills = solidFill(C.navyLight);
+  ruleBox.strokes = solidStroke(C.navyMid);
+  ruleBox.strokeWeight = 1;
+  corner(ruleBox, 8);
+  ruleBox.x = 16; ruleBox.y = y;
 
-  const ruleLbl = await text("Admin.AssignAdmin", 11, C.navy, "Medium");
+  const ruleLbl = mkText("Admin.AssignAdmin", 11, C.navy, "Medium");
   ruleLbl.x = 12; ruleLbl.y = 10;
   ruleBox.appendChild(ruleLbl);
 
-  const ruleVal = await text("เจ้าของร้าน + ผู้อนุมัติ 1 คน", 13, C.navy, "SemiBold");
-  ruleVal.x = 12; ruleVal.y = 28;
+  const ruleVal = mkText("เจ้าของร้าน + ผู้อนุมัติ 1 คน", 13, C.navy, "Semi Bold");
+  ruleVal.x = 12; ruleVal.y = 30;
   ruleBox.appendChild(ruleVal);
-
   drawer.appendChild(ruleBox);
-  yOff += 68;
 
   // Footer
-  const footer = frame("footer", drawerW, 52);
-  setFill(footer, C.bg);
-  footer.x = 0; footer.y = drawerH - 52;
+  const footer = mkFrame("footer", dW, 52);
+  footer.fills = solidFill(C.bg);
+  footer.x = 0; footer.y = dH - 52;
 
-  const ftDiv = rect("footer-div", drawerW, 1, C.bdr);
-  ftDiv.x = 0; ftDiv.y = 0;
-  footer.appendChild(ftDiv);
+  const footDiv = mkRect("foot-div", dW, 1, C.bdr);
+  footDiv.x = 0; footDiv.y = 0;
+  footer.appendChild(footDiv);
 
-  const sendBtn = frame("btn-send", 180, 30);
-  setFill(sendBtn, C.navy);
-  setBorderRadius(sendBtn, 7);
+  const sendBtn = mkFrame("btn-send", 180, 30);
+  sendBtn.fills = solidFill(C.navy);
+  corner(sendBtn, 7);
   sendBtn.x = 16; sendBtn.y = 11;
-
-  const sendT = await text("ส่งคำขอไป Mana App", 12.5, C.white, "Regular");
-  sendT.x = 16; sendT.y = 7;
+  const sendT = mkText("ส่งคำขอไป Mana App", 12.5, C.white, "Regular");
+  sendT.x = 14; sendT.y = 7;
   sendBtn.appendChild(sendT);
   footer.appendChild(sendBtn);
 
-  const cancelBtn = frame("btn-cancel", 72, 30);
-  setFill(cancelBtn, C.card);
-  setStroke(cancelBtn, C.bdr);
-  setBorderRadius(cancelBtn, 7);
+  const cancelBtn = mkFrame("btn-cancel", 72, 30);
+  cancelBtn.fills = solidFill(C.card);
+  cancelBtn.strokes = solidStroke(C.bdr);
+  cancelBtn.strokeWeight = 1;
+  corner(cancelBtn, 7);
   cancelBtn.x = 204; cancelBtn.y = 11;
-
-  const cancelT = await text("ยกเลิก", 12.5, C.ink2, "Regular");
+  const cancelT = mkText("ยกเลิก", 12.5, C.ink2, "Regular");
   cancelT.x = 14; cancelT.y = 7;
   cancelBtn.appendChild(cancelT);
   footer.appendChild(cancelBtn);
 
   drawer.appendChild(footer);
-
   return drawer;
 }
 
 // ══════════════════════════════════════════════════════════════════════════
-// MAIN — Assemble all screens
+// MAIN
 // ══════════════════════════════════════════════════════════════════════════
 async function main() {
-  const SCREEN_W = 1280;
-  const SCREEN_H = 720;
-  const SIDEBAR_W = 196;
-  const TOPBAR_H = 50;
-  const CONTENT_W = SCREEN_W - SIDEBAR_W;
-  const CONTENT_H = SCREEN_H - TOPBAR_H;
+  await loadAllFonts();
 
-  const pages = [
-    { title: "ภาพรวม",              cta: false, ctaLabel: "",          buildFn: buildDashPage     },
-    { title: "ผู้ดูแลระบบ",         cta: true,  ctaLabel: "เพิ่มผู้ดูแล", buildFn: buildAdminsPage   },
-    { title: "คำขอที่ส่งแล้ว",      cta: false, ctaLabel: "",          buildFn: buildRequestsPage },
-    { title: "ตั้งค่าการทำงาน",     cta: false, ctaLabel: "",          buildFn: buildSettingsPage },
+  const SW = 1280, SH = 720;
+  const SB = 196, TB = 50;
+  const CW = SW - SB, CH = SH - TB;
+  const GAP = 80;
+
+  const screens = [
+    { name: "01 ภาพรวม",           title: "ภาพรวม",           cta: false, ctaLabel: "",              buildFn: buildDashPage     },
+    { name: "02 ผู้ดูแลระบบ",      title: "ผู้ดูแลระบบ",      cta: true,  ctaLabel: "เพิ่มผู้ดูแล",   buildFn: buildAdminsPage   },
+    { name: "03 คำขอที่ส่งแล้ว",   title: "คำขอที่ส่งแล้ว",   cta: false, ctaLabel: "",              buildFn: buildRequestsPage },
+    { name: "04 ตั้งค่าการทำงาน",  title: "ตั้งค่าการทำงาน",  cta: false, ctaLabel: "",              buildFn: buildSettingsPage },
   ];
 
-  const screenNames = ["01 ภาพรวม", "02 ผู้ดูแลระบบ", "03 คำขอที่ส่งแล้ว", "04 ตั้งค่าการทำงาน"];
-
-  for (let i = 0; i < pages.length; i++) {
-    const pg = pages[i];
-    const screen = frame(`Screen — ${screenNames[i]}`, SCREEN_W, SCREEN_H);
-    setFill(screen, C.bg);
-    screen.x = i * (SCREEN_W + 80);
+  for (let i = 0; i < screens.length; i++) {
+    const s = screens[i];
+    const screen = mkFrame(s.name, SW, SH);
+    screen.fills = solidFill(C.bg);
+    screen.x = i * (SW + GAP);
     screen.y = 0;
 
-    // Sidebar
-    const sidebar = await buildSidebar(SCREEN_H);
-    sidebar.x = 0; sidebar.y = 0;
-    screen.appendChild(sidebar);
+    screen.appendChild(buildSidebar(SH));
 
-    // Topbar
-    const topbar = await buildTopbar(CONTENT_W, pg.title, pg.cta, pg.ctaLabel);
-    topbar.x = SIDEBAR_W; topbar.y = 0;
-    screen.appendChild(topbar);
+    const tb = buildTopbar(CW, s.title, s.cta, s.ctaLabel);
+    tb.x = SB; tb.y = 0;
+    screen.appendChild(tb);
 
-    // Content
-    const content = await pg.buildFn(CONTENT_W, CONTENT_H);
-    content.x = SIDEBAR_W; content.y = TOPBAR_H;
+    const content = s.buildFn(CW, CH);
+    content.x = SB; content.y = TB;
     screen.appendChild(content);
 
     figma.currentPage.appendChild(screen);
   }
 
-  // Drawer screen (separate)
-  const drawerScreen = frame("Screen — 02 ผู้ดูแลระบบ + Drawer", SCREEN_W, SCREEN_H);
-  setFill(drawerScreen, C.bg);
-  drawerScreen.x = pages.length * (SCREEN_W + 80);
-  drawerScreen.y = 0;
+  // Screen 5 — Drawer open
+  const screen5 = mkFrame("02 ผู้ดูแลระบบ + Drawer", SW, SH);
+  screen5.fills = solidFill(C.bg);
+  screen5.x = screens.length * (SW + GAP);
+  screen5.y = 0;
+  screen5.clipsContent = true;
 
-  const sidebar5 = await buildSidebar(SCREEN_H);
-  sidebar5.x = 0; sidebar5.y = 0;
-  drawerScreen.appendChild(sidebar5);
+  screen5.appendChild(buildSidebar(SH));
 
-  const topbar5 = await buildTopbar(CONTENT_W, "ผู้ดูแลระบบ", true, "เพิ่มผู้ดูแล");
-  topbar5.x = SIDEBAR_W; topbar5.y = 0;
-  drawerScreen.appendChild(topbar5);
+  const tb5 = buildTopbar(CW, "ผู้ดูแลระบบ", true, "เพิ่มผู้ดูแล");
+  tb5.x = SB; tb5.y = 0;
+  screen5.appendChild(tb5);
 
-  const content5 = await buildAdminsPage(CONTENT_W, CONTENT_H);
-  content5.x = SIDEBAR_W; content5.y = TOPBAR_H;
-  drawerScreen.appendChild(content5);
+  const content5 = buildAdminsPage(CW, CH);
+  content5.x = SB; content5.y = TB;
+  screen5.appendChild(content5);
 
-  // Overlay
-  const ov = rect("overlay", CONTENT_W, CONTENT_H, C.ink);
-  ov.opacity = 0.1;
-  ov.x = SIDEBAR_W; ov.y = TOPBAR_H;
-  drawerScreen.appendChild(ov);
+  const ov = mkRect("overlay", CW, CH, C.ink, 0.1);
+  ov.x = SB; ov.y = TB;
+  screen5.appendChild(ov);
 
-  // Drawer
-  const drawer = await buildAddAdminDrawer();
-  drawer.x = SIDEBAR_W + CONTENT_W - 360;
-  drawer.y = TOPBAR_H;
-  drawerScreen.appendChild(drawer);
+  const drawer = buildDrawer();
+  drawer.x = SW - 360; drawer.y = TB;
+  screen5.appendChild(drawer);
 
-  figma.currentPage.appendChild(drawerScreen);
+  figma.currentPage.appendChild(screen5);
 
   figma.viewport.scrollAndZoomIntoView(figma.currentPage.children);
-  figma.closePlugin("✅ Mana BackOffice — สร้าง 5 screens เสร็จแล้ว!");
+  figma.closePlugin("✅ สร้าง 5 screens เสร็จแล้ว!");
 }
 
 main().catch(err => figma.closePlugin("❌ Error: " + err.message));
