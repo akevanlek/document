@@ -1,0 +1,7 @@
+{
+  "name": "Mana BackOffice — HTML to Figma",
+  "id": "mana-backoffice-html2figma",
+  "api": "1.0.0",
+  "main": "code.js",
+  "editorType": ["figma"]
+}
