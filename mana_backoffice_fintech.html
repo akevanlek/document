@@ -1,0 +1,675 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+--navy:#004765;--navy2:#00334a;--navy3:#00263a;
+--navy-light:#e6f0f5;--navy-mid:#b3cfd9;
+--accent:#F7D91E;
+--bg:#F5F7FA;--card:#fff;
+--bdr:#D8E2EA;--bdr2:#eaf0f5;
+--ink:#0F172A;--ink2:#334155;--ink3:#64748B;--ink4:#94A3B8;
+--g-bg:#f0fdf4;--g-tx:#166534;--g-bd:#bbf7d0;
+--a-bg:#fffbeb;--a-tx:#92400e;--a-bd:#fde68a;
+--r-bg:#fef2f2;--r-tx:#991b1b;--r-bd:#fecaca;
+--b-bg:#eff6ff;--b-tx:#1e40af;--b-bd:#bfdbfe;
+--p-bg:#f5f3ff;--p-tx:#5b21b6;--p-bd:#ddd6fe;
+}
+body{font-family:var(--font-sans);font-size:13px;color:var(--ink);background:transparent}
+.app{display:grid;grid-template-columns:196px 1fr;height:720px;border:1px solid var(--bdr);border-radius:12px;overflow:hidden}
+
+/* ── sidebar ── */
+.sb{background:var(--navy);display:flex;flex-direction:column}
+.sb-brand{padding:16px 18px 14px;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:9px}
+.sb-logo{width:28px;height:28px;border-radius:7px;background:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sb-logo i{font-size:15px;color:var(--navy)}
+.sb-brand-name{font-size:13px;font-weight:600;color:#fff;letter-spacing:-.01em}
+.sb-brand-sub{font-size:10px;color:rgba(255,255,255,0.4);margin-top:1px}
+.sb-sec{padding:10px 10px 0}
+.sb-lbl{font-size:10px;color:rgba(255,255,255,0.35);padding:0 8px;margin-bottom:4px;letter-spacing:.06em;font-weight:500}
+.sb-item{display:flex;align-items:center;gap:9px;padding:7px 9px;border-radius:7px;cursor:pointer;font-size:12.5px;color:rgba(255,255,255,0.55);transition:all .15s;position:relative}
+.sb-item:hover{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.85)}
+.sb-item.active{background:rgba(255,255,255,0.13);color:#fff}
+.sb-item.active::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:3px;height:18px;border-radius:0 3px 3px 0;background:var(--accent)}
+.sb-item i{font-size:15px;width:15px;flex-shrink:0}
+.sb-dot{width:6px;height:6px;border-radius:50%;margin-left:auto;flex-shrink:0;background:var(--accent);opacity:.8}
+.sb-user{padding:12px 18px;border-top:1px solid rgba(255,255,255,0.08);margin-top:auto;display:flex;align-items:center;gap:9px}
+.sb-av{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;font-size:10px;color:rgba(255,255,255,0.75);font-weight:600;flex-shrink:0;border:1px solid rgba(255,255,255,0.1)}
+.sb-uname{font-size:12px;color:rgba(255,255,255,0.75);font-weight:500}
+.sb-urole{font-size:10px;color:rgba(255,255,255,0.35);margin-top:1px}
+
+/* ── main ── */
+.main{display:flex;flex-direction:column;overflow:hidden;background:var(--bg)}
+.topbar{background:var(--card);border-bottom:1px solid var(--bdr);padding:0 20px;height:50px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.tb-title{font-size:14px;font-weight:600;color:var(--ink)}
+.tb-right{display:flex;align-items:center;gap:8px}
+.content{flex:1;overflow:hidden;position:relative;display:flex}
+.page{display:none;flex:1;overflow-y:auto;flex-direction:column}
+.page.active{display:flex}
+.pbody{padding:18px;display:flex;flex-direction:column;gap:14px}
+
+/* ── buttons ── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 13px;border-radius:7px;font-size:12.5px;font-family:var(--font-sans);cursor:pointer;border:1px solid var(--bdr);background:var(--card);color:var(--ink2);transition:all .15s;font-weight:400}
+.btn:hover{background:var(--bg);border-color:#c0cdd8}
+.btn-primary{background:var(--navy);color:#fff;border-color:var(--navy)}
+.btn-primary:hover{background:var(--navy2)}
+.btn-sm{padding:5px 11px;font-size:11.5px}
+.btn-ghost{border:none;background:transparent;padding:6px 8px;color:var(--ink3)}
+.btn-ghost:hover{background:var(--bg)}
+.btn-warn{color:var(--r-tx);border-color:var(--r-bd);background:var(--card)}
+.btn-warn:hover{background:var(--r-bg)}
+
+/* ── filter ── */
+.filter-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.ftab{padding:5px 12px;border-radius:20px;font-size:12px;cursor:pointer;border:1px solid var(--bdr);color:var(--ink3);background:var(--card);font-family:var(--font-sans);transition:all .15s}
+.ftab:hover{border-color:#c0cdd8;color:var(--ink2)}
+.ftab.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.sbox{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--bdr);border-radius:7px;padding:0 10px;height:33px;margin-left:auto;min-width:180px}
+.sbox input{border:none;outline:none;background:transparent;font-size:12.5px;color:var(--ink);font-family:var(--font-sans);width:100%}
+.sbox i{color:var(--ink4);font-size:14px}
+
+/* ── table ── */
+.card{background:var(--card);border:1px solid var(--bdr);border-radius:10px;overflow:hidden}
+table{width:100%;border-collapse:collapse;table-layout:fixed}
+th{text-align:left;font-size:11px;color:var(--ink3);font-weight:500;padding:9px 14px;border-bottom:1px solid var(--bdr2);background:var(--bg)}
+td{padding:11px 14px;border-bottom:1px solid var(--bdr2);color:var(--ink);vertical-align:middle;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+tr:last-child td{border-bottom:none}
+tr.cl{cursor:pointer}
+tr.cl:hover td{background:#fafbfc}
+
+/* ── badge ── */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:500;white-space:nowrap}
+.b-green{background:var(--g-bg);color:var(--g-tx)}
+.b-amber{background:var(--a-bg);color:var(--a-tx)}
+.b-red{background:var(--r-bg);color:var(--r-tx)}
+.b-blue{background:var(--b-bg);color:var(--b-tx)}
+.b-gray{background:#f1f5f9;color:var(--ink3)}
+.b-navy{background:var(--navy-light);color:var(--navy)}
+.b-purple{background:var(--p-bg);color:var(--p-tx)}
+.b-inactive{background:#f1f5f9;color:var(--ink4)}
+
+/* ── avatar ── */
+.av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;flex-shrink:0}
+.av-op{background:#eff6ff;color:#1e40af}
+.av-admin{background:#f0fdf4;color:#166534}
+.av-super{background:#fffbeb;color:#92400e}
+.av-owner{background:#f5f3ff;color:#5b21b6}
+.ucell{display:flex;align-items:center;gap:8px}
+.uname{font-size:12.5px;font-weight:500;color:var(--ink)}
+.uemail{font-size:11px;color:var(--ink3)}
+
+/* ── progress ── */
+.prog{display:flex;align-items:center;gap:7px}
+.prog-bar{flex:1;height:4px;background:var(--bdr2);border-radius:4px;overflow:hidden;min-width:48px}
+.prog-fill{height:100%;border-radius:4px}
+.prog-lbl{font-size:11px;color:var(--ink3);white-space:nowrap}
+
+/* ── metrics ── */
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.metric{background:var(--card);border-radius:9px;padding:14px;border:1px solid var(--bdr);position:relative;overflow:hidden}
+.metric::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px}
+.metric.m-navy::after{background:var(--navy)}
+.metric.m-amber::after{background:var(--a-bd)}
+.metric.m-green::after{background:var(--g-bd)}
+.metric.m-red::after{background:var(--r-bd)}
+.m-lbl{font-size:11px;color:var(--ink3);margin-bottom:5px}
+.m-val{font-size:22px;font-weight:600;color:var(--ink)}
+.m-sub{font-size:10.5px;color:var(--ink4);margin-top:3px}
+
+/* ── settings split ── */
+.split{display:grid;grid-template-columns:1fr 340px;height:100%;overflow:hidden}
+.op-list{overflow-y:auto;padding:16px}
+.op-detail{border-left:1px solid var(--bdr);background:var(--card);overflow-y:auto;display:flex;flex-direction:column}
+.op-card{background:var(--card);border:1px solid var(--bdr);border-radius:9px;padding:12px 13px;cursor:pointer;margin-bottom:7px;transition:all .15s}
+.op-card:hover{border-color:#c0cdd8;background:#fafbfc}
+.op-card.sel{border-color:var(--navy);border-left:3px solid var(--navy);background:#f8fbfd}
+.oc-top{display:flex;align-items:flex-start;gap:9px}
+.oc-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.oc-name{font-size:13px;font-weight:500;color:var(--ink)}
+.oc-code{font-size:10.5px;color:var(--ink3);font-family:var(--font-mono);margin-top:1px}
+.oc-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:7px;align-items:center}
+.arr{font-size:11px;color:var(--ink4);margin:0 1px}
+.toggle{position:relative;width:34px;height:20px;cursor:pointer;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0;position:absolute}
+.tsl{position:absolute;inset:0;border-radius:20px;background:#cbd5e1;transition:background .2s}
+.tsl::before{content:'';position:absolute;width:14px;height:14px;border-radius:50%;background:#fff;top:3px;left:3px;transition:transform .2s}
+.toggle input:checked+.tsl{background:var(--navy)}
+.toggle input:checked+.tsl::before{transform:translateX(14px)}
+.cat-lbl{font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:8px;display:flex;align-items:center;gap:6px;text-transform:uppercase;letter-spacing:.05em}
+.cat-lbl::after{content:'';flex:1;height:1px;background:var(--bdr)}
+.cat-group{margin-bottom:18px}
+
+/* ── detail panel ── */
+.dh{padding:14px 16px;border-bottom:1px solid var(--bdr);flex-shrink:0}
+.dh-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.dh-name{font-size:14px;font-weight:600;color:var(--ink)}
+.dh-code{font-size:10.5px;color:var(--ink3);font-family:var(--font-mono);margin-top:2px}
+.dbody{flex:1;overflow-y:auto;padding:14px 16px}
+.dfooter{padding:12px 16px;border-top:1px solid var(--bdr);display:flex;gap:7px;flex-shrink:0}
+.sec-lbl{font-size:10px;font-weight:600;color:var(--ink3);margin-bottom:7px;text-transform:uppercase;letter-spacing:.07em}
+.info-block{background:var(--bg);border-radius:8px;padding:10px 12px;margin-bottom:12px;border:1px solid var(--bdr2)}
+.irow{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--bdr2);font-size:12.5px;gap:10px}
+.irow:last-child{border-bottom:none}
+.ik{color:var(--ink3);flex-shrink:0}
+.iv{color:var(--ink);font-weight:500;text-align:right}
+.who-chips{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px}
+.who-chip{display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:6px;font-size:12px;border:1px solid var(--bdr);background:var(--card);color:var(--ink2)}
+.rule-box{background:var(--navy-light);border:1px solid var(--navy-mid);border-radius:8px;padding:11px 12px;margin-bottom:12px}
+.rule-note{font-size:12.5px;color:var(--navy);margin-top:5px;line-height:1.5}
+.hist-item{display:flex;gap:8px;padding:7px 0;border-bottom:1px solid var(--bdr2);font-size:12px}
+.hist-item:last-child{border-bottom:none}
+.h-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:3px}
+.empty-det{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:8px;color:var(--ink4);font-size:12.5px;text-align:center;padding:24px}
+
+/* ── drawer ── */
+.drawer-ov{position:absolute;inset:0;background:rgba(15,23,42,.1);display:none;z-index:10}
+.drawer-ov.open{display:block}
+.drawer{position:absolute;top:0;right:0;width:360px;height:100%;background:var(--card);border-left:1px solid var(--bdr);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .22s cubic-bezier(.25,.46,.45,.94);z-index:11}
+.drawer.open{transform:translateX(0)}
+.dr-hdr{padding:14px 16px;border-bottom:1px solid var(--bdr);display:flex;align-items:flex-start;justify-content:space-between;flex-shrink:0}
+.dr-hdr-stripe{width:100%;height:3px;background:var(--navy);border-radius:3px 3px 0 0;margin-bottom:0;position:absolute;top:0;left:0}
+.dr-title{font-size:14px;font-weight:600;color:var(--ink)}
+.dr-sub{font-size:11.5px;color:var(--ink3);margin-top:2px}
+.dr-body{flex:1;overflow-y:auto;padding:16px}
+.dr-footer{padding:12px 16px;border-top:1px solid var(--bdr);display:flex;gap:7px;flex-shrink:0;background:var(--bg)}
+.df-lbl{font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em}
+.df-sec{margin-bottom:16px}
+.df-field{background:var(--bg);border:1px solid var(--bdr);border-radius:7px;padding:8px 11px;font-size:12.5px;color:var(--ink);width:100%;font-family:var(--font-sans)}
+.df-field:focus{outline:none;border-color:var(--navy)}
+.df-ta{resize:vertical;min-height:70px}
+.df-rule{background:var(--navy-light);border:1px solid var(--navy-mid);border-radius:8px;padding:10px 12px}
+.df-rule-lbl{font-size:11px;color:var(--navy);margin-bottom:3px;font-weight:500}
+.df-rule-val{font-size:13px;font-weight:600;color:var(--navy)}
+.radio-group{display:flex;flex-direction:column;gap:5px}
+.radio-item{display:flex;align-items:center;gap:8px;padding:8px 11px;border:1px solid var(--bdr);border-radius:7px;cursor:pointer;font-size:12.5px;color:var(--ink2);transition:all .15s;user-select:none}
+.radio-item:hover{border-color:#c0cdd8;background:var(--bg)}
+.radio-item.sel{background:var(--navy);color:#fff;border-color:var(--navy)}
+.ri-dot{width:8px;height:8px;border-radius:50%;border:1.5px solid currentColor;flex-shrink:0}
+.radio-item.sel .ri-dot{background:#fff;border-color:#fff}
+.check-item{display:flex;align-items:center;gap:8px;padding:8px 11px;border:1px solid var(--bdr);border-radius:7px;cursor:pointer;font-size:12.5px;color:var(--ink2);user-select:none;transition:all .15s}
+.check-item:hover{background:var(--bg)}
+.check-item.sel{border-color:var(--navy-mid);background:var(--navy-light);color:var(--navy)}
+.chk-box{width:14px;height:14px;border-radius:3px;border:1.5px solid var(--bdr);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px}
+.check-item.sel .chk-box{background:var(--navy);border-color:var(--navy);color:#fff}
+.action-item{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border:1px solid var(--bdr);border-radius:8px;cursor:pointer;font-size:12.5px;color:var(--ink2);margin-bottom:5px;transition:all .15s}
+.action-item:hover{background:var(--bg);border-color:#c0cdd8}
+.action-item.danger{color:var(--r-tx)}
+.rt-item{display:flex;gap:10px;padding-bottom:14px}
+.rt-item:last-child{padding-bottom:0}
+.rt-left{display:flex;flex-direction:column;align-items:center}
+.rt-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-top:3px}
+.rt-line{width:1px;flex:1;background:var(--bdr);min-height:16px}
+.rt-item:last-child .rt-line{display:none}
+.warn-b{background:var(--a-bg);border:1px solid var(--a-bd);border-radius:8px;padding:9px 12px;font-size:12px;color:var(--a-tx);display:flex;gap:7px;align-items:flex-start}
+.ok-b{background:var(--g-bg);border:1px solid var(--g-bd);border-radius:8px;padding:9px 12px;font-size:12px;color:var(--g-tx);display:flex;gap:7px;align-items:flex-start}
+.info-b{background:var(--navy-light);border:1px solid var(--navy-mid);border-radius:8px;padding:9px 12px;font-size:12px;color:var(--navy);display:flex;gap:7px;align-items:flex-start}
+.divider{height:1px;background:var(--bdr);margin:14px 0}
+
+/* ── approver list ── */
+.apr-section{background:var(--bg);border:1px solid var(--bdr);border-radius:9px;overflow:hidden;margin-bottom:14px}
+.apr-hdr{padding:9px 13px;border-bottom:1px solid var(--bdr2);display:flex;align-items:center;justify-content:space-between;background:var(--card)}
+.apr-hdr-title{font-size:12px;font-weight:500;color:var(--ink2)}
+.apr-row{display:flex;align-items:center;gap:10px;padding:9px 13px;border-bottom:1px solid var(--bdr2)}
+.apr-row:last-child{border-bottom:none}
+.apr-icon{width:21px;height:21px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0}
+.api-done{background:var(--g-bg);color:var(--g-tx)}
+.api-wait{background:var(--a-bg);color:var(--a-tx)}
+.apr-info{flex:1}
+.apr-name{font-size:12.5px;font-weight:500;color:var(--ink)}
+.apr-role{font-size:11px;color:var(--ink3);margin-top:1px}
+.apr-time{font-size:11px;color:var(--ink3);white-space:nowrap}
+.prog-hdr{padding:6px 13px 10px;background:var(--card)}
+.prog-hdr-bar{height:5px;background:var(--bdr2);border-radius:5px;overflow:hidden}
+.prog-hdr-fill{height:100%;border-radius:5px;background:var(--navy);transition:width .3s}
+
+/* ── rule picker ── */
+.any-box{background:var(--card);border:1px solid var(--bdr);border-radius:8px;overflow:hidden;margin-top:8px}
+.any-box-hdr{padding:7px 12px;border-bottom:1px solid var(--bdr2);display:flex;align-items:center;justify-content:space-between;background:var(--bg)}
+.any-person-row{display:flex;align-items:center;gap:8px;padding:7px 12px;border-bottom:1px solid var(--bdr2);font-size:12px}
+.any-person-row:last-child{border-bottom:none}
+.any-person-row.inactive{opacity:.4}
+.num-block{display:flex;align-items:center;gap:8px;margin:8px 0}
+.ns{display:flex;align-items:center;border:1px solid var(--bdr);border-radius:7px;overflow:hidden;background:var(--card)}
+.ns-btn{width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:var(--ink2);border:none;background:transparent;font-family:var(--font-sans)}
+.ns-btn:hover{background:var(--bg)}
+.ns-val{width:30px;text-align:center;font-size:13px;font-weight:600;color:var(--ink);border-left:1px solid var(--bdr2);border-right:1px solid var(--bdr2);height:28px;display:flex;align-items:center;justify-content:center}
+.ns-hint{font-size:12px;color:var(--ink2)}
+.person-item{display:flex;align-items:center;gap:8px;padding:8px 12px;cursor:pointer;border-bottom:1px solid var(--bdr2);transition:background .1s}
+.person-item:last-child{border-bottom:none}
+.person-item:hover{background:var(--bg)}
+.person-item.psel{background:#f0f7fb}
+.person-item.pdis{opacity:.4;pointer-events:none}
+.check-circ{width:17px;height:17px;border-radius:50%;border:1.5px solid var(--bdr);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-left:auto}
+.person-item.psel .check-circ{background:var(--navy);border-color:var(--navy);color:#fff}
+.chips-row{display:flex;flex-wrap:wrap;gap:5px;padding:8px 12px;min-height:38px;border-top:1px solid var(--bdr2);background:var(--bg)}
+.chip{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-size:11.5px;background:var(--card);border:1px solid var(--bdr);color:var(--ink)}
+.chip-x{cursor:pointer;color:var(--ink3);font-size:13px}
+.chip-x:hover{color:var(--ink)}
+.placeholder{font-size:12px;color:var(--ink4);display:flex;align-items:center;height:20px}
+.ps-row{display:flex;align-items:center;gap:6px;padding:7px 12px;border-bottom:1px solid var(--bdr2)}
+.ps-row i{color:var(--ink4);font-size:14px}
+.ps-row input{border:none;outline:none;background:transparent;font-size:12.5px;color:var(--ink);font-family:var(--font-sans);width:100%}
+.combo-inner{flex:1;background:var(--card);border:1px solid var(--bdr);border-radius:7px;overflow:hidden}
+.combo-role-bar{display:flex;align-items:center;gap:6px;padding:6px 10px;background:var(--bg);border-bottom:1px solid var(--bdr2)}
+.combo-role-bar select{border:none;background:transparent;font-family:var(--font-sans);font-size:12px;color:var(--ink);font-weight:500;cursor:pointer}
+.combo-num-bar{display:flex;align-items:center;gap:7px;padding:6px 10px;border-bottom:1px solid var(--bdr2)}
+.combo-toggle{font-size:11.5px;color:var(--ink3);cursor:pointer;display:flex;align-items:center;gap:4px;padding:5px 10px;background:var(--bg);border-top:1px solid var(--bdr2)}
+.combo-toggle:hover{color:var(--navy)}
+.mini-list{max-height:0;overflow:hidden}
+.mini-list.open{max-height:140px;overflow-y:auto}
+.mini-item{display:flex;align-items:center;gap:7px;padding:6px 10px;cursor:pointer;border-bottom:1px solid var(--bdr2);font-size:12px;color:var(--ink2)}
+.mini-item:last-child{border-bottom:none}
+.mini-item:hover{background:var(--bg)}
+.mini-item.msel{background:#f0f7fb;color:var(--navy);font-weight:500}
+.mini-dot{width:6px;height:6px;border-radius:50%;border:1.5px solid currentColor;flex-shrink:0}
+.combo-x-btn{width:20px;height:20px;border-radius:50%;border:1px solid var(--bdr);background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink3);flex-shrink:0;margin-top:7px}
+.combo-x-btn:hover{color:var(--r-tx);background:var(--r-bg)}
+.add-combo{width:100%;display:flex;align-items:center;justify-content:center;gap:5px;padding:7px;border:1px dashed var(--bdr);border-radius:7px;background:transparent;font-size:12px;color:var(--ink2);cursor:pointer;font-family:var(--font-sans);margin-bottom:12px}
+.add-combo:hover{background:var(--bg)}
+.combo-row-wrap{display:flex;align-items:flex-start;gap:5px;margin-bottom:7px}
+</style>
+
+<h2 class="sr-only">Mana BackOffice — fintech color system</h2>
+
+<div class="app">
+  <div class="sb">
+    <div class="sb-brand">
+      <div class="sb-logo"><i class="ti ti-building-bank" aria-hidden="true"></i></div>
+      <div><div class="sb-brand-name">Mana BackOffice</div><div class="sb-brand-sub">Operator Web</div></div>
+    </div>
+    <div class="sb-sec">
+      <div class="sb-lbl">ภาพรวม</div>
+      <div class="sb-item" onclick="goPage('dash',this)"><i class="ti ti-layout-dashboard" aria-hidden="true"></i>ภาพรวม</div>
+    </div>
+    <div class="sb-sec">
+      <div class="sb-lbl">จัดการ</div>
+      <div class="sb-item active" onclick="goPage('admins',this)"><i class="ti ti-users" aria-hidden="true"></i>ผู้ดูแลระบบ<span class="sb-dot"></span></div>
+      <div class="sb-item" onclick="goPage('requests',this)"><i class="ti ti-send" aria-hidden="true"></i>คำขอที่ส่งแล้ว<span class="sb-dot" style="background:#fca5a5;opacity:.9"></span></div>
+      <div class="sb-item" onclick="goPage('settings',this)"><i class="ti ti-settings" aria-hidden="true"></i>ตั้งค่าการทำงาน</div>
+    </div>
+    <div class="sb-user">
+      <div class="sb-av">OP</div>
+      <div><div class="sb-uname">Operator</div><div class="sb-urole">ผู้ใช้งานเว็บ</div></div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="tb-title" id="ptitle">ผู้ดูแลระบบ</div>
+      <div class="tb-right">
+        <button class="btn btn-ghost btn-sm"><i class="ti ti-bell" aria-hidden="true" style="font-size:16px"></i></button>
+        <button class="btn btn-primary btn-sm" id="main-cta" onclick="openDrawer('add-admin')"><i class="ti ti-plus" aria-hidden="true"></i>เพิ่มผู้ดูแล</button>
+      </div>
+    </div>
+    <div class="content">
+
+      <!-- DASH -->
+      <div class="page" id="pg-dash">
+        <div class="pbody">
+          <div class="metrics">
+            <div class="metric m-navy"><div class="m-lbl">ผู้ดูแลทั้งหมด</div><div class="m-val">5</div><div class="m-sub">active ทั้งหมด</div></div>
+            <div class="metric m-amber"><div class="m-lbl">รออนุมัติ</div><div class="m-val" style="color:var(--a-tx)">2</div><div class="m-sub">รอ Mana App</div></div>
+            <div class="metric m-green"><div class="m-lbl">อนุมัติวันนี้</div><div class="m-val" style="color:var(--g-tx)">3</div><div class="m-sub">เสร็จสิ้น</div></div>
+            <div class="metric m-red"><div class="m-lbl">ถูกปฏิเสธ</div><div class="m-val" style="color:var(--r-tx)">1</div><div class="m-sub">วันนี้</div></div>
+          </div>
+          <div class="card" style="padding:14px">
+            <div style="font-size:13px;font-weight:600;color:var(--ink);margin-bottom:10px">คำขอล่าสุด</div>
+            <div class="irow"><span class="ik">REQ-0341 · แต่งตั้งผู้อนุมัติ</span><span class="badge b-amber">รออนุมัติ 1/2</span></div>
+            <div class="irow"><span class="ik">REQ-0342 · จ่ายเงินเดือน</span><span class="badge b-amber">รออนุมัติ 0/1</span></div>
+            <div class="irow" style="border:none"><span class="ik">REQ-0340 · เพิ่มวงเงินจัดสรร</span><span class="badge b-green">อนุมัติแล้ว</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADMINS -->
+      <div class="page active" id="pg-admins">
+        <div class="pbody">
+          <div class="filter-row">
+            <button class="ftab active" onclick="ft(this)">ทั้งหมด</button>
+            <button class="ftab" onclick="ft(this)">ใช้งานอยู่</button>
+            <button class="ftab" onclick="ft(this)">ถูกระงับ</button>
+            <div class="sbox"><i class="ti ti-search" aria-hidden="true"></i><input placeholder="ค้นหาชื่อ..." /></div>
+          </div>
+          <div class="card">
+            <table>
+              <thead><tr>
+                <th style="width:28%">ผู้ใช้งาน</th><th style="width:15%">สิทธิ์</th><th style="width:15%">สถานะ</th><th style="width:28%">คำขอล่าสุด</th><th style="width:14%">จัดการ</th>
+              </tr></thead>
+              <tbody>
+                <tr class="cl" onclick="openDrawer('manage','JY','Jirayu Yoodee','jirayu@mana.co','Operator','draft')">
+                  <td><div class="ucell"><div class="av av-op">JY</div><div><div class="uname">Jirayu Yoodee</div><div class="uemail">jirayu@mana.co</div></div></div></td>
+                  <td><span class="badge b-blue">ผู้ดูแล</span></td><td><span class="badge b-gray">แบบร่าง</span></td>
+                  <td style="font-size:12px;color:var(--ink3)">ยังไม่ส่งคำขอ</td>
+                  <td><button class="btn btn-sm" onclick="event.stopPropagation();openDrawer('manage','JY','Jirayu Yoodee','jirayu@mana.co','Operator','draft')">จัดการ</button></td>
+                </tr>
+                <tr class="cl" onclick="openDrawer('manage','DK','Dao Kaew','dao@mana.co','Admin','pending')">
+                  <td><div class="ucell"><div class="av av-admin">DK</div><div><div class="uname">Dao Kaew</div><div class="uemail">dao@mana.co</div></div></div></td>
+                  <td><span class="badge b-green">ผู้อนุมัติ</span></td><td><span class="badge b-amber">รออนุมัติ</span></td>
+                  <td style="font-size:12px">ส่งไป Mana App แล้ว</td>
+                  <td><button class="btn btn-sm" onclick="event.stopPropagation();openDrawer('manage','DK','Dao Kaew','dao@mana.co','Admin','pending')">ติดตาม</button></td>
+                </tr>
+                <tr class="cl" onclick="openDrawer('manage','SM','Somsoke Meboon','somsoke@mana.co','Operator','active')">
+                  <td><div class="ucell"><div class="av av-op">SM</div><div><div class="uname">Somsoke Meboon</div><div class="uemail">somsoke@mana.co</div></div></div></td>
+                  <td><span class="badge b-blue">ผู้ดูแล</span></td><td><span class="badge b-green">ใช้งานอยู่</span></td>
+                  <td style="font-size:12px;color:var(--ink3)">อนุมัติแล้ว</td>
+                  <td><button class="btn btn-sm" onclick="event.stopPropagation();openDrawer('manage','SM','Somsoke Meboon','somsoke@mana.co','Operator','active')">จัดการ</button></td>
+                </tr>
+                <tr class="cl" onclick="openDrawer('manage','EW','Ek Warin','ek@mana.co','Operator','suspended')">
+                  <td><div class="ucell"><div class="av" style="background:var(--r-bg);color:var(--r-tx)">EW</div><div><div class="uname">Ek Warin</div><div class="uemail">ek@mana.co</div></div></div></td>
+                  <td><span class="badge b-blue">ผู้ดูแล</span></td><td><span class="badge b-red">ถูกระงับ</span></td>
+                  <td style="font-size:12px;color:var(--ink3)">อนุมัติแล้ว</td>
+                  <td><button class="btn btn-sm" onclick="event.stopPropagation();openDrawer('manage','EW','Ek Warin','ek@mana.co','Operator','suspended')">จัดการ</button></td>
+                </tr>
+                <tr class="cl" onclick="openDrawer('manage','TT','Tong Tadthai','tong@mana.co','SuperAdmin','active')">
+                  <td><div class="ucell"><div class="av av-super">TT</div><div><div class="uname">Tong Tadthai</div><div class="uemail">tong@mana.co</div></div></div></td>
+                  <td><span class="badge b-purple">ผู้ดูแลสูงสุด</span></td><td><span class="badge b-green">ใช้งานอยู่</span></td>
+                  <td style="font-size:12px;color:var(--ink3)">อนุมัติแล้ว</td>
+                  <td><button class="btn btn-sm" onclick="event.stopPropagation();openDrawer('manage','TT','Tong Tadthai','tong@mana.co','SuperAdmin','active')">จัดการ</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- REQUESTS -->
+      <div class="page" id="pg-requests">
+        <div class="pbody">
+          <div class="filter-row">
+            <button class="ftab active" onclick="ft(this)">ทั้งหมด</button>
+            <button class="ftab" onclick="ft(this)">รออนุมัติ</button>
+            <button class="ftab" onclick="ft(this)">อนุมัติแล้ว</button>
+            <button class="ftab" onclick="ft(this)">ถูกปฏิเสธ</button>
+            <div class="sbox"><i class="ti ti-search" aria-hidden="true"></i><input placeholder="ค้นหา..." /></div>
+          </div>
+          <div class="info-b" style="border-radius:8px"><i class="ti ti-info-circle" aria-hidden="true" style="font-size:14px;flex-shrink:0;margin-top:1px"></i>หน้านี้ใช้ติดตามสถานะเท่านั้น — การอนุมัติ/ปฏิเสธทำใน Mana App</div>
+          <div class="card">
+            <table>
+              <thead><tr>
+                <th style="width:11%">เลขที่</th><th style="width:22%">รายการ</th><th style="width:18%">ผู้ส่งคำขอ</th><th style="width:15%">สถานะ</th><th style="width:22%">ความคืบหน้า</th><th style="width:12%">Actions</th>
+              </tr></thead>
+              <tbody>
+                <tr class="cl" onclick="openDrawer('req','REQ-0341','แต่งตั้งผู้อนุมัติ','Dao Kaew','pending','1','2')">
+                  <td style="font-weight:600;font-size:12px;color:var(--navy)">REQ-0341</td><td style="font-size:12px">แต่งตั้งผู้อนุมัติ</td>
+                  <td><div class="ucell"><div class="av av-op" style="width:22px;height:22px;font-size:9px">SP</div><span style="font-size:12px">Somchai P.</span></div></td>
+                  <td><span class="badge b-amber">รออนุมัติ</span></td>
+                  <td><div class="prog"><div class="prog-bar"><div class="prog-fill" style="width:50%;background:var(--navy)"></div></div><span class="prog-lbl">1/2</span></div></td>
+                  <td><button class="btn btn-sm" onclick="event.stopPropagation();openDrawer('req','REQ-0341','แต่งตั้งผู้อนุมัติ','Dao Kaew','pending','1','2')">ติดตาม</button></td>
+                </tr>
+                <tr class="cl" onclick="openDrawer('req','REQ-0342','จ่ายเงินเดือน','Priya R.','pending','0','1')">
+                  <td style="font-weight:600;font-size:12px;color:var(--navy)">REQ-0342</td><td style="font-size:12px">จ่ายเงินเดือน</td>
+                  <td><div class="ucell"><div class="av av-op" style="width:22px;height:22px;font-size:9px">PR</div><span style="font-size:12px">Priya R.</span></div></td>
+                  <td><span class="badge b-amber">รออนุมัติ</span></td>
+                  <td><div class="prog"><div class="prog-bar"><div class="prog-fill" style="width:0%;background:var(--navy)"></div></div><span class="prog-lbl">0/1</span></div></td>
+                  <td><button class="btn btn-sm" onclick="event.stopPropagation();openDrawer('req','REQ-0342','จ่ายเงินเดือน','Priya R.','pending','0','1')">ติดตาม</button></td>
+                </tr>
+                <tr class="cl" onclick="openDrawer('req','REQ-0340','เพิ่มวงเงินจัดสรร','Napat W.','approved','2','2')">
+                  <td style="font-weight:600;font-size:12px;color:var(--navy)">REQ-0340</td><td style="font-size:12px">เพิ่มวงเงินจัดสรร</td>
+                  <td><div class="ucell"><div class="av av-super" style="width:22px;height:22px;font-size:9px">NW</div><span style="font-size:12px">Napat W.</span></div></td>
+                  <td><span class="badge b-green">อนุมัติแล้ว</span></td>
+                  <td><div class="prog"><div class="prog-bar"><div class="prog-fill" style="width:100%;background:var(--g-tx)"></div></div><span class="prog-lbl">2/2</span></div></td>
+                  <td><button class="btn btn-sm">ดูผล</button></td>
+                </tr>
+                <tr class="cl" onclick="openDrawer('req','REQ-0339','ลดวงเงินจัดสรร','Somchai P.','rejected','0','2')">
+                  <td style="font-weight:600;font-size:12px;color:var(--navy)">REQ-0339</td><td style="font-size:12px">ลดวงเงินจัดสรร</td>
+                  <td><div class="ucell"><div class="av av-op" style="width:22px;height:22px;font-size:9px">SP</div><span style="font-size:12px">Somchai P.</span></div></td>
+                  <td><span class="badge b-red">ถูกปฏิเสธ</span></td>
+                  <td><div class="prog"><div class="prog-bar"><div class="prog-fill" style="width:0%;background:var(--r-tx)"></div></div><span class="prog-lbl">0/2</span></div></td>
+                  <td><button class="btn btn-sm">ดูเหตุผล</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="page" id="pg-settings">
+        <div class="split">
+          <div class="op-list">
+            <div class="filter-row" style="margin-bottom:14px">
+              <div class="sbox" style="min-width:0;flex:1"><i class="ti ti-search" aria-hidden="true"></i><input placeholder="ค้นหา..." /></div>
+              <button class="ftab active" onclick="ft(this)">ทั้งหมด</button>
+              <button class="ftab" onclick="ft(this)">ผู้ดูแล</button>
+              <button class="ftab" onclick="ft(this)">เงินเดือน</button>
+            </div>
+            <div class="cat-group">
+              <div class="cat-lbl">ผู้ดูแลระบบ</div>
+              <div class="op-card" id="opc-0" onclick="selOp(0)"><div class="oc-top"><div class="oc-icon" style="background:var(--p-bg);color:var(--p-tx)"><i class="ti ti-user-star" aria-hidden="true"></i></div><div style="flex:1"><div class="oc-name">แต่งตั้งผู้ดูแลสูงสุด</div><div class="oc-code">Admin.AssignSuperAdmin</div><div class="oc-tags"><span class="badge b-gray">เจ้าของร้าน</span><span class="arr">→</span><span class="badge b-purple">เจ้าของร้าน + ผู้ดูแลสูงสุด</span></div></div><label class="toggle" onclick="event.stopPropagation()"><input type="checkbox" checked /><span class="tsl"></span></label></div></div>
+              <div class="op-card" id="opc-1" onclick="selOp(1)"><div class="oc-top"><div class="oc-icon" style="background:var(--navy-light);color:var(--navy)"><i class="ti ti-user-check" aria-hidden="true"></i></div><div style="flex:1"><div class="oc-name">แต่งตั้งผู้อนุมัติ</div><div class="oc-code">Admin.AssignAdmin</div><div class="oc-tags"><span class="badge b-gray">เจ้าของร้าน / ผู้ดูแลสูงสุด</span><span class="arr">→</span><span class="badge b-navy">เจ้าของร้าน + ผู้อนุมัติ 1 คน</span></div></div><label class="toggle" onclick="event.stopPropagation()"><input type="checkbox" checked /><span class="tsl"></span></label></div></div>
+              <div class="op-card" id="opc-2" onclick="selOp(2)"><div class="oc-top"><div class="oc-icon" style="background:var(--navy-light);color:var(--navy)"><i class="ti ti-user-plus" aria-hidden="true"></i></div><div style="flex:1"><div class="oc-name">แต่งตั้งผู้ดูแล</div><div class="oc-code">Admin.AssignOperator</div><div class="oc-tags"><span class="badge b-gray">ผู้อนุมัติ</span><span class="arr">→</span><span class="badge b-navy">ผู้อนุมัติ 1 คน</span></div></div><label class="toggle" onclick="event.stopPropagation()"><input type="checkbox" checked /><span class="tsl"></span></label></div></div>
+            </div>
+            <div class="cat-group">
+              <div class="cat-lbl">พนักงาน</div>
+              <div class="op-card" id="opc-3" onclick="selOp(3)"><div class="oc-top"><div class="oc-icon" style="background:var(--g-bg);color:var(--g-tx)"><i class="ti ti-users" aria-hidden="true"></i></div><div style="flex:1"><div class="oc-name">จัดการพนักงาน</div><div class="oc-code">Employee.Manage</div><div class="oc-tags"><span class="badge b-gray">ผู้ดูแล</span><span class="arr">→</span><span class="badge b-green">ไม่ต้องอนุมัติ</span></div></div><label class="toggle" onclick="event.stopPropagation()"><input type="checkbox" checked /><span class="tsl"></span></label></div></div>
+            </div>
+            <div class="cat-group">
+              <div class="cat-lbl">เงินเดือน / Allocation</div>
+              <div class="op-card" id="opc-4" onclick="selOp(4)"><div class="oc-top"><div class="oc-icon" style="background:var(--a-bg);color:var(--a-tx)"><i class="ti ti-cash" aria-hidden="true"></i></div><div style="flex:1"><div class="oc-name">จ่ายเงินเดือน</div><div class="oc-code">Payroll.Payout</div><div class="oc-tags"><span class="badge b-gray">ผู้ดูแล</span><span class="arr">→</span><span class="badge b-amber">ผู้อนุมัติ 1 คน</span></div></div><label class="toggle" onclick="event.stopPropagation()"><input type="checkbox" checked /><span class="tsl"></span></label></div></div>
+              <div class="op-card" id="opc-5" onclick="selOp(5)"><div class="oc-top"><div class="oc-icon" style="background:var(--r-bg);color:var(--r-tx)"><i class="ti ti-trending-up" aria-hidden="true"></i></div><div style="flex:1"><div class="oc-name">เพิ่มวงเงินจัดสรร</div><div class="oc-code">Allocation.Increase</div><div class="oc-tags"><span class="badge b-gray">ผู้ดูแล</span><span class="arr">→</span><span class="badge b-red">ผู้อนุมัติ 2 คน</span></div></div><label class="toggle" onclick="event.stopPropagation()"><input type="checkbox" checked /><span class="tsl"></span></label></div></div>
+              <div class="op-card" id="opc-6" onclick="selOp(6)"><div class="oc-top"><div class="oc-icon" style="background:var(--r-bg);color:var(--r-tx)"><i class="ti ti-trending-down" aria-hidden="true"></i></div><div style="flex:1"><div class="oc-name">ลดวงเงินจัดสรร</div><div class="oc-code">Allocation.Decrease</div><div class="oc-tags"><span class="badge b-gray">ผู้ดูแล</span><span class="arr">→</span><span class="badge b-red">ผู้อนุมัติ 2 คน</span></div></div><label class="toggle" onclick="event.stopPropagation()"><input type="checkbox" checked /><span class="tsl"></span></label></div></div>
+            </div>
+          </div>
+          <div class="op-detail" id="op-detail">
+            <div class="empty-det" id="det-empty"><i class="ti ti-settings" aria-hidden="true" style="font-size:28px;color:var(--ink4)"></i><div>เลือก operation<br>เพื่อดูและแก้ไข</div></div>
+            <div id="det-content" style="display:none;flex-direction:column;height:100%"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="drawer-ov" id="dov" onclick="closeDrawer()"></div>
+      <div class="drawer" id="drawer" style="position:relative">
+        <div style="position:absolute;top:0;left:0;right:0;height:3px;background:var(--navy);z-index:1"></div>
+        <div class="dr-hdr" style="padding-top:17px"><div><div class="dr-title" id="dr-title"></div><div class="dr-sub" id="dr-sub"></div></div><button class="btn btn-ghost btn-sm" onclick="closeDrawer()" aria-label="ปิด"><i class="ti ti-x" style="font-size:16px" aria-hidden="true"></i></button></div>
+        <div class="dr-body" id="dr-body"></div>
+        <div class="dr-footer" id="dr-footer"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const ADMINS=[
+  {id:1,init:'AK',name:'Arthit K.',email:'arthit@mana.co',role:'Owner',roleKey:'owner',avCls:'av-owner',active:true},
+  {id:2,init:'TT',name:'Tong Tadthai',email:'tong@mana.co',role:'ผู้ดูแลสูงสุด',roleKey:'super',avCls:'av-super',active:true},
+  {id:3,init:'NW',name:'Napat W.',email:'napat@mana.co',role:'ผู้ดูแลสูงสุด',roleKey:'super',avCls:'av-super',active:true},
+  {id:4,init:'KA',name:'Kuman A.',email:'kuman@mana.co',role:'ผู้อนุมัติ',roleKey:'admin',avCls:'av-admin',active:true},
+  {id:5,init:'DK',name:'Dao Kaew',email:'dao@mana.co',role:'ผู้อนุมัติ',roleKey:'admin',avCls:'av-admin',active:true},
+  {id:6,init:'SM',name:'Somsoke M.',email:'somsoke@mana.co',role:'ผู้อนุมัติ',roleKey:'admin',avCls:'av-admin',active:true},
+  {id:7,init:'EW',name:'Ek Warin',email:'ek@mana.co',role:'ผู้ดูแล',roleKey:'op',avCls:'av-op',active:false},
+];
+const RB={owner:'b-purple',super:'b-amber',admin:'b-green',op:'b-blue'};
+const RL={owner:'เจ้าของร้าน',super:'ผู้ดูแลสูงสุด',admin:'ผู้อนุมัติ',op:'ผู้ดูแล'};
+const OPS=[
+  {id:0,name:'แต่งตั้งผู้ดูแลสูงสุด',code:'Admin.AssignSuperAdmin',cat:'ผู้ดูแลระบบ',who:['เจ้าของร้าน'],approvalType:'combo',approvalLabel:'เจ้าของร้าน + ผู้ดูแลสูงสุด',approvalBadge:'b-purple',ruleType:'Require Combination',ruleNote:'เจ้าของร้าน + ผู้ดูแลสูงสุดอย่างน้อย 1 คน',risk:'high'},
+  {id:1,name:'แต่งตั้งผู้อนุมัติ',code:'Admin.AssignAdmin',cat:'ผู้ดูแลระบบ',who:['เจ้าของร้าน','ผู้ดูแลสูงสุด'],approvalType:'combo',approvalLabel:'เจ้าของร้าน + ผู้อนุมัติ 1 คน',approvalBadge:'b-navy',ruleType:'Require Combination',ruleNote:'เจ้าของร้านต้องอนุมัติ + ผู้อนุมัติ 1 คน',risk:'high'},
+  {id:2,name:'แต่งตั้งผู้ดูแล',code:'Admin.AssignOperator',cat:'ผู้ดูแลระบบ',who:['ผู้อนุมัติ'],approvalType:'x_admin',approvalLabel:'ผู้อนุมัติ 1 คน',approvalBadge:'b-navy',ruleType:'Require X From Role',ruleNote:'ผู้อนุมัติ active ใครก็ได้ 1 คน',risk:'medium'},
+  {id:3,name:'จัดการพนักงาน',code:'Employee.Manage',cat:'พนักงาน',who:['ผู้ดูแล'],approvalType:'none',approvalLabel:'ไม่ต้องอนุมัติ',approvalBadge:'b-green',ruleType:'No Approval',ruleNote:'ทำรายการได้ทันที',risk:'low'},
+  {id:4,name:'จ่ายเงินเดือน',code:'Payroll.Payout',cat:'เงินเดือน',who:['ผู้ดูแล'],approvalType:'x_admin',approvalLabel:'ผู้อนุมัติ 1 คน',approvalBadge:'b-amber',ruleType:'Require X From Role',ruleNote:'ผู้อนุมัติ active ใครก็ได้ 1 คน',risk:'high'},
+  {id:5,name:'เพิ่มวงเงินจัดสรร',code:'Allocation.Increase',cat:'Allocation',who:['ผู้ดูแล'],approvalType:'x_admin',approvalLabel:'ผู้อนุมัติ 2 คน',approvalBadge:'b-red',ruleType:'Require X From Role',ruleNote:'ผู้อนุมัติ active ใครก็ได้ 2 คน',risk:'high'},
+  {id:6,name:'ลดวงเงินจัดสรร',code:'Allocation.Decrease',cat:'Allocation',who:['ผู้ดูแล'],approvalType:'x_admin',approvalLabel:'ผู้อนุมัติ 2 คน',approvalBadge:'b-red',ruleType:'Require X From Role',ruleNote:'ผู้อนุมัติ active ใครก็ได้ 2 คน',risk:'high'},
+];
+const pageMap={dash:'ภาพรวม',admins:'ผู้ดูแลระบบ',requests:'คำขอที่ส่งแล้ว',settings:'ตั้งค่าการทำงาน'};
+const ctaMap={dash:null,admins:{label:'เพิ่มผู้ดูแล',action:"openDrawer('add-admin')"},requests:null,settings:null};
+let editWho=[],editApprType='x_admin',editCount=1,editSpecIds=[],editSpecSearch='',editComboRows=[],currentOpId=null;
+
+function goPage(id,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));
+  document.getElementById('pg-'+id).classList.add('active');
+  el.classList.add('active');
+  document.getElementById('ptitle').textContent=pageMap[id]||id;
+  const cta=document.getElementById('main-cta');
+  const c=ctaMap[id];
+  if(c){cta.style.display='';cta.innerHTML=`<i class="ti ti-plus" aria-hidden="true"></i>${c.label}`;cta.setAttribute('onclick',c.action);}
+  else cta.style.display='none';
+  closeDrawer();
+}
+function ft(el){el.closest('.filter-row').querySelectorAll('.ftab').forEach(t=>t.classList.remove('active'));el.classList.add('active');}
+
+function selOp(idx){
+  document.querySelectorAll('.op-card').forEach(c=>c.classList.remove('sel'));
+  document.getElementById('opc-'+idx).classList.add('sel');
+  currentOpId=idx;
+  const op=OPS[idx];
+  editWho=[...op.who];editApprType=op.approvalType;editCount=parseInt(op.approvalLabel.match(/\d+/)?.[0]||'1');
+  editSpecIds=[];editSpecSearch='';
+  editComboRows=[{roleKey:'owner',anyCount:1,specificId:null,mode:'any'},{roleKey:'admin',anyCount:1,specificId:null,mode:'any'}];
+  document.getElementById('det-empty').style.display='none';
+  const dc=document.getElementById('det-content');dc.style.display='flex';
+  renderDetView(op);
+}
+const riskC={high:'b-red',medium:'b-amber',low:'b-green'};
+const riskL={high:'ความเสี่ยงสูง',medium:'ความเสี่ยงกลาง',low:'ความเสี่ยงต่ำ'};
+function renderDetView(op){
+  document.getElementById('det-content').innerHTML=`
+<div class="dh"><div class="dh-top"><div><div class="dh-name">${op.name}</div><div class="dh-code">${op.code}</div></div><label class="toggle"><input type="checkbox" checked /><span class="tsl"></span></label></div><div style="display:flex;gap:5px;margin-top:8px"><span class="badge b-gray">${op.cat}</span><span class="badge ${riskC[op.risk]}">${riskL[op.risk]}</span></div></div>
+<div class="dbody"><div class="sec-lbl">ผู้ทำรายการ</div><div class="who-chips">${op.who.map(w=>`<span class="who-chip"><i class="ti ti-user" aria-hidden="true" style="font-size:12px"></i>${w}</span>`).join('')}</div><div class="sec-lbl">เงื่อนไขอนุมัติ</div><div class="rule-box"><span class="badge b-navy" style="margin-bottom:6px;display:inline-flex">${op.ruleType}</span><div class="rule-note">${op.ruleNote}</div></div><div class="sec-lbl">ประวัติ</div><div class="info-block"><div class="hist-item"><div class="h-dot" style="background:var(--g-tx)"></div><div><div style="font-weight:500">System สร้าง operation</div><div style="color:var(--ink3)">10 ม.ค.68</div></div></div></div></div>
+<div class="dfooter"><button class="btn btn-primary btn-sm" style="flex:1" onclick="enterDetEdit()"><i class="ti ti-edit" aria-hidden="true"></i>แก้ไขการตั้งค่า</button></div>`;
+}
+function enterDetEdit(){
+  const op=OPS[currentOpId];
+  document.getElementById('det-content').innerHTML=`
+<div class="dh"><div class="dh-name">${op.name}</div><div class="dh-code">${op.code}</div></div>
+<div class="dbody" id="det-edit-body">${renderEditBody()}</div>
+<div class="dfooter"><button class="btn btn-primary btn-sm" style="flex:1" onclick="selOp(${currentOpId})"><i class="ti ti-send" aria-hidden="true"></i>ส่งคำขอไป Mana App</button><button class="btn btn-sm" onclick="selOp(${currentOpId})">ยกเลิก</button></div>`;
+}
+function renderEditBody(){
+  const roles=['เจ้าของร้าน','ผู้ดูแลสูงสุด','ผู้อนุมัติ','ผู้ดูแล'];
+  const whoHtml=roles.map(r=>`<div class="check-item${editWho.includes(r)?' sel':''}" onclick="toggleWho(this,'${r}')"><div class="chk-box">${editWho.includes(r)?'✓':''}</div>${r}</div>`).join('');
+  return `<div class="sec-lbl" style="margin-bottom:6px">ผู้ทำรายการ</div><div style="display:flex;flex-direction:column;gap:5px;margin-bottom:14px">${whoHtml}</div><div class="divider"></div><div class="sec-lbl" style="margin-bottom:6px">เงื่อนไขอนุมัติ</div><div class="radio-group" id="det-rule-group" style="margin-bottom:10px">${['none','x_admin','x_super','owner','specific','combo'].map(k=>{const labels={none:'ไม่ต้องอนุมัติ',x_admin:'ผู้อนุมัติ X คน',x_super:'ผู้ดูแลสูงสุด X คน',owner:'เจ้าของร้าน',specific:'ระบุคนเฉพาะ',combo:'Combination'};return `<div class="radio-item${editApprType===k?' sel':''}" onclick="setApprType('${k}',this)"><span class="ri-dot"></span>${labels[k]}</div>`;}).join('')}</div><div id="det-rule-extra">${renderRuleExtra()}</div><div class="warn-b" style="margin-top:10px"><i class="ti ti-alert-triangle" aria-hidden="true" style="font-size:13px;flex-shrink:0;margin-top:1px"></i>การเปลี่ยนแปลงต้องรออนุมัติใน Mana App ก่อนมีผล</div>`;
+}
+function renderRuleExtra(){
+  if(editApprType==='none') return `<div class="ok-b"><i class="ti ti-circle-check" aria-hidden="true" style="font-size:13px;flex-shrink:0;margin-top:1px"></i>ทำรายการได้ทันที</div>`;
+  if(editApprType==='owner') return `<div class="ok-b"><i class="ti ti-circle-check" aria-hidden="true" style="font-size:13px;flex-shrink:0;margin-top:1px"></i>เจ้าของร้านอนุมัติเพียงคนเดียว</div>`;
+  if(editApprType==='x_admin') return renderAnyPicker('admin','ผู้อนุมัติ');
+  if(editApprType==='x_super') return renderAnyPicker('super','ผู้ดูแลสูงสุด');
+  if(editApprType==='specific') return renderSpecPicker();
+  if(editApprType==='combo') return renderComboPicker();
+  return '';
+}
+function renderAnyPicker(roleKey,label){
+  const pool=ADMINS.filter(a=>a.roleKey===roleKey&&a.active);
+  const inactive=ADMINS.filter(a=>a.roleKey===roleKey&&!a.active);
+  const safe=Math.min(editCount,pool.length);
+  const rows=pool.map(p=>`<div class="any-person-row"><div class="av ${p.avCls}" style="width:24px;height:24px;font-size:9px">${p.init}</div><div style="flex:1"><div style="font-size:12px;font-weight:500">${p.name}</div><div style="font-size:10.5px;color:var(--ink3)">${p.email}</div></div><span class="badge ${RB[p.roleKey]}" style="font-size:10px">${p.role}</span></div>`).join('');
+  const inact=inactive.map(p=>`<div class="any-person-row inactive"><div class="av ${p.avCls}" style="width:24px;height:24px;font-size:9px">${p.init}</div><div style="flex:1"><div style="font-size:12px;font-weight:500">${p.name}</div></div><span class="badge b-inactive" style="font-size:10px">ถูกระงับ</span></div>`).join('');
+  return `<div class="num-block"><div class="ns"><button class="ns-btn" onclick="chgCount(-1)">−</button><div class="ns-val">${safe}</div><button class="ns-btn" onclick="chgCount(1)">+</button></div><span class="ns-hint">คน จาก${label} <span style="color:var(--ink3)">(${pool.length} active)</span></span></div><div class="any-box"><div class="any-box-hdr"><span style="font-size:12px;font-weight:500;color:var(--ink2)">${label} — ใครก็ได้ ${safe} คน</span><span class="badge ${RB[roleKey]}">${pool.length} คน</span></div>${rows}${inact}</div>${pool.length>=safe?`<div class="ok-b" style="margin-top:8px"><i class="ti ti-circle-check" aria-hidden="true" style="font-size:13px;flex-shrink:0;margin-top:1px"></i>ใครก็ได้ ${safe} คน · active ${pool.length} ✓</div>`:`<div class="warn-b" style="margin-top:8px"><i class="ti ti-alert-triangle" aria-hidden="true" style="font-size:13px"></i>active ${pool.length} คน ไม่พอ</div>`}`;
+}
+function renderSpecPicker(){
+  const pool=ADMINS.filter(a=>a.roleKey!=='op');
+  const q=editSpecSearch.toLowerCase();
+  const filtered=q?pool.filter(a=>a.name.toLowerCase().includes(q)):pool;
+  const rows=filtered.map(p=>{const s=editSpecIds.includes(p.id);return `<div class="person-item${s?' psel':''}${!p.active?' pdis':''}" onclick="${p.active?`tglSpec(${p.id})`:''}" ><div class="av ${p.avCls}" style="width:24px;height:24px;font-size:9px">${p.init}</div><div style="flex:1"><div style="font-size:12px;font-weight:500">${p.name}</div><div style="font-size:10.5px;color:var(--ink3)">${p.role}</div></div>${!p.active?`<span class="badge b-inactive" style="font-size:10px">ถูกระงับ</span>`:''}<div class="check-circ">${s?'<i class="ti ti-check" aria-hidden="true" style="font-size:10px"></i>':''}</div></div>`;}).join('');
+  const chips=editSpecIds.map(id=>{const p=ADMINS.find(a=>a.id===id);return p?`<div class="chip"><div class="av ${p.avCls}" style="width:16px;height:16px;font-size:8px">${p.init}</div>${p.name}<span class="chip-x" onclick="tglSpec(${p.id})">×</span></div>`:''}).join('');
+  return `<div style="background:var(--card);border:1px solid var(--bdr);border-radius:8px;overflow:hidden;margin-top:4px"><div class="ps-row"><i class="ti ti-search" aria-hidden="true"></i><input placeholder="ค้นหาชื่อ..." id="spec-inp" oninput="onSpecSearch(this.value)" value="${editSpecSearch}" /></div>${rows}<div class="chips-row">${chips||'<span class="placeholder">ยังไม่ได้เลือก</span>'}</div></div>${editSpecIds.length>0?`<div class="ok-b" style="margin-top:8px"><i class="ti ti-circle-check" aria-hidden="true" style="font-size:13px;flex-shrink:0;margin-top:1px"></i>ต้องให้ ${editSpecIds.length} คนนี้อนุมัติครบ</div>`:`<div class="warn-b" style="margin-top:8px"><i class="ti ti-alert-triangle" aria-hidden="true" style="font-size:13px"></i>เลือกอย่างน้อย 1 คน</div>`}`;
+}
+function renderComboPicker(){
+  const roleOpts=['owner','super','admin'];
+  const rows=editComboRows.map((row,i)=>{
+    const pool=ADMINS.filter(a=>a.roleKey===row.roleKey&&a.active);
+    const safe=Math.min(row.anyCount,pool.length);
+    const opts=roleOpts.map(r=>`<option value="${r}"${row.roleKey===r?' selected':''}>${RL[r]}</option>`).join('');
+    const miniItems=pool.map(p=>{const s=row.specificId===p.id;return `<div class="mini-item${s?' msel':''}" onclick="setCmbSpc(${i},${p.id})"><span class="mini-dot"></span><div class="av ${p.avCls}" style="width:20px;height:20px;font-size:8px">${p.init}</div>${p.name}<span class="badge ${RB[p.roleKey]}" style="margin-left:auto;font-size:10px">${p.role}</span></div>`;}).join('');
+    return `<div class="combo-row-wrap"><div style="min-width:14px;text-align:center;padding-top:8px;font-size:11px;color:var(--ink3)">${i===0?'':'+'}</div><div class="combo-inner"><div class="combo-role-bar"><select onchange="setCmbRole(${i},this.value)">${opts}</select><span style="font-size:11px;color:var(--ink3);margin-left:auto">${pool.length} คน</span></div><div class="combo-num-bar" style="${row.mode==='specific'?'opacity:.4;pointer-events:none':''}"><div class="ns"><button class="ns-btn" style="width:24px;height:24px" onclick="chgCmbCount(${i},-1)">−</button><div class="ns-val" style="width:26px;height:24px;font-size:12px">${safe}</div><button class="ns-btn" style="width:24px;height:24px" onclick="chgCmbCount(${i},1)">+</button></div><span style="font-size:11.5px;color:var(--ink2)">${row.mode==='any'?`ใครก็ได้ ${safe} คน`:'ระบุเฉพาะ'}</span></div><div class="combo-toggle" onclick="tglCmbMode(${i})"><i class="ti ti-${row.mode==='any'?'user-search':'users'}" aria-hidden="true" style="font-size:13px"></i>${row.mode==='any'?'เปลี่ยนเป็น: ระบุคนเฉพาะ':'เปลี่ยนเป็น: ใครก็ได้'}</div><div class="mini-list${row.mode==='specific'?' open':''}">${miniItems||'<div style="padding:9px;font-size:12px;color:var(--ink3)">ไม่มีผู้ใช้</div>'}</div></div>${editComboRows.length>1?`<button class="combo-x-btn" onclick="rmCmbRow(${i})"><i class="ti ti-x" aria-hidden="true" style="font-size:11px"></i></button>`:'<div style="min-width:20px"></div>'}</div>`;
+  }).join('');
+  const allOk=editComboRows.every(r=>r.mode==='any'||(r.mode==='specific'&&r.specificId));
+  const summary=editComboRows.map(r=>{if(r.mode==='any') return `· ${RL[r.roleKey]} ใครก็ได้ ${Math.min(r.anyCount,ADMINS.filter(a=>a.roleKey===r.roleKey&&a.active).length)} คน`;const p=ADMINS.find(a=>a.id===r.specificId);return p?`· ${p.name} (ระบุเฉพาะ)`:`· ยังไม่ได้เลือก`;});
+  return `<div style="margin-top:4px">${rows}</div><button class="add-combo" onclick="addCmbRow()"><i class="ti ti-plus" aria-hidden="true"></i>เพิ่มเงื่อนไข</button>${allOk?`<div class="ok-b"><i class="ti ti-circle-check" aria-hidden="true" style="font-size:13px;flex-shrink:0;margin-top:1px"></i><div><div style="font-weight:500;margin-bottom:2px">ต้องผ่านครบทุกเงื่อนไข</div>${summary.map(s=>`<div style="font-size:11px;opacity:.85">${s}</div>`).join('')}</div></div>`:`<div class="warn-b"><i class="ti ti-alert-triangle" aria-hidden="true" style="font-size:13px"></i>กรุณากำหนดเงื่อนไขให้ครบ</div>`}`;
+}
+function refreshExtra(){const el=document.getElementById('det-rule-extra');if(el)el.innerHTML=renderRuleExtra();}
+function setApprType(k,el){el.closest('#det-rule-group').querySelectorAll('.radio-item').forEach(r=>r.classList.remove('sel'));el.classList.add('sel');editApprType=k;editSpecIds=[];editSpecSearch='';refreshExtra();}
+function toggleWho(el,role){el.classList.toggle('sel');el.querySelector('.chk-box').textContent=el.classList.contains('sel')?'✓':'';if(el.classList.contains('sel'))editWho.push(role);else editWho=editWho.filter(r=>r!==role);}
+function chgCount(d){const rk=editApprType==='x_admin'?'admin':'super';const max=ADMINS.filter(a=>a.roleKey===rk&&a.active).length;editCount=Math.max(1,Math.min(max,editCount+d));refreshExtra();}
+function tglSpec(id){if(editSpecIds.includes(id))editSpecIds=editSpecIds.filter(i=>i!==id);else editSpecIds.push(id);refreshExtra();const inp=document.getElementById('spec-inp');if(inp){inp.focus();inp.value=editSpecSearch;}}
+function onSpecSearch(v){editSpecSearch=v;refreshExtra();const inp=document.getElementById('spec-inp');if(inp){inp.focus();inp.value=v;inp.setSelectionRange(v.length,v.length);}}
+function setCmbRole(i,v){editComboRows[i].roleKey=v;editComboRows[i].specificId=null;refreshExtra();}
+function chgCmbCount(i,d){const max=ADMINS.filter(a=>a.roleKey===editComboRows[i].roleKey&&a.active).length;editComboRows[i].anyCount=Math.max(1,Math.min(max,editComboRows[i].anyCount+d));refreshExtra();}
+function tglCmbMode(i){editComboRows[i].mode=editComboRows[i].mode==='any'?'specific':'any';editComboRows[i].specificId=null;refreshExtra();}
+function setCmbSpc(i,id){editComboRows[i].specificId=editComboRows[i].specificId===id?null:id;refreshExtra();}
+function addCmbRow(){editComboRows.push({roleKey:'admin',anyCount:1,specificId:null,mode:'any'});refreshExtra();}
+function rmCmbRow(i){editComboRows.splice(i,1);refreshExtra();}
+
+function openDrawer(type,...args){
+  document.getElementById('dov').classList.add('open');
+  document.getElementById('drawer').classList.add('open');
+  const B=document.getElementById('dr-body'),F=document.getElementById('dr-footer'),T=document.getElementById('dr-title'),S=document.getElementById('dr-sub');
+
+  if(type==='add-admin'){
+    T.textContent='เพิ่มผู้ดูแลระบบ';S.textContent='สร้างคำขอแต่งตั้ง → ส่งไป Mana App';
+    B.innerHTML=`<div class="df-sec"><div class="df-lbl">ผู้ใช้งาน</div><input class="df-field" placeholder="ค้นหาชื่อ / อีเมล..."/></div><div class="df-sec"><div class="df-lbl">สิทธิ์ที่ต้องการแต่งตั้ง</div><div class="radio-group"><div class="radio-item" onclick="selR(this)"><span class="ri-dot"></span>ผู้ดูแล (Operator)</div><div class="radio-item sel" onclick="selR(this)"><span class="ri-dot"></span>ผู้อนุมัติ (Admin)</div><div class="radio-item" onclick="selR(this)"><span class="ri-dot"></span>ผู้ดูแลสูงสุด (SuperAdmin)</div></div></div><div class="df-sec"><div class="df-lbl">เหตุผล</div><textarea class="df-field df-ta" placeholder="ระบุเหตุผล..."></textarea></div><div class="df-sec"><div class="df-lbl">เงื่อนไขอนุมัติ</div><div class="df-rule"><div class="df-rule-lbl">Admin.AssignAdmin</div><div class="df-rule-val">เจ้าของร้าน + ผู้อนุมัติ 1 คน</div><div style="font-size:11px;color:var(--navy);margin-top:4px;opacity:.7">ผู้อนุมัติ active: 3 คน ✓</div></div></div>`;
+    F.innerHTML=`<button class="btn btn-primary btn-sm" style="flex:1" onclick="closeDrawer()"><i class="ti ti-send" aria-hidden="true"></i>ส่งคำขอไป Mana App</button><button class="btn btn-sm" onclick="closeDrawer()">บันทึกแบบร่าง</button><button class="btn btn-sm" onclick="closeDrawer()">ยกเลิก</button>`;
+  }
+
+  else if(type==='manage'){
+    const[init,name,email,role,status]=args;
+    const rl={Operator:'ผู้ดูแล',Admin:'ผู้อนุมัติ',SuperAdmin:'ผู้ดูแลสูงสุด'};
+    const isPending=status==='pending';
+    T.textContent='จัดการผู้ดูแล';S.textContent=name;
+    const allApprovers=[
+      {init:'TT',name:'Tong Tadthai',role:'ผู้ดูแลสูงสุด',avCls:'av-super',done:true,time:'15 ม.ค. · 10:38'},
+      {init:'AK',name:'Arthit K.',role:'เจ้าของร้าน',avCls:'av-owner',done:false,time:''},
+      {init:'KA',name:'Kuman A.',role:'ผู้อนุมัติ',avCls:'av-admin',done:false,time:''},
+    ];
+    const doneCount=allApprovers.filter(a=>a.done).length;
+    const totalCount=allApprovers.length;
+    const pct=Math.round(doneCount/totalCount*100);
+    const aprRows=allApprovers.map(a=>`<div class="apr-row"><div class="apr-icon ${a.done?'api-done':'api-wait'}"><i class="ti ti-${a.done?'check':'clock'}" aria-hidden="true"></i></div><div class="av ${a.avCls}" style="width:26px;height:26px;font-size:10px">${a.init}</div><div class="apr-info"><div class="apr-name">${a.name}</div><div class="apr-role">${a.role}</div></div><div class="apr-time">${a.done?a.time:'<span style="color:var(--a-tx)">รออยู่</span>'}</div></div>`).join('');
+    B.innerHTML=`
+<div style="display:flex;align-items:center;gap:10px;padding:12px;background:var(--bg);border:1px solid var(--bdr);border-radius:9px;margin-bottom:14px">
+  <div class="av av-op" style="width:38px;height:38px;font-size:13px">${init}</div>
+  <div><div style="font-size:13px;font-weight:600">${name}</div><div style="font-size:11px;color:var(--ink3)">${email}</div><div style="margin-top:4px"><span class="badge b-blue">${rl[role]||role}</span></div></div>
+</div>
+${isPending?`
+<div class="df-sec">
+  <div class="df-lbl">ความคืบหน้าการอนุมัติ</div>
+  <div class="apr-section">
+    <div class="apr-hdr"><span class="apr-hdr-title">Admin.AssignAdmin · ต้องการ ${totalCount} คน</span><span class="badge b-amber">${doneCount}/${totalCount}</span></div>
+    <div class="prog-hdr"><div class="prog-hdr-bar"><div class="prog-hdr-fill" style="width:${pct}%"></div></div></div>
+    ${aprRows}
+  </div>
+  <div class="warn-b" style="margin-top:8px"><i class="ti ti-bell" aria-hidden="true" style="font-size:13px;flex-shrink:0;margin-top:1px"></i>รอ <strong>Arthit K.</strong> และ <strong>Kuman A.</strong> — กด "แจ้งเตือนอีกครั้ง"</div>
+</div>
+<div class="divider"></div>`:''}
+<div class="df-lbl" style="margin-bottom:8px">Actions</div>
+<div class="action-item"><i class="ti ti-exchange" aria-hidden="true"></i>เปลี่ยนสิทธิ์<i class="ti ti-chevron-right" aria-hidden="true" style="color:var(--ink4)"></i></div>
+${status==='suspended'?`<div class="action-item" style="color:var(--g-tx)"><i class="ti ti-circle-check" aria-hidden="true"></i>เปิดใช้งานอีกครั้ง<i class="ti ti-chevron-right" aria-hidden="true" style="color:var(--ink4)"></i></div>`:`<div class="action-item"><i class="ti ti-ban" aria-hidden="true"></i>ระงับการใช้งาน<i class="ti ti-chevron-right" aria-hidden="true" style="color:var(--ink4)"></i></div>`}
+<div class="action-item danger"><i class="ti ti-user-minus" aria-hidden="true"></i>ถอดถอนสิทธิ์<i class="ti ti-chevron-right" aria-hidden="true" style="color:var(--ink4)"></i></div>
+<div class="action-item"><i class="ti ti-history" aria-hidden="true"></i>ดูประวัติ<i class="ti ti-chevron-right" aria-hidden="true" style="color:var(--ink4)"></i></div>`;
+    F.innerHTML=isPending
+      ?`<button class="btn btn-primary btn-sm" style="flex:1" onclick="closeDrawer()"><i class="ti ti-bell-ringing" aria-hidden="true"></i>แจ้งเตือนอีกครั้ง</button><button class="btn btn-sm btn-warn" onclick="closeDrawer()">ยกเลิกคำขอ</button>`
+      :`<button class="btn btn-primary btn-sm" style="flex:1" onclick="closeDrawer()"><i class="ti ti-send" aria-hidden="true"></i>ส่งคำขอไป Mana App</button><button class="btn btn-sm" onclick="closeDrawer()">ยกเลิก</button>`;
+  }
+
+  else if(type==='req'){
+    const[reqId,opName,target,status,done,total]=args;
+    const isPending=status==='pending',isRej=status==='rejected';
+    T.textContent=reqId;S.textContent=opName;
+    const reqApprovers=[
+      {init:'KA',name:'Kuman A.',role:'ผู้อนุมัติ',avCls:'av-admin',done:parseInt(done)>0,time:'15 ม.ค. · 10:38'},
+      ...(parseInt(total)>=2?[{init:'TT',name:'Tong Tadthai',role:'ผู้ดูแลสูงสุด',avCls:'av-super',done:false,time:''}]:[]),
+    ];
+    const aprRows2=reqApprovers.map(a=>`<div class="apr-row"><div class="apr-icon ${a.done?'api-done':'api-wait'}"><i class="ti ti-${a.done?'check':'clock'}" aria-hidden="true"></i></div><div class="av ${a.avCls}" style="width:26px;height:26px;font-size:10px">${a.init}</div><div class="apr-info"><div class="apr-name">${a.name}</div><div class="apr-role">${a.role}</div></div><div class="apr-time">${a.done?a.time:`<span style="color:var(--a-tx)">รออยู่</span>`}</div></div>`).join('');
+    const pct2=Math.round(parseInt(done)/parseInt(total)*100);
+    const fillColor=status==='approved'?'var(--g-tx)':status==='rejected'?'var(--r-tx)':'var(--navy)';
+    B.innerHTML=`
+<div class="df-sec"><div class="df-lbl">ข้อมูลคำขอ</div><div class="info-block"><div class="irow"><span class="ik">รายการ</span><span class="iv">${opName}</span></div><div class="irow"><span class="ik">เป้าหมาย</span><span class="iv">${target}</span></div><div class="irow"><span class="ik">สถานะ</span><span class="iv">${status==='pending'?'รออนุมัติ':status==='approved'?'อนุมัติแล้ว':'ถูกปฏิเสธ'}</span></div><div class="irow" style="border:none"><span class="ik">หมดอายุ</span><span class="iv">17 ม.ค.68 · 10:42</span></div></div></div>
+<div class="df-sec"><div class="df-lbl">ผู้อนุมัติ — รอใครบ้าง</div>
+<div class="apr-section">
+  <div class="apr-hdr"><span class="apr-hdr-title">ต้องการ ${total} คน</span><span class="badge ${status==='approved'?'b-green':status==='rejected'?'b-red':'b-amber'}">${done}/${total}</span></div>
+  <div class="prog-hdr"><div class="prog-hdr-bar"><div class="prog-hdr-fill" style="width:${pct2}%;background:${fillColor}"></div></div></div>
+  ${aprRows2}
+</div></div>
+${isRej?`<div class="df-sec"><div class="df-lbl">เหตุผลที่ปฏิเสธ</div><div style="background:var(--r-bg);border:1px solid var(--r-bd);border-radius:8px;padding:9px 12px;font-size:12.5px;color:var(--r-tx)">วงเงินเกินกำหนด</div></div>`:''}
+<div class="df-sec"><div class="df-lbl">Timeline</div>
+<div class="rt-item"><div class="rt-left"><div class="rt-dot" style="background:var(--g-tx)"></div><div class="rt-line"></div></div><div><div style="font-size:12.5px;font-weight:500">สร้างคำขอ</div><div style="font-size:11px;color:var(--ink3)">15 ม.ค. · 08:30</div></div></div>
+${parseInt(done)>0?`<div class="rt-item"><div class="rt-left"><div class="rt-dot" style="background:var(--g-tx)"></div><div class="rt-line"></div></div><div><div style="font-size:12.5px;font-weight:500">Kuman A. อนุมัติ</div><div style="font-size:11px;color:var(--ink3)">15 ม.ค. · 10:38</div></div></div>`:''}
+${isPending?`<div class="rt-item"><div class="rt-left"><div class="rt-dot" style="background:var(--a-bd)"></div></div><div><div style="font-size:12.5px;color:var(--ink3)">รออนุมัติเพิ่มเติม...</div></div></div>`:''}
+${isRej?`<div class="rt-item"><div class="rt-left"><div class="rt-dot" style="background:var(--r-tx)"></div></div><div><div style="font-size:12.5px;font-weight:500;color:var(--r-tx)">ถูกปฏิเสธ</div><div style="font-size:11px;color:var(--ink3)">15 ม.ค. · 09:10</div></div></div>`:''}
+</div>`;
+    F.innerHTML=isPending?`<button class="btn btn-primary btn-sm" style="flex:1" onclick="closeDrawer()"><i class="ti ti-bell-ringing" aria-hidden="true"></i>แจ้งเตือนอีกครั้ง</button><button class="btn btn-sm btn-warn" onclick="closeDrawer()">ยกเลิกคำขอ</button>`:`<button class="btn btn-sm" onclick="closeDrawer()">ปิด</button>`;
+  }
+}
+function closeDrawer(){document.getElementById('dov').classList.remove('open');document.getElementById('drawer').classList.remove('open');}
+function selR(el){el.closest('.radio-group').querySelectorAll('.radio-item').forEach(r=>r.classList.remove('sel'));el.classList.add('sel');}
+document.getElementById('main-cta').style.display='';
+</script>
