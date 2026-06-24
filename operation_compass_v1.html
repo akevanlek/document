@@ -933,9 +933,10 @@ main{padding:28px 32px;max-width:860px}
       <div class="st-item"><div class="st-dot" style="background:#1d6fd8"></div>In Progress</div>
       <div class="st-item"><div class="st-dot" style="background:#b83232"></div>Blocked</div>
       <div class="st-item"><div class="st-dot" style="background:#5b3fa8"></div>In Review</div>
-      <div class="st-item"><div class="st-dot" style="background:#92610a"></div>QA</div>
+      <div class="st-item"><div class="st-dot" style="background:#92610a"></div>Testing</div>
+      <div class="st-item"><div class="st-dot" style="background:#b83232"></div>Re-open</div>
       <div class="st-item"><div class="st-dot" style="background:#1a7a4a"></div>Done</div>
-      <div style="font-size:10px;color:var(--hint);margin-top:4px">● แดง = escalation trigger</div>
+      <div style="font-size:10px;color:var(--hint);margin-top:4px">● แดง = escalation / QA fail</div>
     </div>
   </div>
   <div class="panel-main" id="df-main"></div>
@@ -979,22 +980,26 @@ main{padding:28px 32px;max-width:860px}
   <div class="ref-modal-box">
     <div class="ref-modal-head"><span class="ref-modal-title">Status Standard</span><button class="ref-close" onclick="DF_closeRef(null,'status')">✕</button></div>
     <div class="ref-modal-body">
-      <div class="status-flow" style="margin-bottom:16px">
+      <div class="status-flow" style="margin-bottom:16px;flex-wrap:wrap;gap:4px">
         <div class="sf sf-todo">To Do</div><div class="sf-arr">→</div>
         <div class="sf sf-inprog">In Progress</div><div class="sf-arr">⇄</div>
         <div class="sf sf-blocked">Blocked</div><div class="sf-arr">→</div>
         <div class="sf sf-review">In Review</div><div class="sf-arr">→</div>
-        <div class="sf sf-qa">QA</div><div class="sf-arr">→</div>
+        <div class="sf sf-qa">Testing</div><div class="sf-arr">→</div>
         <div class="sf sf-done">Done</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:12px;padding:7px 10px;background:rgba(184,50,50,.05);border:1px solid rgba(184,50,50,.15);border-radius:var(--r-sm);font-size:12px;color:#7a2020;flex-wrap:wrap">
+        <span style="font-weight:500">QA fail loop:</span> Testing <span style="color:var(--hint)">→</span> <span style="background:rgba(184,50,50,.1);padding:1px 7px;border-radius:999px;border:1px solid rgba(184,50,50,.2)">Re-open</span> <span style="color:var(--hint)">→</span> In Progress <span style="color:var(--hint)">→</span> In Review <span style="color:var(--hint)">→</span> Testing <span style="color:var(--hint)">→ วนจนผ่าน →</span> Done
       </div>
       <table class="da-table">
         <tr><th>Status</th><th style="text-align:left">กติกา</th></tr>
-        <tr><td><span class="sf sf-todo" style="padding:2px 8px;font-size:12px">To Do</span></td><td style="font-size:12px;color:var(--muted)">task ใหม่ทุกอัน start ที่นี่</td></tr>
+        <tr><td><span class="sf sf-todo" style="padding:2px 8px;font-size:12px">To Do</span></td><td style="font-size:12px;color:var(--muted)">task ใหม่ทุกอันเริ่มที่นี่</td></tr>
         <tr><td><span class="sf sf-inprog" style="padding:2px 8px;font-size:12px">In Progress</span></td><td style="font-size:12px;color:var(--muted)">เริ่มทำงานแล้ว — อัปเดตทุกวัน</td></tr>
         <tr><td><span class="sf sf-blocked" style="padding:2px 8px;font-size:12px">Blocked</span></td><td style="font-size:12px;color:var(--muted)">ติดปัญหา — ต้องระบุเหตุผล + แจ้ง PL ทันที</td></tr>
         <tr><td><span class="sf sf-review" style="padding:2px 8px;font-size:12px">In Review</span></td><td style="font-size:12px;color:var(--muted)">ส่ง TL review code</td></tr>
-        <tr><td><span class="sf sf-qa" style="padding:2px 8px;font-size:12px">QA</span></td><td style="font-size:12px;color:var(--muted)">QA ทดสอบตาม AC</td></tr>
-        <tr><td><span class="sf sf-done" style="padding:2px 8px;font-size:12px">Done</span></td><td style="font-size:12px;color:var(--muted)">ผ่าน closing checklist ครบแล้ว</td></tr>
+        <tr><td><span class="sf sf-qa" style="padding:2px 8px;font-size:12px">Testing</span></td><td style="font-size:12px;color:var(--muted)">QA กำลังทดสอบตาม AC — QA task link อยู่กับ Dev task</td></tr>
+        <tr><td><span style="padding:2px 8px;font-size:12px;border-radius:999px;background:rgba(184,50,50,.09);border:1px solid rgba(184,50,50,.22);color:#8c2020;font-weight:500">Re-open</span></td><td style="font-size:12px;color:var(--muted)">QA fail — QA เปลี่ยน Dev task กลับ Re-open + comment bug list + แจ้ง Dev</td></tr>
+        <tr><td><span class="sf sf-done" style="padding:2px 8px;font-size:12px">Done</span></td><td style="font-size:12px;color:var(--muted)">ผ่าน closing tier requirement ครบแล้ว</td></tr>
       </table>
     </div>
   </div>
@@ -2022,40 +2027,46 @@ const DF_STEPS = [
     criteria:["status อัปเดตทุกวัน","Blocked มี reason ทุกครั้ง","daily update ส่งตาม format","code review ผ่านก่อน In Review"]
   },
   {
-    num:"5", name:"Review & QA", hint:"In Review → QA → Done",
+    num:"5", name:"Review & QA", hint:"Testing → Re-open loop → QA sign-off",
     isGate: false,
-    desc:"TL review code quality, QA ทดสอบตาม AC — ถ้า fail กลับ In Progress พร้อม comment ชัดว่าต้องแก้อะไร ห้าม close งานที่ยังมี Urgent bug open",
+    desc:"Dev ทำเสร็จ → TL review → status = Testing — QA สร้าง task ตัวเองแยก + link relation กับ Dev task แล้วทดสอบตาม AC ถ้าพบ bug → บันทึกใน QA task ตัวเอง + เปลี่ยน Dev task กลับเป็น Re-open + แจ้ง Dev วนซ้ำจนผ่านทุก AC แล้วจึง sign-off",
     owner:"TL (Review) / QA (Test)", approver:"PL", escalation:"PL",
     contribs:["Assignee","QA TL"],
     decisionAuthority:[
       { area:"Code quality pass/fail", who:"TL", cls:"da-tl" },
       { area:"QA test pass/fail", who:"QA TL", cls:"da-tl" },
+      { area:"Re-open Dev task", who:"QA TL", cls:"da-tl" },
       { area:"Scope pass/fail", who:"PL", cls:"da-pl" },
       { area:"Technical standard", who:"CTO", cls:"da-cto" }
     ],
     outputs:[
-      { label:"Code review result", desc:"TL review ใน PR — pass หรือ request changes พร้อม comment ชัด", example:"PR #142 ✅ Approved — comment: เพิ่ม unit test partial fail case ก่อน merge" },
-      { label:"QA test result", desc:"QA ทดสอบทุก AC — pass หรือ fail พร้อม bug report", example:"AC1: disburse 500 ✅ / AC2: partial retry ✅ / AC3: wallet ไม่พอ → error ✅ / Found: 1 High timeout bug" },
-      { label:"Bug report (ถ้ามี)", desc:"ถ้า fail สร้าง task ใน ClickUp พร้อม severity และ assign กลับ", example:"[BUG] High timeout >300 records — assign Khun A / Due 27 May" },
-      { label:"QA sign-off", desc:"QA TL confirm ว่าผ่านทุก AC และ 0 Urgent bug open", example:"QA sign-off: Payroll Disbursement ✅ — 100% AC pass, 0 Urgent open, ready for closing" }
+      { label:"QA Task (สร้างครั้งเดียว reuse ทุก round)", desc:"QA สร้าง task แยกต่างหาก 1 task ต่อ 1 Dev task + link relation กลับมาที่ Dev task เสมอ — ไม่สร้าง task ใหม่ทุก round", example:"[QA] Payroll Disbursement — E2E Test (linked: [BE] DisbursementService) / Round 1: bug 1, bug 2, bug 3 / Round 2: bug 1" },
+      { label:"Code review result", desc:"TL review ใน PR — pass หรือ request changes พร้อม comment ชัด ก่อน Dev task เปลี่ยนเป็น Testing", example:"PR #142 ✅ Approved — comment: เพิ่ม unit test partial fail case ก่อน merge" },
+      { label:"Bug list ใน QA task (ถ้า fail)", desc:"QA เขียน bug ที่พบทั้งหมดใน QA task ตัวเอง ระบุ round และ severity — ไม่เขียนใน Dev task และไม่ส่งผ่าน chat", example:"Round 1: [High] timeout >300 records, [Normal] error message ผิด, [Low] UI spacing / Round 2: [High] timeout ยังอยู่" },
+      { label:"Re-open Dev task (ถ้า fail)", desc:"QA เปลี่ยน Dev task status → Re-open + comment สรุป bug ที่ต้องแก้ + แจ้ง Dev โดยตรง — Dev รับรู้และเริ่มแก้ได้เลย", example:"[BE] DisbursementService → Re-open / comment: Round 1 fail — 3 bugs, ดู [QA] task สำหรับรายละเอียด / @Khun A โปรดดูและแจ้ง ETA" },
+      { label:"QA sign-off (เมื่อผ่านทุก AC)", desc:"QA TL confirm ว่าผ่านทุก AC ทุก round และ 0 Urgent bug open — เปลี่ยน Dev task → Testing → Done", example:"QA sign-off: Payroll Disbursement ✅ — Round 2 pass, 100% AC, 0 Urgent open, ready for closing" }
     ],
-    rollback:"ถ้า fail → กลับ In Progress พร้อม comment ชัดว่าต้องแก้อะไร",
+    rollback:"ถ้า fail → QA เปลี่ยน Dev task กลับเป็น Re-open พร้อม comment bug list — ไม่ใช่ In Progress",
     escalation_when:"พบ bug Urgent หรือ scope miss กระทบ release → แจ้ง PL ทันที",
     failures:[
+      "QA ไม่สร้าง task ตัวเอง — บันทึก bug ใน chat หรือ Dev task โดยตรง ติดตามไม่ได้",
+      "QA ไม่ link relation กับ Dev task — ไม่รู้ว่า QA task นี้ test ให้ใคร",
+      "เปลี่ยน Dev task กลับเป็น In Progress แทน Re-open — เสีย context ว่า round นี้ fail",
       "Review ผ่านเร็วโดยไม่ test จริง — bug หลุดไป production",
-      "QA ไม่มี AC ชัด — ทดสอบไม่ครบ ไม่รู้ว่า done จริงหรือเปล่า",
-      "Bug report ไม่สร้างใน ClickUp — ติดตามไม่ได้ หายไปกับ chat"
+      "Bug report ใน chat แทน QA task — ติดตามไม่ได้ หายไปกับ message"
     ],
     realExample:{ scenario:"Payroll Disbursement", highlights:[
-      { label:"AC ครบทุกข้อ", cls:"re-qa", note:"ทดสอบก่อน sign-off" },
-      { label:"Bug → ClickUp", cls:"re-blk", note:"ไม่ใช่แค่บอกใน chat" }
+      { label:"QA task + link", cls:"re-qa", note:"สร้างครั้งเดียว reuse ทุก round" },
+      { label:"Re-open (ไม่ใช่ In Progress)", cls:"re-blk", note:"ถ้า QA fail" },
+      { label:"Bug ใน QA task", cls:"re-ops", note:"ไม่ใช่ chat" }
     ], rows:[
-      { label:"Code review", val:"PR #142 ✅ approved + unit test added for partial fail" },
-      { label:"QA result", val:"AC1-5 ✅ pass / 1 High bug: timeout >300 records" },
-      { label:"Bug fix", val:"[BUG] High timeout → Khun A แก้ + retest → ✅ pass" },
-      { label:"Sign-off", val:"Payroll Disbursement ✅ — 0 open bug, ready for closing" }
+      { label:"QA task", val:"[QA] Payroll Disbursement — E2E Test ← linked: [BE] DisbursementService" },
+      { label:"Round 1", val:"3 bugs พบ → [BE] DisbursementService → Re-open / @Khun A: Round 1 fail, ดู QA task" },
+      { label:"Dev แก้", val:"Khun A แก้ครบ → TL review → Testing อีกครั้ง" },
+      { label:"Round 2", val:"1 bug ยังอยู่ → Re-open อีกครั้ง / Round 3: pass ✅ → QA sign-off" },
+      { label:"Sign-off", val:"Payroll Disbursement ✅ — Round 3 pass, 0 Urgent, ready for closing" }
     ]},
-    criteria:["code review ผ่านจาก TL","QA ทดสอบครบทุก AC","0 Urgent bug open","QA TL sign-off แล้ว"]
+    criteria:["QA task สร้างแล้วและ link กับ Dev task","bug บันทึกใน QA task ทุก round","Dev task = Re-open ทุกครั้งที่ fail (ไม่ใช่ In Progress)","0 Urgent bug open","QA TL sign-off แล้ว"]
   },
   {
     num:"6", name:"Work Closing", hint:"Done checklist",
@@ -2573,7 +2584,7 @@ const PB_S=[
 <div class="sh">Status Flow</div>
 <div class="card"><div class="cb">
 <div class="sc" style="margin-bottom:12px">
-<span class="sn s0">To Do</span><span class="sar">→</span><span class="sn s1">In Progress</span><span class="sar">→</span><span class="sn s2">In Review</span><span class="sar">→</span><span class="sn s3">QA</span><span class="sar">→</span><span class="sn s4">Done</span>
+<span class="sn s0">To Do</span><span class="sar">→</span><span class="sn s1">In Progress</span><span class="sar">→</span><span class="sn s2">In Review</span><span class="sar">→</span><span class="sn s3">Testing</span><span class="sar">→</span><span class="sn s4">Done</span>
 </div>
 <div style="display:flex;align-items:center;gap:8px"><span style="font-size:12px;color:var(--hint)">เกิดได้จากทุกสถานะก่อน Done:</span><span class="sn s5" style="font-size:11px">Blocked</span></div>
 </div></div>
@@ -2584,7 +2595,7 @@ const PB_S=[
 <tr><td>To Do</td><td>Task ใหม่ทุกอันเริ่มที่นี่</td></tr>
 <tr><td>In Progress</td><td>กำลังทำอยู่ — ต้อง update ทุกวัน</td></tr>
 <tr><td>In Review</td><td>ส่ง TL review code แล้ว</td></tr>
-<tr><td>QA</td><td>QA กำลังทดสอบตาม Acceptance Criteria</td></tr>
+<tr><td>Testing</td><td>QA กำลังทดสอบตาม AC — QA task link กับ Dev task + Re-open ถ้า fail</td></tr>
 <tr><td>Done</td><td>ผ่าน closing tier requirement ครบ — ไม่ใช่แค่ทำเสร็จ</td></tr>
 <tr><td>Blocked</td><td>ทำต่อไม่ได้ — ต้องระบุเหตุผลและแจ้ง PL ทันที</td></tr>
 </table>
