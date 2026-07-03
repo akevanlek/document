@@ -1,0 +1,1629 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Operation Compass v3</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f5f4f0; --bg2:#fff; --bg3:#eeedea; --bg4:#e4e3de;
+  --line:rgba(0,0,0,.07); --line2:rgba(0,0,0,.13);
+  --text:#1c1c1a; --muted:#5c5c57; --hint:#a0a099;
+  /* Execution */
+  --pf:#1d6fd8; --pf-dim:rgba(29,111,216,.09); --pf-mid:rgba(29,111,216,.22);
+  --df:#1a7a4a; --df-dim:rgba(26,122,74,.09);  --df-mid:rgba(26,122,74,.22);
+  --of:#6a3fa0; --of-dim:rgba(106,63,160,.09); --of-mid:rgba(106,63,160,.22);
+  --sf:#004765; --sf-dim:rgba(0,71,101,.09);   --sf-mid:rgba(0,71,101,.22);
+  /* Governance */
+  --os:#3d3d3a; --os-dim:rgba(61,61,58,.08);   --os-mid:rgba(61,61,58,.2);
+  --qa:#92610a; --qa-dim:rgba(146,97,10,.09);  --qa-mid:rgba(146,97,10,.22);
+  --ci:#2d6e6e; --ci-dim:rgba(45,110,110,.09); --ci-mid:rgba(45,110,110,.22);
+  /* People */
+  --pe:#7c3f6e; --pe-dim:rgba(124,63,110,.09); --pe-mid:rgba(124,63,110,.22);
+  /* Semantic */
+  --red:#b83232; --red-dim:rgba(184,50,50,.08);
+  --amber:#92610a; --amber-dim:rgba(146,97,10,.08);
+  --green:#1a7a4a; --green-dim:rgba(26,122,74,.08);
+  --r:10px; --r-sm:6px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;line-height:1.6;font-size:14px}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:4px}
+
+/* ── TOP NAV ── */
+.top-nav{position:sticky;top:0;z-index:200;background:rgba(245,244,240,.95);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:0;height:52px;padding:0 20px}
+.nav-brand{display:flex;align-items:center;gap:9px;flex-shrink:0;margin-right:16px}
+.nav-mark{width:28px;height:28px;background:var(--text);border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:9px;color:#fff;letter-spacing:.02em}
+.nav-title{font-size:13px;font-weight:500}
+.nav-v{font-size:10px;color:var(--hint);font-family:'DM Mono',monospace}
+.nav-sep{width:1px;height:24px;background:var(--line2);margin:0 12px;flex-shrink:0}
+
+/* layer groups in nav */
+.nav-layer{display:flex;align-items:center;gap:1px;flex-shrink:0}
+.nav-layer-label{font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;padding:0 8px 0 4px;color:var(--hint);flex-shrink:0}
+.tab-btn{display:flex;align-items:center;gap:5px;padding:5px 10px;border:none;background:transparent;cursor:pointer;border-radius:var(--r-sm);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;color:var(--hint);transition:all .15s;white-space:nowrap}
+.tab-btn:hover{color:var(--muted);background:var(--bg3)}
+.tab-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.tab-btn.active{color:var(--text)}
+.tab-btn.t-home.active{background:var(--bg3)}
+.tab-btn.t-pf.active{color:var(--pf);background:var(--pf-dim)}
+.tab-btn.t-df.active{color:var(--df);background:var(--df-dim)}
+.tab-btn.t-of.active{color:var(--of);background:var(--of-dim)}
+.tab-btn.t-sf.active{color:var(--sf);background:var(--sf-dim)}
+.tab-btn.t-os.active{color:var(--os);background:var(--os-dim)}
+.tab-btn.t-qa.active{color:var(--qa);background:var(--qa-dim)}
+.tab-btn.t-ci.active{color:var(--ci);background:var(--ci-dim)}
+.tab-btn.t-pe.active{color:var(--pe);background:var(--pe-dim)}
+
+/* ── HOME PAGE ── */
+#page-home{display:none;flex-direction:column;align-items:center;padding:40px 24px 64px}
+#page-home.visible{display:flex}
+.home-hero{text-align:center;margin-bottom:48px}
+.home-title{font-size:30px;font-weight:300;letter-spacing:-.02em;margin-bottom:6px}
+.home-sub{font-size:13px;color:var(--muted);max-width:480px;margin:0 auto}
+
+.layer-section{width:100%;max-width:960px;margin-bottom:32px}
+.layer-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.layer-pill{font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:999px;border:1px solid}
+.layer-name{font-size:13px;font-weight:500;color:var(--muted)}
+.layer-cards{display:grid;gap:10px}
+.layer-exec .layer-cards{grid-template-columns:repeat(4,1fr)}
+.layer-gov .layer-cards{grid-template-columns:repeat(3,1fr)}
+.layer-ppl .layer-cards{grid-template-columns:repeat(5,1fr)}
+
+.hcard{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);padding:16px;cursor:pointer;transition:all .15s;position:relative;overflow:hidden}
+.hcard:hover:not(.hcard-soon){transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,.07)}
+.hcard-accent{position:absolute;top:0;left:0;right:0;height:2px}
+.hcard-code{font-family:'DM Mono',monospace;font-size:10px;font-weight:500;letter-spacing:.06em;margin-bottom:8px}
+.hcard-name{font-size:13px;font-weight:500;margin-bottom:5px}
+.hcard-desc{font-size:11px;color:var(--muted);line-height:1.55;margin-bottom:12px}
+.hcard-foot{display:flex;align-items:center;justify-content:space-between}
+.hcard-meta{font-size:10px;color:var(--hint);font-family:'DM Mono',monospace}
+.hcard-badge{font-size:10px;padding:1px 7px;border-radius:999px;font-weight:500;border:1px solid}
+.b-stable{background:rgba(26,122,74,.1);border-color:rgba(26,122,74,.3);color:#145c37}
+.b-frozen{background:rgba(0,71,101,.1);border-color:rgba(0,71,101,.3);color:#004765}
+.b-draft{background:var(--amber-dim);border-color:rgba(146,97,10,.3);color:#7a5008}
+.b-soon{background:var(--bg3);border-color:var(--line2);color:var(--hint)}
+.hcard-soon{cursor:default;opacity:.6}
+.hcard-soon .hcard-name{color:var(--muted)}
+
+/* flow connector between layers */
+.layer-connector{display:flex;align-items:center;justify-content:center;gap:6px;margin:4px 0 16px;font-size:11px;color:var(--hint)}
+.lc-line{flex:1;max-width:120px;height:1px;background:var(--line2)}
+
+/* terminal states strip */
+.terminal-strip{display:flex;gap:8px;width:100%;max-width:960px;margin-top:8px}
+.ts-item{flex:1;padding:10px 14px;background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);text-align:center}
+.ts-state{font-size:16px;font-weight:300;font-family:'DM Mono',monospace;margin-bottom:2px}
+.ts-label{font-size:10px;color:var(--hint);letter-spacing:.06em;text-transform:uppercase}
+
+/* ── PANEL LAYOUT ── */
+.page{display:none}
+.page.visible{display:flex;min-height:calc(100vh - 52px)}
+.panel-aside{width:248px;flex-shrink:0;border-right:1px solid var(--line);position:sticky;top:52px;height:calc(100vh - 52px);overflow-y:auto;display:flex;flex-direction:column;padding:12px 0}
+.panel-main{flex:1;padding:28px 32px;max-width:920px;overflow-y:auto}
+.back-btn{display:flex;align-items:center;gap:5px;padding:5px 10px 5px 8px;margin:0 10px 6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:var(--hint);border-radius:var(--r-sm);transition:all .15s;width:fit-content;font-family:'DM Sans',sans-serif}
+.back-btn:hover{background:var(--bg3);color:var(--muted)}
+.sb-lbl{font-size:10px;font-weight:500;letter-spacing:.1em;color:var(--hint);text-transform:uppercase;padding:8px 14px 4px}
+.sb-div{height:1px;background:var(--line);margin:8px 14px}
+.sb-extra{padding:8px 14px}
+.sb-et{font-size:10px;font-weight:500;letter-spacing:.08em;color:var(--hint);text-transform:uppercase;margin-bottom:6px}
+
+/* sidebar step buttons */
+.sbtn{width:100%;display:flex;align-items:center;gap:8px;padding:7px 14px;border:none;background:transparent;cursor:pointer;text-align:left;transition:background .15s;position:relative}
+.sbtn:hover{background:rgba(0,0,0,.03)}
+.sbtn.active::before{content:'';position:absolute;left:0;top:4px;bottom:4px;width:2px;border-radius:0 2px 2px 0}
+.snum{width:22px;height:22px;border-radius:5px;background:var(--bg3);border:1px solid var(--line2);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);flex-shrink:0;transition:all .15s}
+.smeta{flex:1;min-width:0}
+.stitle{font-size:12px;font-weight:500;color:var(--muted);display:block;transition:color .15s}
+.sbtn.active .stitle{color:var(--text)}
+.shint{font-size:11px;color:var(--hint);display:block;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.spip{width:5px;height:5px;border-radius:50%;flex-shrink:0;opacity:0}
+.has-pip .spip{opacity:1;background:var(--amber)}
+
+/* per-section active colors */
+.pf-btn.active{background:var(--pf-dim)} .pf-btn.active::before{background:var(--pf)} .pf-btn.active .snum{background:var(--pf);border-color:var(--pf);color:#fff}
+.df-btn.active{background:var(--df-dim)} .df-btn.active::before{background:var(--df)} .df-btn.active .snum{background:var(--df);border-color:var(--df);color:#fff}
+.of-btn.active{background:var(--of-dim)} .of-btn.active::before{background:var(--of)} .of-btn.active .snum{background:var(--of);border-color:var(--of);color:#fff}
+.sf-btn.active{background:var(--sf-dim)} .sf-btn.active::before{background:var(--sf)} .sf-btn.active .snum{background:var(--sf);border-color:var(--sf);color:#fff}
+.os-btn.active{background:var(--os-dim)} .os-btn.active::before{background:var(--os)} .os-btn.active .snum{background:var(--os);border-color:var(--os);color:#fff}
+.qa-btn.active{background:var(--qa-dim)} .qa-btn.active::before{background:var(--qa)} .qa-btn.active .snum{background:var(--qa);border-color:var(--qa);color:#fff}
+.ci-btn.active{background:var(--ci-dim)} .ci-btn.active::before{background:var(--ci)} .ci-btn.active .snum{background:var(--ci);border-color:var(--ci);color:#fff}
+
+/* ── CONTENT ── */
+.fade-in{animation:fi .18s ease forwards}
+@keyframes fi{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.hero{display:flex;align-items:flex-start;gap:16px;margin-bottom:22px;padding-bottom:22px;border-bottom:1px solid var(--line)}
+.hero-num{font-size:40px;font-weight:300;font-family:'DM Mono',monospace;line-height:1;opacity:.3;flex-shrink:0;min-width:46px}
+.hero-name{font-size:18px;font-weight:500;margin-bottom:4px}
+.hero-desc{font-size:13px;color:var(--muted);line-height:1.7;max-width:580px}
+.sh{font-size:10px;font-weight:500;letter-spacing:.1em;color:var(--hint);text-transform:uppercase;margin:20px 0 8px}
+.card{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-bottom:12px}
+.ch{padding:9px 14px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:7px}
+.ch-icon{font-size:12px;color:var(--hint)}
+.ch-label{font-size:10px;font-weight:500;letter-spacing:.09em;color:var(--hint);text-transform:uppercase}
+.cb{padding:12px 14px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px}
+
+/* roles */
+.role-row{display:flex;align-items:flex-start;gap:8px;margin-bottom:6px}
+.role-row:last-child{margin-bottom:0}
+.role-key{font-size:11px;color:var(--hint);min-width:80px;padding-top:3px;flex-shrink:0}
+.tags{display:flex;flex-wrap:wrap;gap:4px}
+.tag{font-size:12px;padding:2px 9px;border-radius:999px;border:1px solid var(--line2);color:var(--muted);background:var(--bg3)}
+.tag.owner{background:var(--pf-dim);border-color:var(--pf-mid);color:#0f4fa3}
+.tag.approver{background:var(--df-dim);border-color:var(--df-mid);color:#145c37}
+.tag.escalate{background:var(--amber-dim);border-color:rgba(146,97,10,.22);color:#7a5008}
+
+/* tables */
+.da-table,.ftable,.obs-table,.sev-table{width:100%;border-collapse:collapse;font-size:12px}
+.da-table th,.ftable th,.obs-table th,.sev-table th{font-size:10px;font-weight:500;letter-spacing:.07em;color:var(--hint);text-transform:uppercase;text-align:left;padding:0 0 5px;border-bottom:1px solid var(--line)}
+.da-table td,.ftable td,.obs-table td,.sev-table td{padding:6px 0;border-bottom:1px solid var(--line);color:var(--muted);vertical-align:top;line-height:1.5}
+.da-table tr:last-child td,.ftable tr:last-child td,.obs-table tr:last-child td,.sev-table tr:last-child td{border-bottom:none}
+.da-area{color:var(--muted);font-size:12px}
+.da-who{text-align:right}
+.da-tag{font-size:12px;padding:2px 8px;border-radius:999px;font-weight:500}
+.da-po{background:rgba(91,63,168,.09);color:#4a2e9a;border:1px solid rgba(91,63,168,.2)}
+.da-pl{background:var(--pf-dim);color:#0f4fa3;border:1px solid var(--pf-mid)}
+.da-cto{background:var(--red-dim);color:#8c2020;border:1px solid rgba(184,50,50,.2)}
+.da-coo{background:var(--amber-dim);color:#7a5008;border:1px solid rgba(146,97,10,.2)}
+.da-tl{background:var(--df-dim);color:#145c37;border:1px solid var(--df-mid)}
+.da-assignee{background:var(--df-dim);color:#145c37;border:1px solid var(--df-mid)}
+.obs-ok{color:#145c37;font-weight:500} .obs-no{color:#8c2020;font-weight:500}
+.sev1{color:#8c2020;font-weight:500} .sev2{color:#7a5008;font-weight:500} .sev3{color:#0f4fa3;font-weight:500}
+
+/* outputs */
+.out-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 20px}
+.out-block{padding:9px 0;border-bottom:1px solid var(--line)}
+.out-block:last-child{border-bottom:none}
+.out-hd{display:flex;align-items:center;gap:6px;margin-bottom:3px}
+.out-dot{width:4px;height:4px;border-radius:50%;flex-shrink:0}
+.out-lbl{font-size:13px;font-weight:500}
+.out-desc{font-size:12px;color:var(--muted);margin-bottom:4px;padding-left:10px;line-height:1.5}
+.out-ex{font-size:12px;color:var(--muted);background:var(--bg3);border-left:2px solid #1d6fd8;padding:5px 9px;line-height:1.6;margin-left:10px;border-radius:0 var(--r-sm) var(--r-sm) 0}
+.ex-tag{display:inline-block;font-size:10px;font-weight:500;color:#1d6fd8;background:rgba(29,111,216,.1);border-radius:3px;padding:1px 5px;margin-right:4px}
+.rollback-row{display:flex;align-items:center;gap:6px;margin-top:10px;padding:6px 9px;background:var(--bg3);border-radius:var(--r-sm);font-size:12px;color:var(--muted)}
+
+/* checklist */
+.ck-list{display:flex;flex-direction:column;gap:4px}
+.ck-item{display:flex;align-items:flex-start;gap:7px;font-size:13px;padding:4px 0;border-bottom:1px solid var(--line);line-height:1.5}
+.ck-item:last-child{border-bottom:none;padding-bottom:0}
+.ck-icon{color:#1a7a4a;font-size:12px;flex-shrink:0;margin-top:2px}
+
+/* failures */
+.fail-list{display:flex;flex-direction:column;gap:5px}
+.fail-item{display:flex;align-items:flex-start;gap:7px;padding:7px 10px;background:rgba(184,50,50,.05);border:1px solid rgba(184,50,50,.12);border-radius:var(--r-sm);font-size:12px;color:#7a2020;line-height:1.5}
+
+/* info boxes */
+.info-box{padding:9px 12px;border-radius:var(--r-sm);font-size:13px;line-height:1.6;margin-bottom:8px}
+.info-blue{background:rgba(29,111,216,.06);border:1px solid rgba(29,111,216,.18);color:#0f4fa3}
+.info-amber{background:var(--amber-dim);border:1px solid rgba(146,97,10,.2);color:#7a5008}
+.info-green{background:var(--df-dim);border:1px solid var(--df-mid);color:#145c37}
+.info-note{background:var(--bg3);border:1px solid var(--line2);color:var(--muted)}
+.gov-alert{background:rgba(146,97,10,.07);border:1px solid rgba(146,97,10,.18);border-radius:var(--r-sm);padding:9px 12px;font-size:13px;color:#7a5008;line-height:1.6}
+
+/* real example */
+.re-box{background:var(--bg3);border-radius:var(--r-sm);overflow:hidden}
+.re-title{font-size:12px;font-weight:500;padding:8px 11px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.re-body{padding:9px 11px;display:flex;flex-direction:column;gap:5px}
+.re-row{display:flex;align-items:flex-start;gap:7px;font-size:12px}
+.re-lbl{min-width:110px;flex-shrink:0;color:var(--hint)}
+.re-val{color:var(--text);line-height:1.5}
+.re-hl{display:inline-block;font-size:10px;padding:1px 7px;border-radius:999px;font-weight:500;margin:1px 2px;border:1px solid}
+.re-tec{background:rgba(26,122,74,.09);color:#145c37;border-color:rgba(26,122,74,.22)}
+.re-fin{background:rgba(184,50,50,.09);color:#8c2020;border-color:rgba(184,50,50,.18)}
+.re-gov{background:var(--amber-dim);color:#7a5008;border-color:rgba(146,97,10,.22)}
+.re-con{background:rgba(91,63,168,.09);color:#4a2e9a;border-color:rgba(91,63,168,.2)}
+.re-blk{background:rgba(184,50,50,.09);color:#8c2020;border-color:rgba(184,50,50,.18)}
+.re-ops{background:var(--pf-dim);color:#0f4fa3;border-color:var(--pf-mid)}
+.re-qa{background:var(--amber-dim);color:#7a5008;border-color:rgba(146,97,10,.22)}
+
+/* gate items */
+.gate-item{display:flex;align-items:flex-start;gap:7px;font-size:13px;padding:3px 0}
+.gate-fail-box{margin-top:10px;padding:7px 10px;background:rgba(184,50,50,.06);border:1px solid rgba(184,50,50,.15);border-radius:var(--r-sm);font-size:12px;color:#7a2020}
+
+/* status pills */
+.sf-flow{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:12px}
+.sf-n{padding:3px 9px;border-radius:999px;font-size:12px;font-weight:500}
+.sf-todo{background:var(--bg3);border:1px solid var(--line2);color:var(--muted)}
+.sf-prog{background:var(--pf-dim);border:1px solid var(--pf-mid);color:#0f4fa3}
+.sf-blk{background:var(--red-dim);border:1px solid rgba(184,50,50,.25);color:#8c2020}
+.sf-rev{background:rgba(91,63,168,.09);border:1px solid rgba(91,63,168,.22);color:#4a2e9a}
+.sf-qa{background:var(--amber-dim);border:1px solid rgba(146,97,10,.22);color:#7a5008}
+.sf-done{background:var(--df-dim);border:1px solid var(--df-mid);color:#145c37}
+.sf-arr{color:var(--hint);font-size:11px}
+
+/* ov chain */
+.ov-chain{display:flex;align-items:flex-start;flex-wrap:wrap;gap:0}
+.ov-node{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:8px 6px;border-radius:var(--r-sm);transition:background .15s;text-align:center;min-width:82px}
+.ov-node:hover{background:var(--bg3)}
+.ov-num{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:11px;font-weight:500}
+.ov-nname{font-size:11px;font-weight:500;line-height:1.3}
+.ov-nhint{font-size:10px;color:var(--hint);line-height:1.3}
+.ov-arr{font-size:13px;color:var(--hint);padding:0 2px;align-self:center;padding-bottom:12px}
+
+/* tier cards */
+.tier-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px}
+.tier-card{border-radius:var(--r-sm);padding:11px 13px;border:1px solid var(--line2)}
+.tc-fast{background:rgba(26,122,74,.06);border-color:rgba(26,122,74,.2)} .tc-fast .tc-lbl{color:#145c37}
+.tc-std{background:rgba(29,111,216,.06);border-color:rgba(29,111,216,.2)} .tc-std .tc-lbl{color:#1050a0}
+.tc-full{background:rgba(146,97,10,.06);border-color:rgba(146,97,10,.2)} .tc-full .tc-lbl{color:#7a5008}
+.tc-lbl{font-size:13px;font-weight:500;margin-bottom:2px}
+.tc-eg{font-size:11px;color:var(--hint);margin-bottom:6px;font-style:italic}
+.tc-rules{font-size:12px;color:var(--muted);display:flex;flex-direction:column;gap:2px}
+
+/* closing tier */
+.ct-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.ct-card{padding:10px 12px;border-radius:var(--r-sm);border:1px solid var(--line2)}
+.ct-normal{background:var(--bg3)} .ct-major{background:var(--pf-dim);border-color:var(--pf-mid)}
+.ct-major .ct-lbl{color:#0f4fa3} .ct-critical{background:rgba(184,50,50,.06);border-color:rgba(184,50,50,.18)}
+.ct-critical .ct-lbl{color:#8c2020} .ct-hotfix{background:var(--amber-dim);border-color:rgba(146,97,10,.22)}
+.ct-hotfix .ct-lbl{color:#7a5008}
+.ct-lbl{font-size:12px;font-weight:500;margin-bottom:2px}
+.ct-eg{font-size:11px;color:var(--hint);margin-bottom:5px}
+.ct-req{font-size:12px;font-weight:500;color:var(--text)}
+
+/* nav bar inside panel */
+.nav-bar{display:flex;align-items:center;justify-content:space-between;margin-top:24px;padding-top:18px;border-top:1px solid var(--line)}
+.nav-btn{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--r-sm);border:1px solid var(--line2);background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;transition:all .15s}
+.nav-btn:hover{background:var(--bg3);color:var(--text)}
+.nav-btn:disabled{opacity:.3;cursor:default}
+.nav-prog{font-family:'DM Mono',monospace;font-size:12px;color:var(--hint)}
+
+/* ref modal */
+.ref-modal{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.35);display:none;align-items:center;justify-content:center}
+.ref-modal.open{display:flex}
+.ref-modal-box{background:var(--bg2);border-radius:var(--r);border:1px solid var(--line);width:520px;max-height:80vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,.18)}
+.rmh{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg2)}
+.rmt{font-size:14px;font-weight:500}
+.rmc{border:none;background:transparent;cursor:pointer;color:var(--hint);font-size:14px;padding:2px 6px;border-radius:4px}
+.rmc:hover{background:var(--bg3)}
+.rmb{padding:16px}
+.ref-section{padding:0 14px}
+.ref-title{font-size:10px;font-weight:500;letter-spacing:.08em;color:var(--hint);text-transform:uppercase;margin-bottom:5px}
+.ref-item{display:flex;align-items:center;gap:6px;padding:5px 7px;border-radius:var(--r-sm);cursor:pointer;transition:background .15s;font-size:12px;color:var(--muted)}
+.ref-item:hover{background:var(--bg3);color:var(--text)}
+
+/* report box */
+.report-box{font-family:'DM Mono',monospace;font-size:12px;background:var(--bg3);border-radius:var(--r-sm);padding:10px 12px;color:var(--text);line-height:1.9;margin-bottom:8px;white-space:pre-wrap}
+
+/* gate chain */
+.gate-chain{display:flex;flex-direction:column;align-items:center;gap:0;font-size:12px}
+.gate-box{padding:7px 16px;border-radius:var(--r-sm);border:1px solid var(--line2);background:var(--bg3);color:var(--muted);text-align:center;min-width:200px}
+.gate-pass{background:var(--df-dim);border-color:var(--df-mid);color:#145c37;font-weight:500}
+.gate-fail{background:var(--red-dim);border-color:rgba(184,50,50,.22);color:#8c2020;font-weight:500}
+.gate-arr{color:var(--hint);padding:4px 0;font-size:14px}
+.gate-split{display:flex;gap:12px;width:100%;justify-content:center}
+
+.lifecycle{display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin-bottom:12px}
+.lc-node{padding:4px 11px;border-radius:999px;font-size:12px;font-weight:500;border:1px solid var(--line2);background:var(--bg3);color:var(--muted)}
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="top-nav">
+  <div class="nav-brand">
+    <div class="nav-mark">OC</div>
+    <div><div class="nav-title">Operation Compass</div><div class="nav-v">v3</div></div>
+  </div>
+  <button class="tab-btn t-home" id="tab-home" onclick="showHome()">⊞ Home</button>
+  <div class="nav-sep"></div>
+  <div class="nav-layer">
+    <span class="nav-layer-label">Governance</span>
+    <button class="tab-btn t-os" id="tab-os" onclick="showPanel('os')"><span class="tab-dot" style="background:var(--os)"></span>Standards</button>
+    <button class="tab-btn t-qa" id="tab-qa" onclick="showPanel('qa')"><span class="tab-dot" style="background:var(--qa)"></span>QA</button>
+    <button class="tab-btn t-ci" id="tab-ci" onclick="showPanel('ci')"><span class="tab-dot" style="background:var(--ci)"></span>CI</button>
+  </div>
+  <div class="nav-sep"></div>
+  <div class="nav-layer">
+    <span class="nav-layer-label">Execution</span>
+    <button class="tab-btn t-pf" id="tab-pf" onclick="showPanel('pf')"><span class="tab-dot" style="background:var(--pf)"></span>Product</button>
+    <button class="tab-btn t-df" id="tab-df" onclick="showPanel('df')"><span class="tab-dot" style="background:var(--df)"></span>Delivery</button>
+    <button class="tab-btn t-of" id="tab-of" onclick="showPanel('of')"><span class="tab-dot" style="background:var(--of)"></span>Operation</button>
+    <button class="tab-btn t-sf" id="tab-sf" onclick="showPanel('sf')"><span class="tab-dot" style="background:var(--sf)"></span>Support</button>
+  </div>
+  <div class="nav-sep"></div>
+  <div class="nav-layer">
+    <span class="nav-layer-label">People</span>
+    <button class="tab-btn t-pe" id="tab-pe" onclick="showPanel('pe')"><span class="tab-dot" style="background:var(--pe)"></span>People</button>
+  </div>
+</nav>
+
+<!-- HOME -->
+<div id="page-home">
+  <div class="home-hero">
+    <div class="home-title">Operation Compass</div>
+    <div class="home-sub">ระบบปฏิบัติการของทีม Mana — Governance · Execution · People</div>
+  </div>
+
+  <!-- GOVERNANCE LAYER -->
+  <div class="layer-section layer-gov">
+    <div class="layer-head">
+      <span class="layer-pill" style="background:var(--os-dim);border-color:var(--os-mid);color:var(--os)">Governance Layer</span>
+      <span class="layer-name">กำกับดูแล มาตรฐาน และการปรับปรุงต่อเนื่อง</span>
+    </div>
+    <div class="layer-cards">
+      <div class="hcard" onclick="showPanel('os')">
+        <div class="hcard-accent" style="background:var(--os)"></div>
+        <div class="hcard-code" style="color:var(--os)">OS</div>
+        <div class="hcard-name">Operating Standards</div>
+        <div class="hcard-desc">มาตรฐานกลางที่ทุกคนในองค์กรต้องใช้ร่วมกัน — Working Expectation, ClickUp, Reporting, Decision Authority</div>
+        <div class="hcard-foot"><span class="hcard-meta">6 standards</span><span class="hcard-badge b-stable">Stable v3.1</span></div>
+      </div>
+      <div class="hcard" onclick="showPanel('qa')">
+        <div class="hcard-accent" style="background:var(--qa)"></div>
+        <div class="hcard-code" style="color:var(--qa)">QA</div>
+        <div class="hcard-name">Quality Assurance</div>
+        <div class="hcard-desc">ตรวจสอบว่าทีมปฏิบัติตาม Standards — Evidence → Review → Finding → Recommendation</div>
+        <div class="hcard-foot"><span class="hcard-meta">4 steps</span><span class="hcard-badge b-frozen">Frozen v1.0</span></div>
+      </div>
+      <div class="hcard" onclick="showPanel('ci')">
+        <div class="hcard-accent" style="background:var(--ci)"></div>
+        <div class="hcard-code" style="color:var(--ci)">CI</div>
+        <div class="hcard-name">Continuous Improvement</div>
+        <div class="hcard-desc">Entry point สำหรับ Feedback จากทุกคน — Submit → Review → Decision → Communication</div>
+        <div class="hcard-foot"><span class="hcard-meta">5 steps</span><span class="hcard-badge b-draft">Draft v1.0</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="layer-connector"><div class="lc-line"></div><span>กำกับ Execution Layer ด้านล่าง</span><div class="lc-line"></div></div>
+
+  <!-- EXECUTION LAYER -->
+  <div class="layer-section layer-exec">
+    <div class="layer-head">
+      <span class="layer-pill" style="background:var(--pf-dim);border-color:var(--pf-mid);color:var(--pf)">Execution Layer</span>
+      <span class="layer-name">กระบวนการทำงานตั้งแต่ Idea ถึง Stable</span>
+    </div>
+    <div class="layer-cards">
+      <div class="hcard" onclick="showPanel('pf')">
+        <div class="hcard-accent" style="background:var(--pf)"></div>
+        <div class="hcard-code" style="color:var(--pf)">PF</div>
+        <div class="hcard-name">Product Flow</div>
+        <div class="hcard-desc">ทำให้ requirement ชัดก่อนเริ่มพัฒนา — ลด misunderstanding ทุก role</div>
+        <div class="hcard-foot"><span class="hcard-meta">8 steps</span><span class="hcard-badge b-stable">Stable</span></div>
+      </div>
+      <div class="hcard" onclick="showPanel('df')">
+        <div class="hcard-accent" style="background:var(--df)"></div>
+        <div class="hcard-code" style="color:var(--df)">DF</div>
+        <div class="hcard-name">Delivery Flow</div>
+        <div class="hcard-desc">มาตรฐานการทำงานหลัง Ready for Development — ทุกงานมีเจ้าของ ปิดงานได้ครบ</div>
+        <div class="hcard-foot"><span class="hcard-meta">7 steps</span><span class="hcard-badge b-stable">Stable</span></div>
+      </div>
+      <div class="hcard" onclick="showPanel('of')">
+        <div class="hcard-accent" style="background:var(--of)"></div>
+        <div class="hcard-code" style="color:var(--of)">OF</div>
+        <div class="hcard-name">Operation Flow</div>
+        <div class="hcard-desc">นำระบบไปใช้งานจริง — Rollout, Go Live, Monitoring จนถึง Stable</div>
+        <div class="hcard-foot"><span class="hcard-meta">5 steps</span><span class="hcard-badge b-frozen">Frozen v1.1</span></div>
+      </div>
+      <div class="hcard" onclick="showPanel('sf')">
+        <div class="hcard-accent" style="background:var(--sf)"></div>
+        <div class="hcard-code" style="color:var(--sf)">SF</div>
+        <div class="hcard-name">Support Flow</div>
+        <div class="hcard-desc">รับเรื่อง คัดกรอง ส่งต่อ ติดตาม และปิดเคส — Mana Support เป็น SPOC</div>
+        <div class="hcard-foot"><span class="hcard-meta">6 steps</span><span class="hcard-badge b-frozen">Frozen v1.1</span></div>
+      </div>
+    </div>
+    <div class="terminal-strip" style="margin-top:10px">
+      <div class="ts-item"><div class="ts-state" style="color:var(--pf)">Ready</div><div class="ts-label">Product Flow</div></div>
+      <div class="ts-item"><div class="ts-state" style="color:var(--df)">Done</div><div class="ts-label">Delivery Flow</div></div>
+      <div class="ts-item"><div class="ts-state" style="color:var(--of)">Stable</div><div class="ts-label">Operation Flow</div></div>
+      <div class="ts-item"><div class="ts-state" style="color:var(--sf)">Closed</div><div class="ts-label">Support Flow</div></div>
+    </div>
+  </div>
+
+  <div class="layer-connector"><div class="lc-line"></div><span>Operating Standards ใช้กับทุกคนใน Execution + People</span><div class="lc-line"></div></div>
+
+  <!-- PEOPLE LAYER -->
+  <div class="layer-section layer-ppl">
+    <div class="layer-head">
+      <span class="layer-pill" style="background:var(--pe-dim);border-color:var(--pe-mid);color:var(--pe)">People Layer</span>
+      <span class="layer-name">พัฒนาคน ประเมินผล และสร้างผู้นำ</span>
+    </div>
+    <div class="layer-cards">
+      <div class="hcard hcard-soon" onclick="showPanel('pe')">
+        <div class="hcard-accent" style="background:var(--pe)"></div>
+        <div class="hcard-code" style="color:var(--pe)">SM</div>
+        <div class="hcard-name">Skill Matrix</div>
+        <div class="hcard-desc">มาตรฐาน capability ของแต่ละ role และระดับ</div>
+        <div class="hcard-foot"><span class="hcard-meta">—</span><span class="hcard-badge b-soon">Coming Soon</span></div>
+      </div>
+      <div class="hcard hcard-soon" onclick="showPanel('pe')">
+        <div class="hcard-accent" style="background:var(--pe)"></div>
+        <div class="hcard-code" style="color:var(--pe)">IPR</div>
+        <div class="hcard-name">Individual Performance</div>
+        <div class="hcard-desc">ประเมินผลการทำงานด้วยข้อมูลจริง ไม่ใช่ความรู้สึก</div>
+        <div class="hcard-foot"><span class="hcard-meta">—</span><span class="hcard-badge b-soon">Coming Soon</span></div>
+      </div>
+      <div class="hcard hcard-soon" onclick="showPanel('pe')">
+        <div class="hcard-accent" style="background:var(--pe)"></div>
+        <div class="hcard-code" style="color:var(--pe)">LER</div>
+        <div class="hcard-name">Leadership Effectiveness</div>
+        <div class="hcard-desc">ประเมินประสิทธิภาพของหัวหน้าและผู้นำ</div>
+        <div class="hcard-foot"><span class="hcard-meta">—</span><span class="hcard-badge b-soon">Coming Soon</span></div>
+      </div>
+      <div class="hcard hcard-soon" onclick="showPanel('pe')">
+        <div class="hcard-accent" style="background:var(--pe)"></div>
+        <div class="hcard-code" style="color:var(--pe)">CP</div>
+        <div class="hcard-name">Career Path</div>
+        <div class="hcard-desc">เส้นทางการเติบโตในสายอาชีพ ทุกคนรู้ว่าจะไปไหนได้บ้าง</div>
+        <div class="hcard-foot"><span class="hcard-meta">—</span><span class="hcard-badge b-soon">Coming Soon</span></div>
+      </div>
+      <div class="hcard" onclick="showPanel('os')">
+        <div class="hcard-accent" style="background:var(--os)"></div>
+        <div class="hcard-code" style="color:var(--os)">WE</div>
+        <div class="hcard-name">Working Expectations</div>
+        <div class="hcard-desc">พฤติกรรมที่คาดหวังจากทุกคน — Response, Escalation, Blocked Rule</div>
+        <div class="hcard-foot"><span class="hcard-meta">OS Standard 1</span><span class="hcard-badge b-stable">Stable</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EXECUTION PANELS -->
+<div id="page-pf" class="page">
+  <div class="panel-aside">
+    <button class="back-btn" onclick="showHome()">← Home</button>
+    <div class="sb-lbl">Overview</div>
+    <button class="sbtn pf-btn" id="pf-ov-btn" onclick="PF_showOverview()">
+      <span class="snum" style="font-size:12px">⊞</span>
+      <span class="smeta"><span class="stitle">ภาพรวม</span><span class="shint">เป้าหมาย · tier · decision</span></span>
+    </button>
+    <div class="sb-div"></div>
+    <div class="sb-lbl">Flow</div>
+    <div id="pf-sidebar"></div>
+    <div class="sb-div"></div>
+    <div class="sb-extra">
+      <div class="sb-et">Process Tier</div>
+      <div style="display:flex;flex-direction:column;gap:4px;font-size:11px">
+        <div style="display:flex;align-items:center;gap:6px;color:var(--muted)"><div style="width:6px;height:6px;border-radius:50%;background:#1a7a4a"></div>Fast Track</div>
+        <div style="display:flex;align-items:center;gap:6px;color:var(--muted)"><div style="width:6px;height:6px;border-radius:50%;background:#1d6fd8"></div>Standard</div>
+        <div style="display:flex;align-items:center;gap:6px;color:var(--muted)"><div style="width:6px;height:6px;border-radius:50%;background:#92610a"></div>Full Process</div>
+        <div style="font-size:10px;color:var(--hint);margin-top:2px">⚑ = compliance gate</div>
+      </div>
+    </div>
+  </div>
+  <div class="panel-main" id="pf-main"></div>
+</div>
+
+<div id="page-df" class="page">
+  <div class="panel-aside">
+    <button class="back-btn" onclick="showHome()">← Home</button>
+    <div class="sb-lbl">Overview</div>
+    <button class="sbtn df-btn" id="df-ov-btn" onclick="DF_showOverview()">
+      <span class="snum" style="font-size:12px">⊞</span>
+      <span class="smeta"><span class="stitle">ภาพรวม</span><span class="shint">เป้าหมาย · flow · escalation</span></span>
+    </button>
+    <div class="sb-div"></div>
+    <div class="sb-lbl">Flow</div>
+    <div id="df-sidebar"></div>
+    <div class="sb-div"></div>
+    <div class="ref-section">
+      <div class="ref-title">Reference</div>
+      <div class="ref-item" onclick="openModal('m-status')"><span>◉</span>Status Standard</div>
+      <div class="ref-item" onclick="openModal('m-decision')"><span>◇</span>Decision Authority</div>
+      <div class="ref-item" onclick="openModal('m-breakdown')"><span>≡</span>Task Breakdown</div>
+      <div class="ref-item" onclick="openModal('m-fields')"><span>▤</span>ClickUp Fields</div>
+      <div class="ref-item" onclick="openModal('m-tl')"><span>◇</span>TL Delegation</div>
+      <div class="ref-item" onclick="openModal('m-closing')"><span>▽</span>Closing Tier</div>
+    </div>
+  </div>
+  <div class="panel-main" id="df-main"></div>
+</div>
+
+<div id="page-of" class="page">
+  <div class="panel-aside">
+    <button class="back-btn" onclick="showHome()">← Home</button>
+    <div class="sb-lbl">Overview</div>
+    <button class="sbtn of-btn" id="of-ov-btn" onclick="OF_showOverview()">
+      <span class="snum" style="font-size:12px">⊞</span>
+      <span class="smeta"><span class="stitle">ภาพรวม</span><span class="shint">กฎ · RACI · Incident</span></span>
+    </button>
+    <div class="sb-div"></div>
+    <div class="sb-lbl">Flow</div>
+    <div id="of-sidebar"></div>
+    <div class="sb-div"></div>
+    <div class="sb-extra">
+      <div class="sb-et">Incident Severity</div>
+      <div style="display:flex;flex-direction:column;gap:3px;font-size:11px">
+        <div style="color:#8c2020">● Sev1 — PL+COO ทันที</div>
+        <div style="color:#7a5008">● Sev2 — PL ใน 1 ชม.</div>
+        <div style="color:#0f4fa3">● Sev3 — Next Business Day</div>
+      </div>
+    </div>
+  </div>
+  <div class="panel-main" id="of-main"></div>
+</div>
+
+<div id="page-sf" class="page">
+  <div class="panel-aside">
+    <button class="back-btn" onclick="showHome()">← Home</button>
+    <div class="sb-lbl">Overview</div>
+    <button class="sbtn sf-btn" id="sf-ov-btn" onclick="SF_showOverview()">
+      <span class="snum" style="font-size:12px">⊞</span>
+      <span class="smeta"><span class="stitle">ภาพรวม</span><span class="shint">กฎ · SLA · Classification</span></span>
+    </button>
+    <div class="sb-div"></div>
+    <div class="sb-lbl">Flow</div>
+    <div id="sf-sidebar"></div>
+    <div class="sb-div"></div>
+    <div class="sb-extra">
+      <div class="sb-et">Severity SLA</div>
+      <div style="display:flex;flex-direction:column;gap:3px;font-size:11px">
+        <div style="display:flex;justify-content:space-between"><span style="color:#8c2020;font-weight:500">Critical</span><span style="color:var(--hint);font-family:'DM Mono',monospace">15 นาที</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:#7a5008;font-weight:500">High</span><span style="color:var(--hint);font-family:'DM Mono',monospace">30 นาที</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:#0f4fa3;font-weight:500">Medium</span><span style="color:var(--hint);font-family:'DM Mono',monospace">4 ชม.</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Low</span><span style="color:var(--hint);font-family:'DM Mono',monospace">1 วัน</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="panel-main" id="sf-main"></div>
+</div>
+
+<!-- GOVERNANCE PANELS -->
+<div id="page-os" class="page">
+  <div class="panel-aside">
+    <button class="back-btn" onclick="showHome()">← Home</button>
+    <div class="sb-lbl">Overview</div>
+    <button class="sbtn os-btn" id="os-ov-btn" onclick="OS_show(-1)">
+      <span class="snum" style="font-size:12px">⊞</span>
+      <span class="smeta"><span class="stitle">ภาพรวม</span><span class="shint">6 standards · IPR link</span></span>
+    </button>
+    <div class="sb-div"></div>
+    <div class="sb-lbl">Standards</div>
+    <div id="os-sidebar"></div>
+  </div>
+  <div class="panel-main" id="os-main"></div>
+</div>
+
+<div id="page-qa" class="page">
+  <div class="panel-aside">
+    <button class="back-btn" onclick="showHome()">← Home</button>
+    <div class="sb-lbl">Overview</div>
+    <button class="sbtn qa-btn" id="qa-ov-btn" onclick="QA_show(-1)">
+      <span class="snum" style="font-size:12px">⊞</span>
+      <span class="smeta"><span class="stitle">ภาพรวม</span><span class="shint">scope · บทบาท · gate</span></span>
+    </button>
+    <div class="sb-div"></div>
+    <div class="sb-lbl">Steps</div>
+    <div id="qa-sidebar"></div>
+    <div class="sb-div"></div>
+    <div class="sb-extra">
+      <div class="sb-et">Rating Scale</div>
+      <div style="display:flex;flex-direction:column;gap:3px;font-size:11px">
+        <div style="color:#145c37;font-weight:500">Pass — ไม่มี Gap</div>
+        <div style="color:#7a5008;font-weight:500">Needs Improvement</div>
+        <div style="color:#8c2020;font-weight:500">Critical — Escalate COO</div>
+        <div style="color:var(--hint)">N/A — ไม่เกี่ยว</div>
+      </div>
+    </div>
+  </div>
+  <div class="panel-main" id="qa-main"></div>
+</div>
+
+<div id="page-ci" class="page">
+  <div class="panel-aside">
+    <button class="back-btn" onclick="showHome()">← Home</button>
+    <div class="sb-lbl">Overview</div>
+    <button class="sbtn ci-btn" id="ci-ov-btn" onclick="CI_show(-1)">
+      <span class="snum" style="font-size:12px">⊞</span>
+      <span class="smeta"><span class="stitle">ภาพรวม</span><span class="shint">scope · decision · gate</span></span>
+    </button>
+    <div class="sb-div"></div>
+    <div class="sb-lbl">Steps</div>
+    <div id="ci-sidebar"></div>
+  </div>
+  <div class="panel-main" id="ci-main"></div>
+</div>
+
+<!-- PEOPLE PANEL -->
+<div id="page-pe" class="page">
+  <div class="panel-aside">
+    <button class="back-btn" onclick="showHome()">← Home</button>
+    <div class="sb-lbl">People Layer</div>
+    <div class="sb-extra" style="padding-top:12px">
+      <div style="font-size:12px;color:var(--muted);line-height:1.6">ระบบพัฒนาคนและผู้นำ — อยู่ระหว่างพัฒนา</div>
+    </div>
+  </div>
+  <div class="panel-main" id="pe-main">
+    <div class="fade-in">
+      <div class="hero">
+        <div class="hero-num" style="color:var(--pe)">PE</div>
+        <div><div class="hero-name">People Layer</div>
+        <div class="hero-desc">ระบบพัฒนาคน ประเมินผล และสร้างผู้นำ — อยู่ระหว่างพัฒนา เร็วๆ นี้จะมี content จริง</div></div>
+      </div>
+      <div class="sh">Components</div>
+      <div class="g2">
+        <div class="card"><div class="cb" style="opacity:.7">
+          <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--pe);margin-bottom:6px">SM — Skill Matrix</div>
+          <div style="font-size:13px;font-weight:500;margin-bottom:4px">Skill Matrix</div>
+          <div style="font-size:12px;color:var(--muted)">กำหนดมาตรฐาน capability ของแต่ละ role และแต่ละระดับ — ทุกคนรู้ว่าต้องเก่งเรื่องอะไร</div>
+          <div style="margin-top:10px"><span class="hcard-badge b-soon">Coming Soon</span></div>
+        </div></div>
+        <div class="card"><div class="cb" style="opacity:.7">
+          <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--pe);margin-bottom:6px">IPR — Individual Performance Review</div>
+          <div style="font-size:13px;font-weight:500;margin-bottom:4px">Individual Performance Review</div>
+          <div style="font-size:12px;color:var(--muted)">ประเมินผลการทำงานด้วยข้อมูลจริงจาก Operating Standards และ ClickUp — ไม่ใช่ความรู้สึก</div>
+          <div style="margin-top:10px"><span class="hcard-badge b-soon">Coming Soon</span></div>
+        </div></div>
+        <div class="card"><div class="cb" style="opacity:.7">
+          <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--pe);margin-bottom:6px">LER — Leadership Effectiveness Review</div>
+          <div style="font-size:13px;font-weight:500;margin-bottom:4px">Leadership Effectiveness Review</div>
+          <div style="font-size:12px;color:var(--muted)">ประเมินประสิทธิภาพของหัวหน้าและผู้นำ — ทำให้ทีม scale ได้จริง</div>
+          <div style="margin-top:10px"><span class="hcard-badge b-soon">Coming Soon</span></div>
+        </div></div>
+        <div class="card"><div class="cb" style="opacity:.7">
+          <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--pe);margin-bottom:6px">CP — Career Path</div>
+          <div style="font-size:13px;font-weight:500;margin-bottom:4px">Career Path</div>
+          <div style="font-size:12px;color:var(--muted)">เส้นทางการเติบโตในสายอาชีพ — ทุกคนรู้ว่าตัวเองอยู่ตรงไหนและจะไปไหนได้บ้าง</div>
+          <div style="margin-top:10px"><span class="hcard-badge b-soon">Coming Soon</span></div>
+        </div></div>
+      </div>
+      <div class="sh">เชื่อมกับ Operating Standards</div>
+      <div class="card"><div class="cb">
+        <div class="report-box">Operating Standards  ← กำหนดว่าองค์กรคาดหวังอะไร
+        ↓
+Skill Matrix         ← กำหนดว่าแต่ละ role ต้องมี capability อะไร
+        ↓
+IPR                  ← ประเมินว่าทำได้ตามที่คาดหวังหรือไม่
+        ↓
+LER                  ← ประเมินความสามารถในการเป็นผู้นำ
+        ↓
+Career Path          ← กำหนดทิศทางการเติบโต</div>
+        <div class="info-amber" style="margin-top:8px;font-size:12px">Working Expectations อยู่ใน Operating Standards แล้ว — <span style="cursor:pointer;text-decoration:underline" onclick="showPanel('os')">ไปดูที่ Standards → Standard 1</span></div>
+      </div></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODALS -->
+<div class="ref-modal" id="m-status" onclick="closeMBg(event,'m-status')">
+  <div class="ref-modal-box"><div class="rmh"><span class="rmt">Status Standard</span><button class="rmc" onclick="closeM('m-status')">✕</button></div>
+  <div class="rmb">
+    <div class="sf-flow" style="margin-bottom:14px">
+      <span class="sf-n sf-todo">To Do</span><span class="sf-arr">→</span><span class="sf-n sf-prog">In Progress</span><span class="sf-arr">⇄</span><span class="sf-n sf-blk">Blocked</span><span class="sf-arr">→</span><span class="sf-n sf-rev">In Review</span><span class="sf-arr">→</span><span class="sf-n sf-qa">QA</span><span class="sf-arr">→</span><span class="sf-n sf-done">Done</span>
+    </div>
+    <table class="da-table">
+      <tr><th>Status</th><th>ใครเปลี่ยนได้</th><th style="text-align:left">เงื่อนไข</th></tr>
+      <tr><td><span class="sf-n sf-todo" style="font-size:11px;padding:2px 7px">To Do</span></td><td style="color:var(--muted)">Auto</td><td style="color:var(--muted)">เริ่มที่นี่เสมอ</td></tr>
+      <tr><td><span class="sf-n sf-prog" style="font-size:11px;padding:2px 7px">In Progress</span></td><td style="color:var(--muted)">Assignee</td><td style="color:var(--muted)">อัปเดตทุกวัน</td></tr>
+      <tr><td><span class="sf-n sf-blk" style="font-size:11px;padding:2px 7px">Blocked</span></td><td style="color:var(--muted)">Assignee</td><td style="color:var(--muted)">comment 3 ข้อ + แจ้ง TL</td></tr>
+      <tr><td><span class="sf-n sf-rev" style="font-size:11px;padding:2px 7px">In Review</span></td><td style="color:var(--muted)">Assignee</td><td style="color:var(--muted)">request reviewer ใน Telegram</td></tr>
+      <tr><td><span class="sf-n sf-done" style="font-size:11px;padding:2px 7px">Done</span></td><td style="color:#8c2020;font-weight:500">TL / PL เท่านั้น</td><td style="color:var(--muted)">ผ่าน DoD ก่อน</td></tr>
+    </table>
+  </div></div>
+</div>
+<div class="ref-modal" id="m-decision" onclick="closeMBg(event,'m-decision')">
+  <div class="ref-modal-box"><div class="rmh"><span class="rmt">Decision Authority</span><button class="rmc" onclick="closeM('m-decision')">✕</button></div>
+  <div class="rmb"><table class="da-table">
+    <tr><th>Role</th><th style="text-align:left">ตัดสินใจเรื่อง</th></tr>
+    <tr><td><span class="da-tag da-assignee">Assignee</span></td><td>วิธีการทำงาน, รายละเอียดการพัฒนา</td></tr>
+    <tr><td><span class="da-tag da-tl">TL</span></td><td>Technical quality, code review, SP estimate</td></tr>
+    <tr><td><span class="da-tag da-pl">PL</span></td><td>Scope, priority, timeline, assignment, closing gate</td></tr>
+    <tr><td><span class="da-tag da-cto">CTO</span></td><td>Architecture, technical standard</td></tr>
+    <tr><td><span class="da-tag da-coo">COO</span></td><td>Resource, budget, process, cross-team</td></tr>
+  </table></div></div>
+</div>
+<div class="ref-modal" id="m-breakdown" onclick="closeMBg(event,'m-breakdown')">
+  <div class="ref-modal-box"><div class="rmh"><span class="rmt">Task Breakdown Standard</span><button class="rmc" onclick="closeM('m-breakdown')">✕</button></div>
+  <div class="rmb">
+    <div class="info-blue" style="margin-bottom:10px">Breakdown ก่อน — อย่าสร้าง ClickUp ก่อน</div>
+    <div class="report-box">[TEAM] Feature — Action
+ตัวอย่าง: [BE] Payroll — DisbursementService enqueue</div>
+    <div class="ck-list" style="margin-top:10px">
+      <div class="ck-item"><span class="ck-icon">✓</span>1 Task = 1 Outcome ที่วัดได้</div>
+      <div class="ck-item"><span class="ck-icon">✓</span>1 Task ≤ 3 วัน หรือมี checkpoint</div>
+      <div class="ck-item"><span class="ck-icon">✓</span>Subtask ในทุก task ที่ซับซ้อน</div>
+      <div class="ck-item"><span class="ck-icon">✓</span>Dependency ระบุตั้งแต่ตอน Breakdown</div>
+    </div>
+  </div></div>
+</div>
+<div class="ref-modal" id="m-fields" onclick="closeMBg(event,'m-fields')">
+  <div class="ref-modal-box"><div class="rmh"><span class="rmt">ClickUp Required Fields</span><button class="rmc" onclick="closeM('m-fields')">✕</button></div>
+  <div class="rmb"><table class="da-table">
+    <tr><th>Field</th><th>Required</th><th style="text-align:left">หมายเหตุ</th></tr>
+    <tr><td>Title</td><td><span style="font-size:10px;padding:2px 6px;border-radius:999px;background:rgba(184,50,50,.09);border:1px solid rgba(184,50,50,.2);color:#8c2020">Required</span></td><td>[TEAM] Feature — Action</td></tr>
+    <tr><td>Owner</td><td><span style="font-size:10px;padding:2px 6px;border-radius:999px;background:rgba(184,50,50,.09);border:1px solid rgba(184,50,50,.2);color:#8c2020">Required</span></td><td>1 คน ไม่ใช่ทีม</td></tr>
+    <tr><td>Priority</td><td><span style="font-size:10px;padding:2px 6px;border-radius:999px;background:rgba(184,50,50,.09);border:1px solid rgba(184,50,50,.2);color:#8c2020">Required</span></td><td>Urgent/High/Normal/Low</td></tr>
+    <tr><td>Due Date</td><td><span style="font-size:10px;padding:2px 6px;border-radius:999px;background:rgba(184,50,50,.09);border:1px solid rgba(184,50,50,.2);color:#8c2020">Required</span></td><td>ตกลงกับ PL</td></tr>
+    <tr><td>Status</td><td><span style="font-size:10px;padding:2px 6px;border-radius:999px;background:rgba(184,50,50,.09);border:1px solid rgba(184,50,50,.2);color:#8c2020">Required</span></td><td>เริ่มที่ To Do</td></tr>
+    <tr><td>AC</td><td><span style="font-size:10px;padding:2px 6px;border-radius:999px;background:var(--bg3);border:1px solid var(--line2);color:var(--hint)">แนะนำ</span></td><td>QA ใช้ทดสอบ</td></tr>
+  </table></div></div>
+</div>
+<div class="ref-modal" id="m-tl" onclick="closeMBg(event,'m-tl')">
+  <div class="ref-modal-box"><div class="rmh"><span class="rmt">TL Delegation Rule</span><button class="rmc" onclick="closeM('m-tl')">✕</button></div>
+  <div class="rmb">
+    <div class="info-green" style="margin-bottom:10px">TL ตัดสินใจเองได้ — ถ้าไม่กระทบ Scope / Timeline / Budget</div>
+    <table class="da-table">
+      <tr><th>Decision</th><th>TL ตัดสินได้</th><th style="text-align:left">ต้องแจ้ง</th></tr>
+      <tr><td>Technical approach</td><td style="color:#145c37">✓</td><td>—</td></tr>
+      <tr><td>Code quality / SP</td><td style="color:#145c37">✓</td><td>—</td></tr>
+      <tr><td>Re-assign ในทีม</td><td style="color:#145c37">✓ (แจ้ง PL)</td><td>แจ้ง PL</td></tr>
+      <tr><td>Scope / Timeline</td><td style="color:#8c2020">✗</td><td>PL final</td></tr>
+      <tr><td>Architecture</td><td style="color:#8c2020">✗</td><td>CTO final</td></tr>
+      <tr><td>Budget</td><td style="color:#8c2020">✗</td><td>COO final</td></tr>
+    </table>
+  </div></div>
+</div>
+<div class="ref-modal" id="m-closing" onclick="closeMBg(event,'m-closing')">
+  <div class="ref-modal-box"><div class="rmh"><span class="rmt">Closing Tier Standard</span><button class="rmc" onclick="closeM('m-closing')">✕</button></div>
+  <div class="rmb">
+    <div class="info-amber" style="margin-bottom:10px">PL กำหนด tier ตั้งแต่ Work Intake — ถ้าไม่แน่ใจ default = Major</div>
+    <table class="da-table">
+      <tr><th>Tier</th><th style="text-align:left">ตัวอย่าง</th><th style="text-align:left">Closing Requirement</th></tr>
+      <tr><td><span style="font-size:11px;padding:2px 7px;border-radius:999px;background:var(--bg3);border:1px solid var(--line2);color:var(--muted);font-weight:500">Normal</span></td><td>bug fix, UI tweak</td><td>QA sign-off</td></tr>
+      <tr><td><span style="font-size:11px;padding:2px 7px;border-radius:999px;background:var(--pf-dim);border:1px solid var(--pf-mid);color:#0f4fa3;font-weight:500">Major</span></td><td>new feature</td><td>QA + Demo</td></tr>
+      <tr><td><span style="font-size:11px;padding:2px 7px;border-radius:999px;background:rgba(184,50,50,.09);border:1px solid rgba(184,50,50,.2);color:#8c2020;font-weight:500">Business Critical</span></td><td>financial, consent</td><td>QA + Demo + PO Signoff</td></tr>
+      <tr><td><span style="font-size:11px;padding:2px 7px;border-radius:999px;background:var(--amber-dim);border:1px solid rgba(146,97,10,.22);color:#7a5008;font-weight:500">Hotfix</span></td><td>production incident</td><td>QA + PL Approval</td></tr>
+    </table>
+  </div></div>
+</div>
+
+<script>
+// ── SHELL ──
+let activeSection = 'home';
+
+function showHome() {
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('visible');});
+  document.getElementById('page-home').style.display = 'flex';
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('tab-home').classList.add('active');
+  activeSection = 'home';
+}
+function showPanel(key) {
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('visible');});
+  document.getElementById('page-home').style.display = 'none';
+  var page = document.getElementById('page-'+key);
+  if(page) page.classList.add('visible');
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
+  var tb = document.getElementById('tab-'+key);
+  if(tb) tb.classList.add('active');
+  activeSection = key;
+  if(key==='pf' && PF_cur===-1) PF_showOverview();
+  if(key==='df' && DF_cur===-1) DF_showOverview();
+  if(key==='of' && OF_cur===-1) OF_showOverview();
+  if(key==='sf' && SF_cur===-1) SF_showOverview();
+  if(key==='os' && OS_cur===-1) OS_show(-1);
+  if(key==='qa' && QA_cur===-1) QA_show(-1);
+  if(key==='ci' && CI_cur===-1) CI_show(-1);
+}
+function openModal(id){ document.getElementById(id).classList.add('open'); }
+function closeM(id){ document.getElementById(id).classList.remove('open'); }
+function closeMBg(e,id){ if(e.target.id===id) closeM(id); }
+document.addEventListener('keydown', function(e){
+  if(e.key==='Escape') document.querySelectorAll('.ref-modal.open').forEach(function(m){m.classList.remove('open');});
+  if(activeSection==='pf'){ if(e.key==='ArrowRight'||e.key==='ArrowDown') PF_nav(1); if(e.key==='ArrowLeft'||e.key==='ArrowUp') PF_nav(-1); }
+  if(activeSection==='df'){ if(e.key==='ArrowRight'||e.key==='ArrowDown') DF_nav(1); if(e.key==='ArrowLeft'||e.key==='ArrowUp') DF_nav(-1); }
+  if(activeSection==='of'){ if(e.key==='ArrowRight'||e.key==='ArrowDown') OF_nav(1); if(e.key==='ArrowLeft'||e.key==='ArrowUp') OF_nav(-1); }
+  if(activeSection==='sf'){ if(e.key==='ArrowRight'||e.key==='ArrowDown') SF_nav(1); if(e.key==='ArrowLeft'||e.key==='ArrowUp') SF_nav(-1); }
+});
+
+// ── SHARED RENDERERS ──
+function rRoles(s) {
+  if(!s.owner) return '<div style="color:var(--hint);font-size:13px">— Entry point</div>';
+  var h = '<div class="role-row"><span class="role-key">Owner</span><div class="tags"><span class="tag owner">'+s.owner+'</span></div></div>';
+  if(s.approver) h += '<div class="role-row"><span class="role-key">Approver</span><div class="tags"><span class="tag approver">'+s.approver+'</span></div></div>';
+  if(s.contribs && s.contribs.length) h += '<div class="role-row"><span class="role-key">Contributor</span><div class="tags">'+s.contribs.map(function(c){return '<span class="tag">'+c+'</span>';}).join('')+'</div></div>';
+  if(s.escalation) h += '<div class="role-row"><span class="role-key">Escalation</span><div class="tags"><span class="tag escalate">'+s.escalation+'</span></div></div>';
+  return h;
+}
+function rDA(da) {
+  if(!da||!da.length) return '<div style="color:var(--hint);font-size:13px">—</div>';
+  return '<table class="da-table"><tr><th>Area</th><th>Decision</th></tr>'+da.map(function(d){return '<tr><td class="da-area">'+d.area+'</td><td class="da-who"><span class="da-tag '+d.cls+'">'+d.who+'</span></td></tr>';}).join('')+'</table>';
+}
+function rOutputs(outputs, accent) {
+  accent = accent || '#1d6fd8';
+  return '<div class="out-grid">'+outputs.map(function(o){
+    return '<div class="out-block"><div class="out-hd"><span class="out-dot" style="background:'+accent+'"></span><span class="out-lbl">'+o.label+'</span></div><div class="out-desc">'+o.desc+'</div><div class="out-ex" style="border-left-color:'+accent+'"><span class="ex-tag" style="color:'+accent+';background:'+accent+'22">ตัวอย่าง</span>'+o.example+'</div></div>';
+  }).join('')+'</div>';
+}
+function rFails(f) {
+  return '<div class="fail-list">'+f.map(function(x){return '<div class="fail-item"><span style="color:var(--red);flex-shrink:0">▲</span><span>'+x+'</span></div>';}).join('')+'</div>';
+}
+function rCk(items) {
+  return '<div class="ck-list">'+items.map(function(c){return '<div class="ck-item"><span class="ck-icon">✓</span><span>'+c+'</span></div>';}).join('')+'</div>';
+}
+function rRE(re) {
+  if(!re) return '';
+  return '<div class="re-box"><div class="re-title"><span>◎</span>'+re.scenario+'<span style="display:flex;gap:3px;flex-wrap:wrap">'+re.highlights.map(function(h){return '<span class="re-hl '+h.cls+'" title="'+h.note+'">'+h.label+'</span>';}).join('')+'</span></div><div class="re-body">'+re.rows.map(function(r){return '<div class="re-row"><span class="re-lbl">'+r.label+'</span><span class="re-val">'+r.val+'</span></div>';}).join('')+'</div></div>';
+}
+function rNavBar(cur, total, prev, next) {
+  return '<div class="nav-bar"><button class="nav-btn" onclick="'+prev+'" '+(cur===0?'disabled':'')+'>← ก่อนหน้า</button><span class="nav-prog">'+(cur+1)+' / '+total+'</span><button class="nav-btn" onclick="'+next+'" '+(cur===total-1?'disabled':'')+'>ถัดไป →</button></div>';
+}
+function rOvChain(steps, color, gofn) {
+  return steps.map(function(s,i){
+    return '<div class="ov-node" onclick="'+gofn+'('+i+')">' +
+      '<div class="ov-num" style="background:'+color+'22;border:1px solid '+color+'44;color:'+color+'">'+s.num+'</div>' +
+      '<div class="ov-nname">'+s.name+'</div><div class="ov-nhint">'+s.hint+'</div></div>' +
+      (i<steps.length-1?'<div class="ov-arr">→</div>':'');
+  }).join('');
+}
+const PF_STEPS = [
+  { num:"0", name:"Trigger", hint:"Entry point", gov:null,
+    desc:"จุดเริ่มต้นของงาน — เหตุผลที่ต้องเริ่ม process อาจมาจาก CEO direction, business need, customer request, compliance requirement, production incident หรือ scaling problem",
+    owner:null, approver:null, escalation:null, contribs:[],
+    decisionAuthority:[],
+    outputs:[
+      {label:"Trigger Source",desc:"ระบุว่า trigger มาจากใครหรือเหตุการณ์อะไร",example:"ลูกค้า Enterprise ร้องขอให้จ่ายเงินเดือนผ่าน Mana Wallet ได้โดยตรง"},
+      {label:"Problem / Opportunity",desc:"ระบุปัญหาหรือ opportunity ที่ต้องแก้",example:"ระบบปัจจุบัน export bank file อย่างเดียว ลูกค้าต้องโอนเองทุกเดือน เพิ่ม error"},
+      {label:"Initial Priority",desc:"ระดับ priority เบื้องต้น",example:"High — กระทบ retention ลูกค้า Enterprise 3 ราย มูลค่า ARR 2.4M THB"}
+    ], rollback:"— (entry point)", failures:[], criteria:["มีเหตุผลชัดเจนว่าทำไมต้องเริ่ม","ระบุ trigger source ได้"],
+    tier:{fast:"—",std:"—",full:"—"}, realExample:null
+  },
+  { num:"1", name:"Trigger Validation", hint:"กัน assumption ผิด", gov:null,
+    desc:"ตรวจว่า trigger นี้ควรเริ่ม process จริงไหม — validate source, confirm priority, assign process tier และ identify compliance trigger ตั้งแต่ต้น",
+    owner:"PM / PL", approver:"PO หรือ CEO", escalation:"COO", contribs:[],
+    decisionAuthority:[
+      {area:"ควรเริ่ม process?",who:"PO / CEO",cls:"da-po"},
+      {area:"Process tier",who:"PL",cls:"da-pl"},
+      {area:"Compliance trigger",who:"PL",cls:"da-pl"},
+      {area:"Strategic priority",who:"CEO",cls:"da-coo"}
+    ],
+    outputs:[
+      {label:"Validated Trigger",desc:"trigger ที่ผ่านการตรวจสอบแล้ว",example:"ยืนยันแล้ว: ลูกค้า 3 รายร้องขอจริง + CEO อนุมัติเป็น Q3 priority"},
+      {label:"Assigned Process Tier",desc:"tier ที่ถูก assign ณ จุดนี้",example:"Full Process — เพราะกระทบ financial flow และ settlement"},
+      {label:"Compliance Trigger",desc:"รายการ compliance condition",example:"เข้า trigger: กระทบเงินจริง, เปลี่ยน settlement flow, อาจกระทบ BOT"}
+    ], rollback:"Trigger",
+    failures:["trigger มาจาก PO แต่ยังไม่ validate กับ CEO — direction ผิดตั้งแต่ต้น","ไม่ assign process tier — ทำ Full Process ทั้งหมดทั้งที่เป็น Fast Track","ลืม identify compliance trigger — รู้ทีหลังตอน Architecture Review"],
+    criteria:["Trigger source ตรวจสอบแล้ว","Process tier กำหนดแล้ว","Compliance trigger identify แล้ว"],
+    tier:{fast:"Simplified",std:"Full",full:"Full"}, realExample:null
+  },
+  { num:"2", name:"Business Intake", hint:"แปลง direction → scope", gov:"PL ต้อง notify COO ถ้าเข้า compliance trigger",
+    desc:"แปลง business direction ให้เป็น scope ที่ชัด — affected system, priority, in/out of scope ชัดเจน",
+    owner:"PM / PL", approver:"CEO (strategic) / PO (feature)", escalation:"COO", contribs:["PO / Business"],
+    decisionAuthority:[
+      {area:"Business scope & goal",who:"PO",cls:"da-po"},
+      {area:"Priority",who:"PL",cls:"da-pl"},
+      {area:"Strategic alignment",who:"CEO",cls:"da-coo"}
+    ],
+    outputs:[
+      {label:"Business Objective",desc:"เป้าหมายทางธุรกิจที่ชัดเจน",example:"ให้ลูกค้า Enterprise สามารถจ่ายเงินเดือนผ่าน Mana Wallet ได้ Q3"},
+      {label:"In / Out of Scope",desc:"ระบุชัดว่าอะไรอยู่ใน scope และอะไรไม่อยู่",example:"In: THB disbursement, slip, retry. Out: multi-currency, credit"},
+      {label:"Affected System",desc:"ระบุ system ที่ต้องเปลี่ยน",example:"Nexum Payroll, Mana Wallet, Mana Backend, Notification"}
+    ], rollback:"Business Intake",
+    failures:["scope ไม่ชัด — dev ตีความเองทำให้ feature ออกมาไม่ตรง","ไม่ identify affected system — รู้ทีหลังว่ากระทบ Ledger"],
+    criteria:["PO อนุมัติ scope แล้ว","In/Out of scope ชัด","Affected system identify แล้ว"],
+    tier:{fast:"Simplified",std:"Full",full:"Full"}, realExample:null
+  },
+  { num:"3", name:"Requirement Discovery", hint:"แตก requirement จริง", gov:"PL ต้อง check: financial / compliance → notify COO",
+    desc:"แตก requirement จริงของระบบ — financial flow, main workflow, dependency, edge case ทุกทีมเข้าใจตรงกัน",
+    owner:"PL", approver:"PO", escalation:"COO", contribs:["Backend TL","Designer","QA"],
+    decisionAuthority:[
+      {area:"Requirement completeness",who:"PL",cls:"da-pl"},
+      {area:"Financial flow",who:"COO",cls:"da-coo"},
+      {area:"Technical feasibility",who:"Backend TL",cls:"da-tl"}
+    ],
+    outputs:[
+      {label:"Requirement + Feature List",desc:"รายการ requirement ทั้งหมด",example:"1) Employer กด Disburse 2) ตรวจ wallet 3) หัก fee 4) โอนเข้า employee wallet 5) ส่ง slip"},
+      {label:"Financial Flow",desc:"การเดินของเงิน",example:"Employer Wallet → deduct + fee → credit employee wallets → ledger → settlement"},
+      {label:"Dependency + Edge Case",desc:"dependency และ case พิเศษ",example:"Dep: Nexum API, BOT window. Edge: wallet ไม่พอ, no Mana account, partial fail"}
+    ], rollback:"Requirement Discovery",
+    failures:["financial flow ไม่ครบ — partial fail ไม่มี rollback","edge case ไม่ถูกพูดถึง — employee ไม่มี Mana account รู้ตอน UAT"],
+    criteria:["PO เข้าใจ flow ตรงกัน","Financial flow ชัด","Edge case identify แล้ว"],
+    tier:{fast:"Simplified",std:"Full",full:"Full"},
+    realExample:{scenario:"Payroll ผ่าน Mana",highlights:[{label:"Financial flow",cls:"re-fin",note:"เงินเดิน 4 จุด"},{label:"Compliance trigger",cls:"re-gov",note:"notify COO"}],rows:[{label:"Key features",val:"Disburse, track, slip, retry, history"},{label:"Financial flow",val:"Employer → fee → employee wallets → ledger → settlement"},{label:"Edge case",val:"employee ไม่มี Mana account → fallback"}]}
+  },
+  { num:"4", name:"Architecture Review", hint:"จัดโครง + boundary", gov:"PL + Backend TL check: financial / production risk",
+    desc:"จัดโครงระบบและ system boundary — state flow, permission matrix, service impact, external dependency feasibility",
+    owner:"PL", approver:"Backend TL (normal) / CTO (high risk)", escalation:"COO", contribs:["Backend TL","Designer","Compliance"],
+    decisionAuthority:[
+      {area:"Architecture direction",who:"Backend TL",cls:"da-tl"},
+      {area:"State + permission",who:"PL",cls:"da-pl"},
+      {area:"High-risk architecture",who:"CTO",cls:"da-cto"},
+      {area:"Compliance risk",who:"COO",cls:"da-coo"}
+    ],
+    outputs:[
+      {label:"Sitemap + UserFlow",desc:"แผนผังหน้าจอและ flow",example:"Payroll List → Review → PIN → Processing → Success/Fail Summary"},
+      {label:"State Flow",desc:"สถานะทั้งหมดของ transaction",example:"Draft → Processing → Completed / Partial_Disbursed / Failed → Retry"},
+      {label:"Permission Matrix",desc:"role ไหนเห็นและทำอะไรได้",example:"Employer: disburse. Employee: view slip. Compliance: audit read-only"},
+      {label:"System Boundary",desc:"แต่ละส่วนอยู่ใน system ไหน",example:"Nexum → payload → Mana Backend → Mana App UI"}
+    ], rollback:"Requirement Discovery",
+    failures:["State flow ไม่ครบ — Partial_Disbursed state หาย dev handle ผิด","Permission matrix หาย — backoffice ไม่รู้สิทธิ์จน UAT"],
+    criteria:["Backend confirm ว่าทำได้","State Flow ชัด","Permission Matrix ชัด"],
+    tier:{fast:"Optional",std:"Full",full:"Full"},
+    realExample:{scenario:"Payroll ผ่าน Mana",highlights:[{label:"State: Partial_Disbursed",cls:"re-tec",note:"state พิเศษ"},{label:"Permission: Compliance read-only",cls:"re-gov",note:"audit trail"}],rows:[{label:"Key states",val:"Draft → Processing → Completed / Partial_Disbursed / Failed"},{label:"System boundary",val:"Nexum → Mana Backend → Mana App"}]}
+  },
+  { num:"5", name:"UX / Workflow Lock", hint:"ล็อก screen + state", gov:"COO approve เมื่อ approval / consent เปลี่ยนมาก",
+    desc:"ล็อก flow การใช้งานก่อนเริ่ม implement — screen direction, state behavior, error/empty state ต้องชัดก่อน frontend เริ่ม",
+    owner:"PL", approver:"Frontend TL (normal) / COO (gov impact)", escalation:"COO", contribs:["Designer","Frontend TL","Backend TL"],
+    decisionAuthority:[
+      {area:"UX direction final",who:"PL",cls:"da-pl"},
+      {area:"Frontend feasibility",who:"Frontend TL",cls:"da-tl"},
+      {area:"Operation / gov impact",who:"COO",cls:"da-coo"}
+    ],
+    outputs:[
+      {label:"UX Final Low Level",desc:"wireframe ที่ lock แล้ว + annotation ครบ",example:"Figma: Payroll Disburse Flow v3 — annotated พร้อม state, permission, API field mapping"},
+      {label:"Screen Flow",desc:"ลำดับหน้าจอทั้งหมด",example:"List → Review → PIN → Processing overlay → Result. Error: insufficient → top-up → retry"},
+      {label:"Error / Empty State",desc:"การแสดงผลเมื่อ error",example:"Wallet ไม่พอ: inline error + top-up CTA. ไม่มี account: warning + invite button"}
+    ], rollback:"Architecture Review",
+    failures:["Error state ไม่ออกแบบ — dev handle เองแต่ละคน ไม่ consistent","UX conflict กับ backend — designer ออกแบบ real-time แต่ backend ทำได้แค่ polling"],
+    criteria:["Frontend เริ่ม implement ได้","UX ไม่ conflict กับ technical limitation"],
+    tier:{fast:"Simplified",std:"Full",full:"Full"},
+    realExample:{scenario:"Payroll ผ่าน Mana",highlights:[{label:"Processing overlay",cls:"re-tec",note:"lock UI"},{label:"Partial fail UI",cls:"re-fin",note:"show failed rows + retry"}],rows:[{label:"Screen flow",val:"Upload → Review → PIN → Processing → Result"},{label:"Error highlight",val:"wallet ไม่พอ → inline. ไม่มี account → warn + invite CTA"}]}
+  },
+  { num:"6", name:"Technical Direction", hint:"สรุป approach ก่อน dev", gov:null,
+    desc:"สรุป technical approach ก่อนเข้า development — integration flow, service impact, risk concern, retry/rollback strategy",
+    owner:"Backend TL", approver:"Backend TL (normal) / CTO (high risk)", escalation:"COO", contribs:["PL","Frontend TL"],
+    decisionAuthority:[
+      {area:"Technical approach",who:"Backend TL",cls:"da-tl"},
+      {area:"High-risk tech",who:"CTO",cls:"da-cto"},
+      {area:"Operational risk",who:"COO",cls:"da-coo"}
+    ],
+    outputs:[
+      {label:"Technical Direction",desc:"แนวทาง technical ที่เลือกและเหตุผล",example:"async disbursement queue (RabbitMQ) + idempotency key ทุก transaction"},
+      {label:"Integration Flow",desc:"ลำดับการเรียก API",example:"Nexum POST → DisbursementService.enqueue() → Worker → WalletService.credit() → Notification.push()"},
+      {label:"Service Impact",desc:"service ที่ต้องเปลี่ยน",example:"New: DisbursementService, PayrollWorker. Modified: WalletService, LedgerService"},
+      {label:"Risk / Concern",desc:"ความเสี่ยงที่ต้องจัดการ",example:"Risk: partial fail ต้องมี rollback. BOT window 23:00–01:00. Mitigation: queue + retry + alert"}
+    ], rollback:"Technical Direction หรือ Architecture Review",
+    failures:["ไม่มี retry strategy — partial fail stuck state ต้อง manual fix","ไม่ประเมิน load — Notification ไม่รองรับ bulk push พัง production"],
+    criteria:["ทุกทีมเข้าใจ approach ตรงกัน","Risk identify แล้ว","พร้อมแตก task ได้"],
+    tier:{fast:"Simplified",std:"Full",full:"Full"},
+    realExample:{scenario:"Payroll ผ่าน Mana",highlights:[{label:"Async queue",cls:"re-tec",note:"ป้องกัน timeout"},{label:"Idempotency key",cls:"re-fin",note:"ป้องกัน double credit"}],rows:[{label:"Approach",val:"async queue + idempotency key"},{label:"Integration",val:"Nexum → DisbursementService → Worker → Wallet → Notification"},{label:"Key risk",val:"BOT window + Notification overload → queue + alert"}]}
+  },
+  { num:"7", name:"Ready for Development", hint:"Delivery gate", gov:"COO review required สำหรับ Full Process",
+    desc:"Gate ก่อนส่งต่อ Delivery Flow — PL consolidate sign-off จากทุกทีม ถ้ามีทีมใด Not Ready ห้ามเข้า phase ถัดไป",
+    owner:"PL (consolidate)", approver:"TL (low) / CTO+COO (high)", escalation:"COO", contribs:["Backend TL","Frontend TL","QA TL","Operation Owner"],
+    decisionAuthority:[
+      {area:"Gate pass / fail",who:"PL",cls:"da-pl"},
+      {area:"Technical readiness",who:"Backend TL",cls:"da-tl"},
+      {area:"High-risk final",who:"CTO + COO",cls:"da-cto"},
+      {area:"Compliance clearance",who:"COO",cls:"da-coo"}
+    ],
+    outputs:[
+      {label:"Requirement final",desc:"requirement ที่ lock แล้ว ไม่มี open question",example:"Confluence: Payroll Spec v1.2 — approved by PO. 0 TBD"},
+      {label:"Task breakdown + estimate",desc:"งานที่แตกเป็น task พร้อม estimate",example:"23 tasks, 34 SP. BE 18SP/3wk, FE 10SP/2wk, QA 6SP/1wk"},
+      {label:"All teams: Ready",desc:"sign-off จากทุก team",example:"Backend ✓ · Frontend ✓ · QA ✓ · Operation ✓ · Compliance ✓"}
+    ], rollback:"ดู Gate Fail table (per failure type)",
+    failures:["estimate ไม่มี — scope เกิน deadline ไม่มีใครรู้ล่วงหน้า","QA ไม่ sign-off — ไม่รู้ test scope จน late","มี open question — dev ตีความเองทำให้ rework"],
+    criteria:["Task breakdown เสร็จแล้ว","QA review test scope แล้ว","ไม่มีทีมใด Not Ready"],
+    tier:{fast:"—",std:"Conditional COO",full:"COO Required"},
+    realExample:{scenario:"Payroll ผ่าน Mana",highlights:[{label:"CTO+COO approve",cls:"re-gov",note:"high risk financial"},{label:"Compliance sign-off",cls:"re-con",note:"consent + BOT confirmed"}],rows:[{label:"Spec",val:"Payroll Spec v1.2 — approved, 0 TBD"},{label:"Tasks",val:"23 tasks, 34 SP — BE 3wk critical path"},{label:"Sign-off",val:"BE ✓ FE ✓ QA ✓ Operation ✓ Compliance ✓"}]}
+  }
+];
+
+const DF_STEPS = [
+  { num:"0", name:"Ready for Development", hint:"Gate จาก Product Flow", isGate:true,
+    desc:"Gate ที่รับงานจาก Product Flow — ตรวจว่าทุกอย่างพร้อมก่อนเข้า Delivery Flow ถ้า checklist ไม่ผ่าน ห้ามเริ่ม",
+    owner:"PL", approver:"PL", escalation:null, contribs:["Backend TL","Frontend TL","QA TL"],
+    decisionAuthority:[{area:"Gate pass / fail",who:"PL",cls:"da-pl"},{area:"Clarify requirement",who:"PL + PO",cls:"da-pl"},{area:"Resource readiness",who:"COO",cls:"da-coo"}],
+    checklist:["Requirement ชัด — spec approve แล้ว ไม่มี TBD","Owner ชัด — แต่ละส่วนมีคนรับผิดชอบ","Priority ชัด — Urgent/High/Normal/Low","Due Date ชัด — มี target date","Acceptance Criteria ชัด — QA รู้จะ test อะไร"],
+    outputs:[{label:"Checklist passed",desc:"ทุกข้อใน Definition of Ready ผ่านแล้ว",example:"PL ยืนยัน: spec v1.2 ✅, Owner ✅, Priority Urgent ✅, Due 30 May ✅, AC ครบ ✅"},{label:"Kickoff signal",desc:"PL แจ้งทีมว่างานพร้อมเริ่ม",example:"PL: 'Payroll Disbursement — Ready. เริ่ม breakdown ได้เลย'"}],
+    rollback:"ส่งกลับ PL เพื่อ clarify — ห้ามเข้า Delivery Flow", escalation_when:null,
+    failures:["เริ่มทำงานโดย spec มี TBD — dev ตีความเองทำให้ rework","ไม่มี AC ชัด — QA ไม่รู้จะ test อะไร","owner ไม่ชัด — งานลอย ไม่มีใครรับผิดชอบ"],
+    criteria:["spec approve แล้ว ไม่มี TBD","owner ชัดทุกส่วน","due date ตกลงแล้ว","AC มีครบก่อน start"],
+    realExample:{scenario:"Payroll Disbursement",highlights:[{label:"Spec v1.2 approved",cls:"re-tec",note:"0 TBD"},{label:"AC 5 ข้อ ชัด",cls:"re-qa",note:"QA รู้จะ test"}],rows:[{label:"Spec",val:"Payroll Disbursement Spec v1.2 — approved, 0 TBD"},{label:"Owner",val:"BE: Khun A / FE: Khun B / QA: Khun C"},{label:"Priority/Due",val:"Urgent / Due 30 May"},{label:"AC",val:"5 ข้อ ชัดเจน"}]}
+  },
+  { num:"1", name:"Work Intake", hint:"รับ scope + assign", isGate:false,
+    desc:"รับ scope จาก gate ที่ผ่านแล้ว — กำหนด owner, priority, due date, closing tier ให้ชัดก่อนเริ่ม breakdown ทุกงานต้องมีเจ้าของ 1 คน",
+    owner:"PL", approver:"PL", escalation:null, contribs:["TL","Assignee"],
+    decisionAuthority:[{area:"Scope boundary",who:"PL",cls:"da-pl"},{area:"Priority",who:"PL",cls:"da-pl"},{area:"Assignment",who:"PL",cls:"da-pl"},{area:"Resource conflict",who:"COO",cls:"da-coo"}],
+    checklist:null,
+    outputs:[{label:"Owner per area",desc:"ระบุคนรับผิดชอบ 1 คนต่อ 1 area",example:"Backend: Khun A / Frontend: Khun B / QA: Khun C"},{label:"Priority + Due Date",desc:"priority และ deadline ที่ตกลงแล้ว",example:"Urgent / Due 30 May — Q3 sprint"},{label:"Closing Tier",desc:"PL กำหนด closing tier ตั้งแต่ตอนนี้",example:"Business Critical → ต้องมี QA + Demo + PO Signoff"}],
+    rollback:"กลับหา PL เพื่อ clarify ก่อน breakdown", escalation_when:null,
+    failures:["assign เป็น 'ทีม Backend' ไม่ใช่คนจริง — ไม่มีใครรับผิดชอบ","ไม่มี due date — ถูก deprioritize","priority ไม่ชัด — breakdown ผิดลำดับ"],
+    criteria:["ทุก area มี owner 1 คน","priority ชัด","due date ตกลงแล้ว","closing tier กำหนดแล้ว"],
+    realExample:{scenario:"Payroll Disbursement",highlights:[{label:"1 Owner per area",cls:"re-tec",note:"ไม่ใช่ทีม"},{label:"Urgent — Critical Path",cls:"re-blk",note:"block release"}],rows:[{label:"Owner",val:"BE: Khun A / FE: Khun B / QA: Khun C"},{label:"Priority",val:"Urgent — Critical path Q3"},{label:"Due date",val:"30 May"},{label:"Closing Tier",val:"Business Critical"}]}
+  },
+  { num:"2", name:"Task Breakdown", hint:"Story → Task → Subtask", isGate:false,
+    desc:"แตก Story ให้เป็น Task และ Subtask ก่อนสร้างใน ClickUp — 1 Task = 1 Outcome ที่วัดได้ ≤ 3 วัน",
+    owner:"Assignee", approver:"TL", escalation:null, contribs:["PL"],
+    decisionAuthority:[{area:"วิธีแตก task",who:"Assignee",cls:"da-assignee"},{area:"Technical quality",who:"TL",cls:"da-tl"},{area:"Scope ของ task",who:"PL",cls:"da-pl"}],
+    checklist:null,
+    outputs:[{label:"Story",desc:"1 Story = 1 user value ที่วัดได้",example:"Story: Employer สามารถจ่ายเงินเดือนผ่าน Mana ได้"},{label:"Task list",desc:"[TEAM] Feature — Action ทุก task",example:"[BE] DisbursementService / [BE] WalletService / [FE] Disburse screen / [QA] E2E"},{label:"Subtask per task",desc:"ขั้นตอนย่อยที่ชัด",example:"[BE] DisbursementService: schema → implement → unit test → code review"}],
+    rollback:"แก้ breakdown + re-estimate ก่อนสร้างใน ClickUp", escalation_when:null,
+    failures:["สร้าง ClickUp ก่อน breakdown — task ใหญ่เกิน แตกทีหลังไม่ได้","1 task ใหญ่เกิน 1 สัปดาห์ — track ไม่ได้","ไม่มี subtask — dev ข้ามขั้นตอน unit test"],
+    criteria:["ทุก task ≤ 3 วัน","1 Task = 1 Outcome ที่วัดได้","naming format ถูกต้อง"],
+    realExample:{scenario:"Payroll Disbursement",highlights:[{label:"Breakdown ก่อน ClickUp",cls:"re-tec",note:"รู้ก่อนว่าจะแตกยังไง"}],rows:[{label:"Story",val:"Employer จ่ายเงินเดือนผ่าน Mana"},{label:"Tasks BE",val:"DisbursementService / WalletService.bulkCredit / LedgerService"},{label:"Tasks FE/QA",val:"Disburse screen / Result screen / E2E / Load test"},{label:"Subtask",val:"DisbursementService: schema → implement → unit test → review"}]}
+  },
+  { num:"3", name:"Task Creation", hint:"สร้างใน ClickUp", isGate:false,
+    desc:"เอา breakdown มาสร้างใน ClickUp — ต้องมี required fields ครบก่อน start ClickUp คือ source of truth",
+    owner:"Assignee", approver:"PL", escalation:null, contribs:["TL"],
+    decisionAuthority:[{area:"Task structure",who:"Assignee",cls:"da-assignee"},{area:"SP estimate",who:"TL",cls:"da-tl"},{area:"Task completeness",who:"PL",cls:"da-pl"}],
+    checklist:null,
+    outputs:[{label:"Tasks in ClickUp (required)",desc:"Title, Owner, Assignee, Priority, Due Date, Status ครบ",example:"[BE] DisbursementService — Khun A / Urgent / Due 25 May / To Do"},{label:"Tasks in ClickUp (optional)",desc:"AC + Spec link + SP ช่วย track",example:"AC: Worker ≥500 records ไม่ timeout / Spec: Confluence / SP: 8"},{label:"Status: To Do",desc:"task ใหม่ต้อง start ที่ To Do เสมอ",example:"สร้างแล้ว → To Do. เริ่มทำ → เปลี่ยนเป็น In Progress เอง"}],
+    rollback:"แก้ required fields ให้ครบก่อน start", escalation_when:null,
+    failures:["สร้าง task ไม่มี due date — ไม่รู้ว่าช้าหรือไม่","ไม่มี AC ใน task — QA ไม่รู้จะ test อะไร","task ไม่ผูกกับ Story — ทำเสร็จไม่รู้ contribute อะไร"],
+    criteria:["required fields ครบทุก task","task ผูกกับ Story","status = To Do ทุก task ใหม่"],
+    realExample:{scenario:"Payroll Disbursement",highlights:[{label:"Required fields ครบ",cls:"re-tec",note:"6 fields"}],rows:[{label:"Task",val:"[BE] DisbursementService — enqueue payroll batch"},{label:"Owner/Priority/Due",val:"Khun A / Urgent / 25 May"},{label:"AC",val:"process ≥500 records ไม่ timeout, idempotency key ทุก transaction"},{label:"Story",val:"Employer จ่ายเงินเดือนผ่าน Mana"}]}
+  },
+  { num:"4", name:"Work Execution", hint:"ทำงาน + daily update", isGate:false,
+    desc:"ลงมือทำตาม task ที่สร้างแล้ว — อัปเดต ClickUp ทุกวัน ส่ง daily update และ escalate ทันทีเมื่อ blocked",
+    owner:"Assignee", approver:"TL", escalation:"PL", contribs:["TL"],
+    decisionAuthority:[{area:"Technical approach",who:"Assignee",cls:"da-assignee"},{area:"Technical quality",who:"TL",cls:"da-tl"},{area:"Unblock / Re-scope",who:"PL",cls:"da-pl"}],
+    checklist:null,
+    outputs:[{label:"Daily progress update",desc:"ส่งใน Telegram ทุกวัน format มาตรฐาน",example:"✅ เสร็จ: schema DisbursementService\n🔄 กำลังทำ: implement enqueue\n🚫 ติด: ไม่มี"},{label:"ClickUp status updated",desc:"status สะท้อนความจริงทุกวัน",example:"In Progress ตลอดที่กำลังทำ, Blocked ทันทีที่ติด"},{label:"Blocked report (ถ้ามี)",desc:"แจ้ง 3 ข้อ: ติดอะไร / กระทบอะไร / ต้องการอะไร",example:"ติด: Nexum API ไม่รองรับ bulk. กระทบ: DisbursementService. ต้องการ: Nexum TL confirm ภายในวันนี้"}],
+    rollback:"ถ้า blocked > 4h ที่แก้เองไม่ได้ → แจ้ง PL", escalation_when:"Blocked กระทบ Timeline หรือ Dependency ทีมอื่น → แจ้ง PL ทันที",
+    failures:["ไม่อัปเดต ClickUp — status ค้างใน To Do ทั้งที่ทำอยู่","Blocked แต่ไม่แจ้ง — งานค้างโดยไม่มีใครรู้","Daily update ไม่ส่ง — PL ต้องตามทุกวัน"],
+    criteria:["status อัปเดตทุกวัน","daily update ส่งทุกวัน","blocked แจ้งทันที"],
+    realExample:{scenario:"Payroll Disbursement",highlights:[{label:"Daily update ครบ",cls:"re-tec",note:"ทุกวัน"},{label:"Blocked → แจ้ง PL",cls:"re-blk",note:"ไม่รอ"}],rows:[{label:"Daily update",val:"✅ schema ✅ / 🔄 implement enqueue / 🚫 ไม่มี"},{label:"Blocked",val:"Nexum API ไม่รองรับ bulk → แจ้ง PL ทันที"},{label:"Status",val:"In Progress อัปเดตทุกวัน"}]}
+  },
+  { num:"5", name:"Review & QA", hint:"Review code + QA test", isGate:false,
+    desc:"TL review code แล้วส่ง QA ทดสอบตาม AC — ทุก bug ต้องสร้างใน ClickUp ไม่แจ้งแค่ใน chat",
+    owner:"Assignee", approver:"TL (code) / QA TL (test)", escalation:"PL", contribs:["TL","QA"],
+    decisionAuthority:[{area:"Code quality",who:"TL",cls:"da-tl"},{area:"Test pass/fail",who:"QA TL",cls:"da-tl"},{area:"Release decision",who:"PL",cls:"da-pl"}],
+    checklist:null,
+    outputs:[{label:"Code review result",desc:"TL review และ approve PR แล้ว",example:"PR #142 ✅ — approved + unit test added for partial fail"},{label:"QA test result",desc:"ทดสอบครบทุก AC + 0 Urgent bug open",example:"AC1-5 ✅ / 1 High bug: timeout >300 records → แก้แล้ว retest ✅"},{label:"QA sign-off",desc:"QA TL confirm ว่าผ่าน AC และ 0 Urgent",example:"QA sign-off: Payroll ✅ — 100% AC pass, 0 Urgent, ready for closing"}],
+    rollback:"ถ้า fail → กลับ In Progress + comment ชัดว่าต้องแก้อะไร", escalation_when:"พบ bug Urgent หรือ scope miss กระทบ release → แจ้ง PL ทันที",
+    failures:["Review ผ่านเร็วไม่ test จริง — bug หลุด production","QA ไม่มี AC ชัด — ทดสอบไม่ครบ","Bug report ไม่สร้างใน ClickUp — ติดตามไม่ได้"],
+    criteria:["code review ผ่าน TL","QA ทดสอบครบ AC","0 Urgent bug open","QA TL sign-off"],
+    realExample:{scenario:"Payroll Disbursement",highlights:[{label:"AC ครบทุกข้อ",cls:"re-qa",note:"ทดสอบก่อน sign-off"}],rows:[{label:"Code review",val:"PR #142 ✅ approved + unit test"},{label:"QA result",val:"AC1-5 ✅ / 1 High bug → แก้ → retest ✅"},{label:"Sign-off",val:"Payroll ✅ — 0 open, ready for closing"}]}
+  },
+  { num:"6", name:"Work Closing", hint:"Done checklist", isGate:false,
+    desc:"ปิดงานตาม closing tier — Normal: QA / Major: QA+Demo / Business Critical: QA+Demo+PO Signoff / Hotfix: QA+PL ห้าม Done ถ้า tier requirement ไม่ครบ",
+    owner:"Assignee", approver:"PL", escalation:null, contribs:["TL","QA"],
+    decisionAuthority:[{area:"Closing checklist pass",who:"PL",cls:"da-pl"},{area:"Demo acceptance",who:"PL / PO",cls:"da-pl"},{area:"PO Signoff (BC)",who:"PO",cls:"da-po"}],
+    checklist:null,
+    outputs:[{label:"Scope ครบตาม AC",desc:"ทุกอย่างใน AC ทำเสร็จแล้ว",example:"disburse ✅, track ✅, slip ✅, retry ✅, error state ✅"},{label:"Closing Tier requirement",desc:"ทำตาม tier ที่ PL กำหนด",example:"Business Critical → QA ✅ + Demo ✅ + PO Signoff ✅"},{label:"Status = Done + Evidence",desc:"เปลี่ยน status พร้อมแนบ evidence",example:"Done 28 May / PR #142 ✅ / QA ✅ / Demo Loom ✅ / PO ✅"}],
+    rollback:"ห้ามเปลี่ยนเป็น Done ถ้า checklist ไม่ครบ", escalation_when:null,
+    failures:["เปลี่ยน Done ไม่มี QA sign-off — bug ถูก close","ไม่แนบ evidence — audit ไม่ได้","ไม่ทำ demo — PO เห็นครั้งแรกตอน production"],
+    criteria:["scope ครบตาม AC","ผ่าน closing tier requirement","QA sign-off แล้ว","status = Done + evidence ครบ"],
+    realExample:{scenario:"Payroll Disbursement",highlights:[{label:"Demo ก่อน Done",cls:"re-qa",note:"PO เห็นก่อน close"},{label:"Evidence ครบ",cls:"re-ops",note:"PR+QA+demo"}],rows:[{label:"Scope",val:"ทุก AC ผ่าน"},{label:"Demo",val:"28 May ✅ — PO approved, 0 change request"},{label:"Evidence",val:"PR ✅ / QA ✅ / Demo ✅ / Spec ✅"}]}
+  }
+];
+
+const OF_STEPS = [
+  { num:"0", name:"Delivery Handover", hint:"PL sign-off → Operation",
+    desc:"ส่งมอบงานจาก Delivery ไป Operation — PL sign-off ว่า 'Ready for Operation' และแต่งตั้ง Operation Owner",
+    owner:"Delivery TL", approver:"PL", escalation:"COO", contribs:["Operation Owner"],
+    decisionAuthority:[{area:"Sign-off 'Ready for Operation'",who:"PL",cls:"da-pl"},{area:"แต่งตั้ง Operation Owner",who:"PL",cls:"da-pl"}],
+    outputs:[{label:"Handover Package",desc:"เอกสารส่งมอบครบ",example:"Spec, runbook, access, known issue, escalation contact"},{label:"Operation Owner assigned",desc:"PL แต่งตั้งชัดเจน",example:"Operation Owner: Khun Wanchana — รับผิดชอบ Production ตั้งแต่นี้"}],
+    rollback:"ถ้า documentation ไม่ครบ → ส่งกลับ Delivery TL แก้ก่อน",
+    failures:["Handover ทั้งที่ documentation ยังไม่ครบ — Operation ไม่มีเอกสาร support","ไม่ระบุ Operation Owner — ไม่มีใครรับผิดชอบตอนเกิด incident"],
+    criteria:["Documentation ครบ","Operation Owner ถูกแต่งตั้งแล้ว","Backup/Rollback Plan มีถ้า Business Critical"]
+  },
+  { num:"1", name:"Rollout", hint:"เตรียมทีม + Support channel",
+    desc:"เตรียมทีมและช่องทาง Support ก่อนเปิดใช้งาน — Training, Telegram announcement, Support channel พร้อม",
+    owner:"Operation Owner", approver:"PL", escalation:"COO", contribs:["Support","Dev"],
+    decisionAuthority:[{area:"อนุมัติ Rollout plan",who:"PL",cls:"da-pl"},{area:"Training จำเป็นไหม",who:"PL",cls:"da-pl"}],
+    outputs:[{label:"Team Ready",desc:"ทีมที่เกี่ยวข้องรู้วิธีใช้และรับ Support ได้",example:"Training done ✅ / Rollout announcement sent ✅"},{label:"Support channel ready",desc:"ช่องทาง incident และ support พร้อม",example:"Telegram channel configured, escalation contact shared"}],
+    rollback:"ทีมยังไม่พร้อม → Delay Go Live → กลับ Step 1",
+    failures:["Rollout ทีหลัง Go Live (Business Critical) — user เจอปัญหาแต่ทีม support ไม่รู้","ไม่แจ้งช่องทาง Support ล่วงหน้า — incident แรกไม่มีใครรับเรื่อง"],
+    criteria:["ทีมที่เกี่ยวข้องได้รับการแจ้ง","Support channel พร้อม","Training เสร็จ (ถ้าจำเป็น)"]
+  },
+  { num:"2", name:"Go Live", hint:"Deploy Production → PL อนุมัติ",
+    desc:"เปิดใช้งาน Production ตาม Go-Live Ready Checklist — PL อนุมัติก่อนเสมอ Smoke Test ผ่านก่อน announce",
+    owner:"Operation Owner", approver:"PL", escalation:"COO", contribs:["Dev"],
+    decisionAuthority:[{area:"อนุมัติ Go Live",who:"PL",cls:"da-pl"},{area:"อนุมัติ Rollback",who:"PL",cls:"da-pl"}],
+    outputs:[{label:"Production Live",desc:"ระบบทำงานใน Production แล้ว",example:"Deploy ✅ / Smoke Test ✅ / Announcement sent ✅"},{label:"Monitoring active",desc:"Monitoring ทำงานปกติ",example:"Grafana alerts configured, on-call rotation set"}],
+    rollback:"Deploy Fail → PL อนุมัติ Rollback → กลับ Step 2",
+    failures:["Deploy โดยไม่ผ่าน Go-Live Ready Checklist — ไม่มีใครรับผิดชอบถ้าเกิดปัญหา","ข้าม Smoke Test เพราะรีบ — เจอ bug หลังประกาศแล้ว"],
+    criteria:["Go-Live Ready Checklist ผ่านครบ","Deploy สำเร็จ","Smoke Test ผ่าน","Monitoring ทำงาน"]
+  },
+  { num:"3", name:"Post Go-Live Monitoring", hint:"Monitor → Stable",
+    desc:"ติดตามผลต่อเนื่องจนกว่า Operation Owner จะประกาศ Stable ตาม Stable Criteria — ไม่มี timeframe ตายตัว",
+    owner:"Operation Owner", approver:"PL", escalation:"COO", contribs:["Support"],
+    decisionAuthority:[{area:"ประกาศ Stable",who:"Operation Owner",cls:"da-assignee"},{area:"อนุมัติ Rollback",who:"PL",cls:"da-pl"},{area:"Sev1 response",who:"PL + COO",cls:"da-coo"}],
+    outputs:[{label:"Stable Operation",desc:"ระบบผ่าน Stable Criteria ครบ",example:"0 Sev1 ใน 7 วัน / Error rate < threshold / User complaint < baseline"},{label:"Incident Summary",desc:"สรุป incident ที่เกิดในช่วง monitoring",example:"2 Sev3 incidents — both resolved, root cause identified"}],
+    rollback:"Sev1 → Incident Response → PL อนุมัติ Rollback → กลับ Step 2",
+    failures:["ประกาศ Stable เร็วเกินไปโดยไม่เช็ค error log — ปัญหาโผล่ทีหลัง","พบ Sev1 แต่ไม่แจ้ง PL ทันที — ผลกระทบลุกลาม"],
+    criteria:["ผ่าน Stable Criteria ครบ","ไม่มี Sev1 open","Error rate ปกติ"]
+  },
+  { num:"4", name:"Knowledge Review", hint:"Optional — บังคับเมื่อ Sev1/Rollback",
+    desc:"ทบทวนมาตรฐานจากการใช้งานจริง — Optional ยกเว้นเกิด Sev1 / Rollback Production / Major Incident → บังคับทำ",
+    owner:"Operation Owner", approver:"PL", escalation:"COO", contribs:["Dev"],
+    decisionAuthority:[{area:"ตัดสินทำ Knowledge Review (Optional)",who:"PL",cls:"da-pl"}],
+    outputs:[{label:"Lessons Learned",desc:"สิ่งที่เรียนรู้จาก Go Live จริง",example:"Root cause Sev1, process gap, recommendation สำหรับ next release"},{label:"Updated SOP / Runbook",desc:"อัปเดต document ถ้า process ต้องเปลี่ยน",example:"Runbook v2 — เพิ่ม step rollback manual disbursement"}],
+    rollback:"—",
+    failures:["ข้าม Knowledge Review ทั้งที่เข้าเงื่อนไขบังคับ (Sev1) — บทเรียนสำคัญหายไป"],
+    criteria:["Lessons Learned บันทึกแล้ว","Document อัปเดตแล้ว (ถ้าจำเป็น)"]
+  }
+];
+
+const SF_STEPS = [
+  { num:"0", name:"Receive", hint:"รับเรื่อง + เปิด Ticket",
+    desc:"รับเรื่องจากช่องทางที่กำหนด เปิด Support Ticket และแจ้งลูกค้าว่ารับเรื่องแล้ว",
+    owner:"Mana Support", approver:null, escalation:null, contribs:[],
+    decisionAuthority:[{area:"รับเรื่อง",who:"Mana Support",cls:"da-assignee"}],
+    outputs:[{label:"Support Ticket",desc:"Ticket เปิดแล้วใน system",example:"Ticket #4821: ลูกค้า A ไม่สามารถจ่ายเงินเดือนได้ — รับเมื่อ 10:23"}],
+    rollback:"—", failures:["เปิด Ticket ช้า — ลูกค้ารอนาน SLA เสีย"], criteria:["Ticket เปิดแล้ว","ลูกค้าได้รับการยืนยัน"]
+  },
+  { num:"1", name:"Issue Classification", hint:"จำแนก Category + Severity",
+    desc:"วิเคราะห์และคัดกรอง — ระบุ Category, ประเมิน Severity, รวบรวม Minimum Information ก่อนผ่าน Gate: Issue Classified",
+    owner:"Mana Support", approver:null, escalation:null, contribs:[],
+    decisionAuthority:[{area:"จำแนกประเภท",who:"Mana Support",cls:"da-assignee"},{area:"ประเมิน Severity",who:"Mana Support",cls:"da-assignee"},{area:"กำหนด Priority",who:"PL",cls:"da-pl"}],
+    outputs:[
+      {label:"Issue Category",desc:"ประเภทของปัญหา",example:"Incident / Bug — ระบบจ่ายเงินเดือนล้มเหลว"},
+      {label:"Severity",desc:"Critical / High / Medium / Low",example:"Critical — ระบบล่ม กระทบลูกค้าทุกราย"},
+      {label:"Minimum Information",desc:"User/Company, Screenshot, วันเวลา, ขั้นตอน, Error Message, App Version",example:"User: บริษัท A, Error: 'Payment failed 502', App v2.1.3, เกิด 10:15"}
+    ],
+    rollback:"—", failures:["จำแนก Category ผิด — ส่งทีมผิด","ไม่เก็บ Minimum Information — ทีมต้องถามซ้ำ"],
+    criteria:["Category ชัดเจน","Severity ประเมินแล้ว","Minimum Information ครบ"]
+  },
+  { num:"2", name:"Routing", hint:"ส่งต่อทีมที่เหมาะสม",
+    desc:"ส่งต่อทีมที่ถูกต้องตาม Category — Bug/Incident ต้องผ่าน PL ก่อน Developer",
+    owner:"Mana Support", approver:"PL (กรณี Bug)", escalation:"PL", contribs:["PL"],
+    decisionAuthority:[{area:"ส่งต่อทีม",who:"Mana Support",cls:"da-assignee"},{area:"เปิด Story / Task",who:"PL",cls:"da-pl"},{area:"Priority",who:"PL",cls:"da-pl"}],
+    outputs:[{label:"Assigned Ticket",desc:"Ticket ถูกส่งต่อและ assign แล้ว",example:"Ticket ส่ง PL → PL เปิด Story [BE] Fix Payment 502 Error / Priority: Urgent"},{label:"Ticket linked to Story/Task",desc:"Support Ticket เชื่อมกับ ClickUp task",example:"Ticket #4821 → linked to Story #NEXUM-2891"}],
+    rollback:"—", failures:["ส่งตรง Developer ข้าม PL — ทีมรับงานไม่มีคนดู priority"],
+    criteria:["Ticket assign แล้ว","Story/Task เชื่อมโยงแล้ว (กรณี Bug)","Priority กำหนดแล้ว"]
+  },
+  { num:"3", name:"Resolution", hint:"ดำเนินการแก้ไข",
+    desc:"ทีมที่รับผิดชอบดำเนินการแก้ไข — Support ตอบคำถาม / Operation แก้ Config / Dev พัฒนา / QA ทดสอบ / Deploy",
+    owner:"Owner ที่ได้รับมอบหมาย", approver:null, escalation:"PL", contribs:["Dev","QA","Operation"],
+    decisionAuthority:[{area:"ดำเนินการแก้ไข",who:"Owner ที่ assign",cls:"da-assignee"}],
+    outputs:[{label:"Resolved",desc:"ปัญหาได้รับการแก้ไขแล้ว",example:"Bug fixed: Payment API timeout — deploy ไป Production แล้ว 11:45"}],
+    rollback:"—", failures:["Waiting ค้างนาน — ไม่มีใคร follow up"],
+    criteria:["ปัญหาได้รับการแก้ไข","Deploy ถ้าจำเป็น"]
+  },
+  { num:"4", name:"Verification", hint:"ทีมยืนยัน + ลูกค้ายืนยัน (2 รอบ)",
+    desc:"สองรอบแยกกัน — รอบ 1: ทีม verify ว่าแก้เสร็จจริง, รอบ 2: ลูกค้า confirm ว่าใช้งานได้แล้ว",
+    owner:"Owner + Mana Support", approver:"Mana Support", escalation:null, contribs:[],
+    decisionAuthority:[{area:"ยืนยันผล (ทีม)",who:"Owner",cls:"da-assignee"},{area:"ยืนยันผล (ลูกค้า)",who:"Mana Support",cls:"da-assignee"}],
+    outputs:[{label:"Mana Support Verify",desc:"ทีม verify ว่าแก้เสร็จจริงก่อนแจ้งลูกค้า",example:"Support ทดสอบระบบ → จ่ายเงินสำเร็จ → พร้อมแจ้งลูกค้า"},{label:"Customer Confirm",desc:"ลูกค้ายืนยันว่าใช้งานได้",example:"ลูกค้า confirm 12:30: 'จ่ายเงินเดือนได้แล้ว ขอบคุณครับ'"}],
+    rollback:"ถ้า verify ไม่ผ่าน → กลับ Step 3", failures:["แจ้งลูกค้าโดยไม่ verify เอง — ลูกค้าเจอปัญหาซ้ำ"],
+    criteria:["ทีม verify ว่าแก้เสร็จจริง","ลูกค้า confirm แล้ว"]
+  },
+  { num:"5", name:"Close", hint:"บันทึก Root Cause + ปิด Ticket",
+    desc:"ปิด Ticket พร้อมบันทึก Root Cause จาก Taxonomy — Reopen ≥ 3 ครั้งต้อง PL Root Cause Review",
+    owner:"Mana Support", approver:null, escalation:"PL", contribs:[],
+    decisionAuthority:[{area:"ปิด Ticket",who:"Mana Support",cls:"da-assignee"},{area:"Reopen ≥ 3 → Root Cause Review",who:"PL",cls:"da-pl"}],
+    outputs:[
+      {label:"Root Cause",desc:"เลือกจาก Taxonomy ที่กำหนด",example:"Product Bug — API timeout ที่ 500+ records"},
+      {label:"Ticket Closed",desc:"Ticket ปิดและแจ้งลูกค้าแล้ว",example:"Ticket #4821 Closed 12:35 / Root Cause: Product Bug / Resolution Time: 2h 12m"}
+    ],
+    rollback:"—", failures:["ปิด Ticket ไม่บันทึก Root Cause — วิเคราะห์ trend ไม่ได้","Reopen ≥ 3 ครั้ง ไม่ escalate PL — ปัญหาเดิมไม่ได้รับการแก้จริง"],
+    criteria:["Root Cause บันทึกแล้ว (จาก Taxonomy)","ลูกค้าได้รับแจ้ง","Ticket Closed"]
+  }
+];
+
+
+// ── PRODUCT FLOW ──
+var PF_cur = -1;
+function PF_buildSidebar() {
+  document.getElementById('pf-sidebar').innerHTML = PF_STEPS.map(function(s,i){
+    return '<button class="sbtn pf-btn'+(i===PF_cur?' active':'')+(s.gov?' has-pip':'')+'" onclick="PF_go('+i+')">'+
+      '<span class="snum">'+s.num+'</span>'+
+      '<span class="smeta"><span class="stitle">'+s.name+'</span><span class="shint">'+s.hint+'</span></span>'+
+      '<span class="spip" title="compliance gate"></span></button>';
+  }).join('');
+}
+function PF_showOverview() {
+  PF_cur=-1;
+  document.querySelectorAll('#pf-sidebar .sbtn,#pf-ov-btn').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('pf-ov-btn').classList.add('active');
+  PF_buildSidebar();
+  document.getElementById('pf-main').innerHTML = '<div class="fade-in">'+
+    '<div class="hero"><div class="hero-num" style="color:var(--pf)">PF</div><div>'+
+    '<div class="hero-name">Product Flow v4</div>'+
+    '<div class="hero-desc">ทำให้ requirement, workflow, governance และ architecture ชัดก่อนเริ่มพัฒนา — ลด misunderstanding ระหว่าง Business, Product, UX, Tech, QA, Operation</div>'+
+    '</div></div>'+
+    '<div class="sh">Flow ทั้งหมด</div>'+
+    '<div class="card"><div class="cb"><div class="ov-chain">'+rOvChain(PF_STEPS,'#1d6fd8','PF_go')+'</div></div></div>'+
+    '<div class="sh">Process Tier</div>'+
+    '<div class="card"><div class="cb"><div class="tier-grid">'+
+    '<div class="tier-card tc-fast"><div class="tc-lbl">Fast Track</div><div class="tc-eg">UI, text, low-risk</div><div class="tc-rules"><div>• async, ไม่ต้องมี COO</div><div>• PL decide</div></div></div>'+
+    '<div class="tier-card tc-std"><div class="tc-lbl">Standard</div><div class="tc-eg">New feature, workflow</div><div class="tc-rules"><div>• Full process</div><div>• COO: conditional</div></div></div>'+
+    '<div class="tier-card tc-full"><div class="tc-lbl">Full Process</div><div class="tc-eg">Financial, compliance</div><div class="tc-rules"><div>• ทุก gate ต้องผ่าน COO</div></div></div>'+
+    '</div></div></div>'+
+    '<div class="sh">Decision Authority</div>'+
+    '<div class="card"><div class="cb"><table class="da-table">'+
+    '<tr><th>Area</th><th>Final Decision</th><th style="text-align:left">หมายเหตุ</th></tr>'+
+    '<tr><td class="da-area">Business scope & goal</td><td><span class="da-tag da-po">PO</span></td><td style="font-size:12px;color:var(--muted)">CEO approve ถ้า strategic</td></tr>'+
+    '<tr><td class="da-area">Workflow & product design</td><td><span class="da-tag da-pl">PL</span></td><td style="font-size:12px;color:var(--muted)">COO เข้าถ้ากระทบ operation มาก</td></tr>'+
+    '<tr><td class="da-area">Technical architecture</td><td><span class="da-tag da-tl">Backend TL</span></td><td style="font-size:12px;color:var(--muted)">CTO approve ถ้า high risk</td></tr>'+
+    '<tr><td class="da-area">Compliance</td><td><span class="da-tag da-coo">COO</span></td><td style="font-size:12px;color:var(--muted)">Final decision ทุก conflict</td></tr>'+
+    '</table></div></div>'+
+    '<div class="nav-bar"><span></span><span class="nav-prog">Overview</span><button class="nav-btn" onclick="PF_go(0)">เริ่ม Step 0 →</button></div>'+
+    '</div>';
+  document.getElementById('pf-main').scrollTop=0;
+}
+function PF_buildMain() {
+  var s = PF_STEPS[PF_cur];
+  document.getElementById('pf-main').innerHTML = '<div class="fade-in">'+
+    '<div class="hero"><div class="hero-num" style="color:var(--pf)">'+s.num+'</div><div>'+
+    '<div class="hero-name">'+s.name+'</div><div class="hero-desc">'+s.desc+'</div></div></div>'+
+    (s.gov?'<div class="sh">Compliance</div><div class="card"><div class="cb"><div class="gov-alert">⚑ '+s.gov+'</div></div></div>':'')+
+    '<div class="sh">Roles & Decision Authority</div>'+
+    '<div class="g2"><div class="card"><div class="ch"><span class="ch-icon">○</span><span class="ch-label">Roles</span></div><div class="cb">'+rRoles(s)+'</div></div>'+
+    '<div class="card"><div class="ch"><span class="ch-icon">◇</span><span class="ch-label">Decision Authority</span></div><div class="cb">'+rDA(s.decisionAuthority)+'</div></div></div>'+
+    '<div class="sh">Output</div>'+
+    '<div class="card"><div class="cb">'+rOutputs(s.outputs,'#1d6fd8')+'<div class="rollback-row"><span style="color:var(--hint)">↩</span><span>'+s.rollback+'</span></div></div></div>'+
+    (s.realExample?'<div class="sh">Real Example</div><div class="card"><div class="cb">'+rRE(s.realExample)+'</div></div>':'')+
+    (s.failures&&s.failures.length?'<div class="sh">Common Failure</div><div class="card"><div class="cb">'+rFails(s.failures)+'</div></div>':'')+
+    '<div class="sh">Success Criteria</div><div class="card"><div class="cb">'+rCk(s.criteria)+'</div></div>'+
+    rNavBar(PF_cur,PF_STEPS.length,'PF_nav(-1)','PF_nav(1)')+
+    '</div>';
+  document.getElementById('pf-main').scrollTop=0;
+}
+function PF_go(i){PF_cur=i;document.querySelectorAll('#pf-sidebar .sbtn,#pf-ov-btn').forEach(function(b){b.classList.remove('active');});PF_buildSidebar();PF_buildMain();}
+function PF_nav(d){var n=PF_cur+d;if(n>=0&&n<PF_STEPS.length)PF_go(n);}
+
+// ── DELIVERY FLOW ──
+var DF_cur = -1;
+function DF_buildSidebar() {
+  document.getElementById('df-sidebar').innerHTML = DF_STEPS.map(function(s,i){
+    return '<button class="sbtn df-btn'+(i===DF_cur?' active':'')+(s.escalation_when?' has-pip':'')+'" onclick="DF_go('+i+')">'+
+      '<span class="snum'+(s.isGate?' gate-snum':'')+'">'+s.num+'</span>'+
+      '<span class="smeta"><span class="stitle">'+s.name+'</span><span class="shint">'+s.hint+'</span></span>'+
+      '<span class="spip" style="background:var(--red)" title="escalation"></span></button>';
+  }).join('');
+}
+function DF_showOverview() {
+  DF_cur=-1;
+  document.querySelectorAll('#df-sidebar .sbtn,#df-ov-btn').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('df-ov-btn').classList.add('active');
+  DF_buildSidebar();
+  document.getElementById('df-main').innerHTML = '<div class="fade-in">'+
+    '<div class="hero"><div class="hero-num" style="color:var(--df)">DF</div><div>'+
+    '<div class="hero-name">Delivery Flow v3</div>'+
+    '<div class="hero-desc">มาตรฐานการทำงานหลัง Product Flow ส่ง Ready for Development — ทุกงานมีเจ้าของ ติดตามได้ทุกวัน ปิดงานได้ครบ</div>'+
+    '</div></div>'+
+    '<div class="sh">Flow ทั้งหมด</div>'+
+    '<div class="card"><div class="cb"><div class="ov-chain">'+rOvChain(DF_STEPS,'#1a7a4a','DF_go')+'</div></div></div>'+
+    '<div class="sh">Escalation Path</div>'+
+    '<div class="card"><div class="cb"><div class="ck-list">'+
+    '<div class="ck-item"><span class="ck-icon" style="color:var(--red)">●</span>Blocked กระทบ Timeline → แจ้ง PL ทันที</div>'+
+    '<div class="ck-item"><span class="ck-icon" style="color:var(--red)">●</span>Blocked กระทบ Dependency ทีมอื่น → PL นำเข้า Cross-Team</div>'+
+    '<div class="ck-item"><span class="ck-icon" style="color:var(--red)">●</span>แจ้งครบ 3 อย่าง: ติดอะไร · กระทบอะไร · ต้องการอะไร</div>'+
+    '</div></div></div>'+
+    '<div class="nav-bar"><span></span><span class="nav-prog">Overview</span><button class="nav-btn" onclick="DF_go(0)">เริ่ม Step 0 →</button></div>'+
+    '</div>';
+  document.getElementById('df-main').scrollTop=0;
+}
+function DF_buildMain() {
+  var s = DF_STEPS[DF_cur];
+  var ckHtml = s.checklist ? '<div class="sh">Definition of Ready</div><div class="card"><div class="cb">'+
+    '<div style="display:flex;flex-direction:column;gap:4px">'+s.checklist.map(function(c){return '<div class="gate-item"><span style="color:var(--hint)">□</span>'+c+'</div>';}).join('')+'</div>'+
+    '<div class="gate-fail-box">▲ ไม่ผ่าน → ห้ามเข้า Delivery Flow</div></div></div>' : '';
+  var ctHtml = s.num==='6' ? '<div class="sh">Closing Tier</div><div class="card"><div class="cb"><div class="ct-grid">'+
+    '<div class="ct-card ct-normal"><div class="ct-lbl">Normal</div><div class="ct-eg">bug fix</div><div class="ct-req">QA sign-off</div></div>'+
+    '<div class="ct-card ct-major"><div class="ct-lbl">Major</div><div class="ct-eg">new feature</div><div class="ct-req">QA + Demo</div></div>'+
+    '<div class="ct-card ct-critical"><div class="ct-lbl">Business Critical</div><div class="ct-eg">financial</div><div class="ct-req">QA + Demo + PO</div></div>'+
+    '<div class="ct-card ct-hotfix"><div class="ct-lbl">Hotfix</div><div class="ct-eg">production</div><div class="ct-req">QA + PL Approval</div></div>'+
+    '</div></div></div>' : '';
+  var escHtml = s.escalation_when ?
+    '<div class="gov-alert">● '+s.escalation_when+'</div>' :
+    '<div style="font-size:13px;color:var(--hint)">ไม่มี escalation trigger พิเศษ</div>';
+  document.getElementById('df-main').innerHTML = '<div class="fade-in">'+
+    '<div class="hero"><div class="hero-num" style="color:'+(s.isGate?'var(--pf)':'var(--df)')+'">'+s.num+'</div><div>'+
+    '<div class="hero-name">'+s.name+(s.isGate?' <span style="font-size:11px;padding:2px 7px;border-radius:999px;background:var(--pf-dim);border:1px solid var(--pf-mid);color:#0f4fa3">Gate</span>':'')+'</div>'+
+    '<div class="hero-desc">'+s.desc+'</div></div></div>'+
+    ckHtml+ctHtml+
+    '<div class="sh">Roles & Decision Authority</div>'+
+    '<div class="g2"><div class="card"><div class="cb">'+rRoles(s)+'</div></div>'+
+    '<div class="card"><div class="cb">'+rDA(s.decisionAuthority)+'</div></div></div>'+
+    '<div class="sh">Output</div>'+
+    '<div class="card"><div class="cb">'+rOutputs(s.outputs,'#1a7a4a')+'<div class="rollback-row"><span style="color:var(--hint)">↩</span><span>'+s.rollback+'</span></div></div></div>'+
+    '<div class="g2">'+
+    '<div class="card"><div class="ch"><span class="ch-icon">◎</span><span class="ch-label">Real Example</span></div><div class="cb">'+rRE(s.realExample)+'</div></div>'+
+    '<div class="card"><div class="ch"><span class="ch-icon">▲</span><span class="ch-label">Common Failure</span></div><div class="cb">'+rFails(s.failures)+'</div></div></div>'+
+    '<div class="g2">'+
+    '<div class="card"><div class="ch"><span class="ch-icon">●</span><span class="ch-label">Escalation</span></div><div class="cb">'+escHtml+'</div></div>'+
+    '<div class="card"><div class="ch"><span class="ch-icon">✓</span><span class="ch-label">Success Criteria</span></div><div class="cb">'+rCk(s.criteria)+'</div></div></div>'+
+    rNavBar(DF_cur,DF_STEPS.length,'DF_nav(-1)','DF_nav(1)')+
+    '</div>';
+  document.getElementById('df-main').scrollTop=0;
+}
+function DF_go(i){DF_cur=i;document.querySelectorAll('#df-sidebar .sbtn,#df-ov-btn').forEach(function(b){b.classList.remove('active');});DF_buildSidebar();DF_buildMain();}
+function DF_nav(d){var n=DF_cur+d;if(n>=0&&n<DF_STEPS.length)DF_go(n);}
+
+// ── OPERATION FLOW ──
+var OF_cur = -1;
+function OF_buildSidebar() {
+  document.getElementById('of-sidebar').innerHTML = OF_STEPS.map(function(s,i){
+    return '<button class="sbtn of-btn'+(i===OF_cur?' active':'')+'" onclick="OF_go('+i+')">'+
+      '<span class="snum">'+s.num+'</span>'+
+      '<span class="smeta"><span class="stitle">'+s.name+'</span><span class="shint">'+s.hint+'</span></span></button>';
+  }).join('');
+}
+function OF_showOverview() {
+  OF_cur=-1;
+  document.querySelectorAll('#of-sidebar .sbtn,#of-ov-btn').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('of-ov-btn').classList.add('active');
+  OF_buildSidebar();
+  document.getElementById('of-main').innerHTML = '<div class="fade-in">'+
+    '<div class="hero"><div class="hero-num" style="color:var(--of)">OF</div><div>'+
+    '<div class="hero-name">Operation Flow v1.1 <span style="font-size:11px;padding:2px 7px;border-radius:999px;background:var(--of-dim);border:1px solid var(--of-mid);color:var(--of)">Frozen</span></div>'+
+    '<div class="hero-desc">นำระบบที่พัฒนาเสร็จไปใช้งานจริง — ใช้หลัง Delivery Flow Work Closing จบที่ Stable</div></div></div>'+
+    '<div class="sh">กฎที่ต้องรู้ก่อน</div>'+
+    '<div class="card"><div class="cb"><div class="ck-list">'+
+    '<div class="ck-item"><span class="ck-icon">●</span>PL คือผู้มีอำนาจหลักตลอด — sign-off, deploy, rollback, แต่งตั้ง Operation Owner</div>'+
+    '<div class="ck-item"><span class="ck-icon">●</span>ห้าม Go Live ถ้าไม่ผ่าน Go-Live Ready Checklist</div>'+
+    '<div class="ck-item"><span class="ck-icon">●</span>ห้ามข้าม PL ในการอนุมัติ Rollback ทุก Severity</div>'+
+    '<div class="ck-item"><span class="ck-icon">●</span>ทุก Incident ต้องมี Incident Record</div>'+
+    '<div class="ck-item"><span class="ck-icon">●</span>Knowledge Review Optional ยกเว้น Sev1/Rollback → บังคับ</div>'+
+    '</div></div></div>'+
+    '<div class="sh">5 Steps</div>'+
+    '<div class="card"><div class="cb"><div class="ov-chain">'+rOvChain(OF_STEPS,'#6a3fa0','OF_go')+'</div></div></div>'+
+    '<div class="sh">Incident Severity</div>'+
+    '<div class="card"><div class="cb"><table class="sev-table">'+
+    '<tr><th>Severity</th><th>ตัวอย่าง</th><th>Escalation</th></tr>'+
+    '<tr><td class="sev1">Sev1</td><td>ระบบล่ม / ทำธุรกรรมไม่ได้</td><td style="color:#8c2020">แจ้ง PL+COO ทันที</td></tr>'+
+    '<tr><td class="sev2">Sev2</td><td>บาง feature ใช้ไม่ได้ มี workaround</td><td style="color:#7a5008">แจ้ง PL ใน 1 ชม.</td></tr>'+
+    '<tr><td class="sev3">Sev3</td><td>กระทบน้อย / UI</td><td style="color:#0f4fa3">Next Business Day</td></tr>'+
+    '</table></div></div>'+
+    '<div class="nav-bar"><span></span><span class="nav-prog">Overview</span><button class="nav-btn" onclick="OF_go(0)">เริ่ม Step 0 →</button></div>'+
+    '</div>';
+  document.getElementById('of-main').scrollTop=0;
+}
+function OF_buildMain() {
+  var s = OF_STEPS[OF_cur];
+  document.getElementById('of-main').innerHTML = '<div class="fade-in">'+
+    '<div class="hero"><div class="hero-num" style="color:var(--of)">'+s.num+'</div><div>'+
+    '<div class="hero-name">'+s.name+'</div><div class="hero-desc">'+s.desc+'</div></div></div>'+
+    '<div class="sh">Roles & Decision Authority</div>'+
+    '<div class="g2"><div class="card"><div class="cb">'+rRoles(s)+'</div></div>'+
+    '<div class="card"><div class="cb">'+rDA(s.decisionAuthority)+'</div></div></div>'+
+    '<div class="sh">Output</div>'+
+    '<div class="card"><div class="cb">'+rOutputs(s.outputs,'#6a3fa0')+'<div class="rollback-row"><span style="color:var(--hint)">↩</span><span>'+s.rollback+'</span></div></div></div>'+
+    '<div class="g2">'+
+    '<div class="card"><div class="ch"><span class="ch-icon">▲</span><span class="ch-label">Common Failure</span></div><div class="cb">'+rFails(s.failures)+'</div></div>'+
+    '<div class="card"><div class="ch"><span class="ch-icon">✓</span><span class="ch-label">Success Criteria</span></div><div class="cb">'+rCk(s.criteria)+'</div></div></div>'+
+    rNavBar(OF_cur,OF_STEPS.length,'OF_nav(-1)','OF_nav(1)')+
+    '</div>';
+  document.getElementById('of-main').scrollTop=0;
+}
+function OF_go(i){OF_cur=i;document.querySelectorAll('#of-sidebar .sbtn,#of-ov-btn').forEach(function(b){b.classList.remove('active');});OF_buildSidebar();OF_buildMain();}
+function OF_nav(d){var n=OF_cur+d;if(n>=0&&n<OF_STEPS.length)OF_go(n);}
+
+// ── SUPPORT FLOW ──
+var SF_cur = -1;
+function SF_buildSidebar() {
+  document.getElementById('sf-sidebar').innerHTML = SF_STEPS.map(function(s,i){
+    return '<button class="sbtn sf-btn'+(i===SF_cur?' active':'')+'" onclick="SF_go('+i+')">'+
+      '<span class="snum">'+s.num+'</span>'+
+      '<span class="smeta"><span class="stitle">'+s.name+'</span><span class="shint">'+s.hint+'</span></span></button>';
+  }).join('');
+}
+function SF_showOverview() {
+  SF_cur=-1;
+  document.querySelectorAll('#sf-sidebar .sbtn,#sf-ov-btn').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('sf-ov-btn').classList.add('active');
+  SF_buildSidebar();
+  document.getElementById('sf-main').innerHTML = '<div class="fade-in">'+
+    '<div class="hero"><div class="hero-num" style="color:var(--sf)">SF</div><div>'+
+    '<div class="hero-name">Support Flow v1.1 <span style="font-size:11px;padding:2px 7px;border-radius:999px;background:var(--sf-dim);border:1px solid var(--sf-mid);color:var(--sf)">Frozen</span></div>'+
+    '<div class="hero-desc">รับเรื่อง คัดกรอง ส่งต่อ ติดตาม และปิดเคส — Mana Support เป็น SPOC ลูกค้าไม่ติดต่อ Dev โดยตรง</div></div></div>'+
+    '<div class="sh">Ticket Lifecycle</div>'+
+    '<div class="card"><div class="cb"><div class="lifecycle">'+
+    '<span class="lc-node">Open</span><span style="color:var(--hint);font-size:11px">→</span>'+
+    '<span class="lc-node">In Review</span><span style="color:var(--hint);font-size:11px">→</span>'+
+    '<span class="lc-node">Assigned</span><span style="color:var(--hint);font-size:11px">→</span>'+
+    '<span class="lc-node" style="border-color:rgba(146,97,10,.25);background:var(--amber-dim);color:#7a5008">Waiting Customer</span>'+
+    '<span style="color:var(--hint);font-size:11px">/</span>'+
+    '<span class="lc-node" style="border-color:rgba(184,50,50,.25);background:var(--red-dim);color:#8c2020">Waiting Internal</span>'+
+    '<span style="color:var(--hint);font-size:11px">→</span>'+
+    '<span class="lc-node" style="border-color:rgba(26,122,74,.25);background:var(--df-dim);color:#145c37">Resolved</span>'+
+    '<span style="color:var(--hint);font-size:11px">→</span>'+
+    '<span class="lc-node" style="border-color:rgba(0,71,101,.25);background:var(--sf-dim);color:var(--sf);font-weight:500">Closed</span>'+
+    '</div></div></div>'+
+    '<div class="sh">6 Steps</div>'+
+    '<div class="card"><div class="cb"><div class="ov-chain">'+rOvChain(SF_STEPS,'#004765','SF_go')+'</div></div></div>'+
+    '<div class="sh">กฎสำคัญ</div>'+
+    '<div class="card"><div class="cb"><div class="ck-list">'+
+    '<div class="ck-item"><span class="ck-icon">●</span>Mana Support เป็น Owner จนกว่าจะปิดเคส</div>'+
+    '<div class="ck-item"><span class="ck-icon">●</span>Severity ≠ Priority — Severity ประเมินโดย Mana Support, Priority โดย PL</div>'+
+    '<div class="ck-item"><span class="ck-icon">●</span>Developer รับงานผ่าน PL เท่านั้น</div>'+
+    '<div class="ck-item"><span class="ck-icon">●</span>Reopen ≥ 3 ครั้ง → PL Root Cause Review</div>'+
+    '<div class="ck-item"><span class="ck-icon">●</span>Root Cause ต้องเลือกจาก Taxonomy: Product Bug / Configuration / User Error / Data Issue / External / Enhancement / Unknown</div>'+
+    '</div></div></div>'+
+    '<div class="nav-bar"><span></span><span class="nav-prog">Overview</span><button class="nav-btn" onclick="SF_go(0)">เริ่ม Step 0 →</button></div>'+
+    '</div>';
+  document.getElementById('sf-main').scrollTop=0;
+}
+function SF_buildMain() {
+  var s = SF_STEPS[SF_cur];
+  document.getElementById('sf-main').innerHTML = '<div class="fade-in">'+
+    '<div class="hero"><div class="hero-num" style="color:var(--sf)">'+s.num+'</div><div>'+
+    '<div class="hero-name">'+s.name+'</div><div class="hero-desc">'+s.desc+'</div></div></div>'+
+    '<div class="sh">Roles & Decision Authority</div>'+
+    '<div class="g2"><div class="card"><div class="cb">'+rRoles(s)+'</div></div>'+
+    '<div class="card"><div class="cb">'+rDA(s.decisionAuthority)+'</div></div></div>'+
+    '<div class="sh">Output</div>'+
+    '<div class="card"><div class="cb">'+rOutputs(s.outputs,'#004765')+'<div class="rollback-row"><span style="color:var(--hint)">↩</span><span>'+s.rollback+'</span></div></div></div>'+
+    '<div class="g2">'+
+    '<div class="card"><div class="ch"><span class="ch-icon">▲</span><span class="ch-label">Common Failure</span></div><div class="cb">'+rFails(s.failures)+'</div></div>'+
+    '<div class="card"><div class="ch"><span class="ch-icon">✓</span><span class="ch-label">Success Criteria</span></div><div class="cb">'+rCk(s.criteria)+'</div></div></div>'+
+    rNavBar(SF_cur,SF_STEPS.length,'SF_nav(-1)','SF_nav(1)')+
+    '</div>';
+  document.getElementById('sf-main').scrollTop=0;
+}
+function SF_go(i){SF_cur=i;document.querySelectorAll('#sf-sidebar .sbtn,#sf-ov-btn').forEach(function(b){b.classList.remove('active');});SF_buildSidebar();SF_buildMain();}
+function SF_nav(d){var n=SF_cur+d;if(n>=0&&n<SF_STEPS.length)SF_go(n);}
+
+// ── OPERATING STANDARDS ──
+var OS_SECS = [
+  {num:'1',name:'Working Expectation',hint:'พฤติกรรมที่คาดหวัง'},
+  {num:'2',name:'ClickUp Standard',hint:'Source of Truth'},
+  {num:'3',name:'Status Standard',hint:'6 สถานะ + กฎการเปลี่ยน'},
+  {num:'4',name:'Task Breakdown',hint:'Story → Task → Subtask'},
+  {num:'5',name:'Reporting Standard',hint:'Daily + Weekly format'},
+  {num:'6',name:'Decision Authority',hint:'ใครตัดสินใจอะไร'}
+];
+var OS_BODIES = [
+  // 1 Working Expectation
+  '<div class="sh">1.1 Responsibility</div><div class="card"><div class="cb"><table class="obs-table"><tr><th>พฤติกรรม</th><th>✅ ถูก</th><th>❌ ผิด</th></tr><tr><td>Status งาน</td><td class="obs-ok">อัปเดต ClickUp ทุกวัน</td><td class="obs-no">อัปเดตแค่ตอนเสร็จ</td></tr><tr><td>ความรับผิดชอบ</td><td class="obs-ok">รับงานแล้วทำจนจบ</td><td class="obs-no">รับงานแล้วปล่อยเงียบ</td></tr><tr><td>ปัญหา</td><td class="obs-ok">แจ้งทันทีที่พบ</td><td class="obs-no">รอให้ deadline ใกล้</td></tr></table></div></div><div class="sh">1.2 Response Timeframe</div><div class="card"><div class="cb"><table class="ftable"><tr><th>สถานการณ์</th><th>ต้องตอบสนองภายใน</th></tr><tr><td>Blocked กระทบ Timeline</td><td style="color:#8c2020;font-weight:500">แจ้ง TL ทันที ≤ 2 ชม.</td></tr><tr><td>Blocked กระทบ Dependency ทีมอื่น</td><td style="color:#8c2020;font-weight:500">แจ้ง PL ทันที ≤ 2 ชม.</td></tr><tr><td>Direct mention ใน Telegram</td><td style="color:var(--muted)">ภายใน 4 ชม. ทำการ</td></tr><tr><td>งาน assign ใหม่</td><td style="color:var(--muted)">ตอบรับภายใน 4 ชม.</td></tr><tr><td>งานไม่มี update &gt; 1 วัน</td><td style="color:#7a5008">ถือว่า Blocked — TL ต้องตาม</td></tr></table></div></div><div class="sh">1.3 Escalation Rule</div><div class="card"><div class="cb"><div class="report-box">1. ติดอะไร      → ระบุปัญหาชัดเจน\n2. กระทบอะไร   → งาน / ทีม / timeline ไหน\n3. ต้องการอะไร  → ตัดสินใจ / ข้อมูล / คนช่วย</div><div class="info-green" style="font-size:12px">✅ "ติด: Nexum API ไม่รองรับ bulk. กระทบ: DisbursementService. ต้องการ: Nexum TL confirm ภายในวันนี้"</div></div></div><div class="sh">1.4 Blocked Rule</div><div class="card"><div class="cb"><div class="info-blue" style="margin-bottom:10px">Blocked = เปลี่ยน Status ใน ClickUp ทันที + แจ้ง TL ใน Telegram</div><table class="ftable"><tr><th>เงื่อนไข</th><th>Action</th></tr><tr><td>Blocked ≤ 4 ชม.</td><td style="color:var(--muted);font-size:12px">แจ้ง TL</td></tr><tr><td>Blocked &gt; 4 ชม. หรือกระทบทีมอื่น</td><td style="color:#7a5008;font-weight:500;font-size:12px">แจ้ง PL ทันที</td></tr><tr><td>Blocked กระทบ release</td><td style="color:#8c2020;font-weight:500;font-size:12px">แจ้ง PL + COO ทันที</td></tr></table></div></div>',
+  // 2 ClickUp Standard
+  '<div class="sh">2.1 Required Fields</div><div class="card"><div class="cb"><table class="ftable"><tr><th>Field</th><th>คำอธิบาย</th><th>ตัวอย่าง</th></tr><tr><td>Title</td><td style="font-size:12px;color:var(--muted)">Naming Convention</td><td style="font-size:12px;color:var(--muted)">[BE] Payroll — DisbursementService</td></tr><tr><td>Owner</td><td style="font-size:12px;color:var(--muted)">1 คน ไม่ใช่ทีม</td><td style="font-size:12px;color:var(--muted)">Khun A</td></tr><tr><td>Priority</td><td style="font-size:12px;color:var(--muted)">Urgent/High/Normal/Low</td><td style="font-size:12px;color:var(--muted)">Urgent</td></tr><tr><td>Due Date</td><td style="font-size:12px;color:var(--muted)">ตกลงกับ PL</td><td style="font-size:12px;color:var(--muted)">25 May</td></tr><tr><td>Status</td><td style="font-size:12px;color:var(--muted)">เริ่มที่ To Do เสมอ</td><td style="font-size:12px;color:var(--muted)">To Do</td></tr></table></div></div><div class="sh">2.2 Source of Truth Rules</div><div class="card"><div class="cb"><div class="ck-list"><div class="ck-item"><span class="ck-icon" style="color:var(--red)">●</span>Chat ≠ ClickUp → ยึด ClickUp เสมอ</div><div class="ck-item"><span class="ck-icon" style="color:var(--red)">●</span>งานที่ไม่มีใน ClickUp → ไม่มีอยู่จริง</div><div class="ck-item"><span class="ck-icon" style="color:var(--red)">●</span>งานไม่มี Owner → PL ต้อง assign ก่อนเริ่ม</div></div></div></div><div class="sh">2.3 Status Change Rule</div><div class="card"><div class="cb"><table class="ftable"><tr><th>การเปลี่ยน</th><th>ใครเปลี่ยนได้</th><th>เงื่อนไข</th></tr><tr><td style="font-size:12px">To Do → In Progress</td><td style="font-size:12px;color:var(--muted)">Assignee</td><td style="font-size:12px;color:var(--muted)">—</td></tr><tr><td style="font-size:12px">In Progress → Blocked</td><td style="font-size:12px;color:var(--muted)">Assignee</td><td style="font-size:12px;color:var(--muted)">comment 3 ข้อ + แจ้ง TL</td></tr><tr><td style="font-size:12px">In Review → Done</td><td style="font-size:12px;color:var(--muted)">TL / PL</td><td style="font-size:12px;color:var(--muted)">ผ่าน Definition of Done</td></tr><tr><td style="font-size:12px">Done → ย้อนกลับ</td><td style="font-size:12px;color:#8c2020;font-weight:500">PL เท่านั้น</td><td style="font-size:12px;color:var(--muted)">แจ้งเหตุผลใน ClickUp</td></tr></table></div></div>',
+  // 3 Status Standard
+  '<div class="sh">Status Flow</div><div class="card"><div class="cb"><div class="sf-flow"><span class="sf-n sf-todo">To Do</span><span class="sf-arr">→</span><span class="sf-n sf-prog">In Progress</span><span class="sf-arr">⇄</span><span class="sf-n sf-blk">Blocked</span><span class="sf-arr">→</span><span class="sf-n sf-rev">In Review</span><span class="sf-arr">→</span><span class="sf-n sf-qa">QA</span><span class="sf-arr">→</span><span class="sf-n sf-done">Done</span></div></div></div><div class="sh">Entry / Exit / Observable</div><div class="card"><div class="cb"><table class="obs-table"><tr><th>Status</th><th>Entry</th><th>Exit</th><th>Observable</th></tr><tr><td><span class="sf-n sf-todo" style="font-size:11px;padding:2px 7px">To Do</span></td><td>Task ถูกสร้าง + required fields ครบ</td><td>Assignee เริ่มทำ</td><td>ห้าม start โดยไม่มี fields ครบ</td></tr><tr><td><span class="sf-n sf-prog" style="font-size:11px;padding:2px 7px">In Progress</span></td><td>Assignee เริ่มทำจริง</td><td>เสร็จ → In Review / ติด → Blocked</td><td>ต้องอัปเดตทุกวัน — ค้าง &gt;1 วัน = ผิด</td></tr><tr><td><span class="sf-n sf-blk" style="font-size:11px;padding:2px 7px">Blocked</span></td><td>แก้เองไม่ได้ใน 4 ชม.</td><td>ปัญหาแก้ → In Progress</td><td>comment 3 ข้อ + แจ้ง TL ทันที</td></tr><tr><td><span class="sf-n sf-rev" style="font-size:11px;padding:2px 7px">In Review</span></td><td>Code complete + request reviewer</td><td>ผ่าน DoD → Done / มีแก้ → In Progress</td><td>แนบ PR link ให้ Reviewer</td></tr><tr><td><span class="sf-n sf-done" style="font-size:11px;padding:2px 7px">Done</span></td><td>ผ่าน DoD ครบ — Leader approve</td><td>ไม่มี — ถ้าต้องแก้ สร้าง task ใหม่</td><td>ห้าม Assignee เปลี่ยนเองโดยไม่ผ่าน Review</td></tr></table></div></div>',
+  // 4 Task Breakdown
+  '<div class="sh">4.1 Structure</div><div class="card"><div class="cb"><div class="report-box">Story\n└── Task      ← unit ที่ติดตามได้\n    └── Subtask</div><div class="info-blue" style="margin-top:10px">Leader ติดตามระดับ Story — ทุก Task ต้องผ่าน DoD ก่อน Story ปิดได้</div></div></div><div class="sh">4.2 Naming Convention</div><div class="card"><div class="cb"><div class="report-box">[TEAM] Feature — Action</div><table class="ftable" style="margin-top:10px"><tr><th>Team</th><th>Prefix</th><th>ตัวอย่าง</th></tr><tr><td>Backend</td><td style="font-family:monospace;color:var(--df)">[BE]</td><td style="font-size:12px;color:var(--muted)">[BE] Payroll — DisbursementService enqueue</td></tr><tr><td>Frontend</td><td style="font-family:monospace;color:var(--pf)">[FE]</td><td style="font-size:12px;color:var(--muted)">[FE] Payroll — Disburse screen</td></tr><tr><td>QA</td><td style="font-family:monospace;color:var(--qa)">[QA]</td><td style="font-size:12px;color:var(--muted)">[QA] Payroll — E2E flow</td></tr></table></div></div><div class="sh">4.3 Good Task Checklist</div><div class="card"><div class="cb">'+rCk(['1 Owner ชัดเจน — ไม่ใช่ "ทีม"','1 Outcome ชัดเจน — รู้ว่าเสร็จหมายความว่าอะไร','AC Observable — วัดได้ ไม่ใช่ "ใช้งานได้"','≤ 3 วัน หรือมี Checkpoint ชัดเจน','Dependency ระบุแล้ว'])+'</div></div>',
+  // 5 Reporting
+  '<div class="sh">5.1 Daily Update</div><div class="card"><div class="cb"><div class="report-box">✅ เสร็จ:      [สิ่งที่ทำเสร็จ]\n🔄 กำลังทำ:   [สิ่งที่กำลังทำอยู่]\n🚫 ติด:        [ปัญหา — ถ้าไม่มีให้ระบุ "ไม่มี"]</div><div style="margin-top:8px;font-size:12px;color:var(--muted)">ช่องทาง: Telegram — ส่งภายใน 09:30 ทุกวัน (จ.–ศ.)</div></div></div><div class="sh">5.2 Weekly Summary</div><div class="card"><div class="cb"><div class="report-box">📊 สรุปสัปดาห์ที่ [N]  [วันที่ – วันที่]\n\n✅ ทำเสร็จ:\n  • [Task]\n🔄 กำลังทำ:\n  • [Task] — [% / ETA]\n⚠️ ปัญหา:\n  • [ปัญหา] → [action]\n📅 สัปดาห์หน้า:\n  • [แผน]</div><div style="margin-top:8px;font-size:12px;color:var(--muted)">ส่งทุกวันศุกร์ก่อน 17:00</div></div></div>',
+  // 6 Decision Authority
+  '<div class="sh">6.1 Decision Matrix</div><div class="card"><div class="cb"><table class="da-table"><tr><th>Area</th><th>Final Authority</th><th style="text-align:left">หมายเหตุ</th></tr><tr><td class="da-area">วิธีการทำงานจริง</td><td><span class="da-tag da-assignee">Assignee</span></td><td style="font-size:12px;color:var(--muted)">ตัดสินได้เอง</td></tr><tr><td class="da-area">Technical quality / code</td><td><span class="da-tag da-tl">TL</span></td><td style="font-size:12px;color:var(--muted)">SP, code review, re-assign ในทีม</td></tr><tr><td class="da-area">Scope / Priority / Timeline</td><td><span class="da-tag da-pl">PL</span></td><td style="font-size:12px;color:var(--muted)">Final — TL ไม่ override</td></tr><tr><td class="da-area">Architecture</td><td><span class="da-tag da-cto">CTO</span></td><td style="font-size:12px;color:var(--muted)">High-risk decisions</td></tr><tr><td class="da-area">Resource / Compliance</td><td><span class="da-tag da-coo">COO</span></td><td style="font-size:12px;color:var(--muted)">Cross-team + financial</td></tr></table></div></div><div class="sh">6.2 เชื่อมกับ People Layer</div><div class="card"><div class="cb"><div class="report-box">Operating Standards → Skill Matrix → IPR → LER → Career Path</div><div class="info-note" style="margin-top:8px;font-size:12px">Standard ไม่ใช่ bureaucracy — เป็น Evidence ที่ใช้ประเมินและพัฒนาคนได้อย่างยุติธรรม</div></div></div>'
+];
+
+var OS_cur = -1;
+function OS_buildSidebar() {
+  document.getElementById('os-sidebar').innerHTML = OS_SECS.map(function(s,i){
+    return '<button class="sbtn os-btn'+(i===OS_cur?' active':'')+'" onclick="OS_show('+i+')">'+
+      '<span class="snum">'+s.num+'</span>'+
+      '<span class="smeta"><span class="stitle">'+s.name+'</span><span class="shint">'+s.hint+'</span></span></button>';
+  }).join('');
+}
+function OS_show(i) {
+  OS_cur = i;
+  document.querySelectorAll('#os-sidebar .sbtn,#os-ov-btn').forEach(function(b){b.classList.remove('active');});
+  if(i===-1) {
+    document.getElementById('os-ov-btn').classList.add('active');
+    var cards = OS_SECS.map(function(s,idx){
+      return '<div class="card" style="cursor:pointer" onclick="OS_show('+idx+')"><div class="cb">'+
+        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">'+
+        '<span style="font-family:DM Mono,monospace;font-size:11px;padding:2px 7px;border-radius:4px;background:var(--os-dim);color:var(--os)">'+s.num+'</span>'+
+        '<span style="font-size:13px;font-weight:500">'+s.name+'</span></div>'+
+        '<div style="font-size:12px;color:var(--muted)">'+s.hint+'</div></div></div>';
+    }).join('');
+    document.getElementById('os-main').innerHTML = '<div class="fade-in">'+
+      '<div class="hero"><div class="hero-num" style="color:var(--os)">OS</div><div>'+
+      '<div class="hero-name">Operating Standards v3.1</div>'+
+      '<div class="hero-desc">มาตรฐานกลางที่ทุกคนในองค์กรต้องใช้ร่วมกัน ไม่ว่าจะอยู่ใน flow ไหน — Governance Layer</div>'+
+      '</div></div>'+
+      '<div class="sh">6 Standards</div><div class="g2">'+cards+'</div>'+
+      '<div class="sh">Observable Standard</div>'+
+      '<div class="card"><div class="cb"><div class="info-blue">ทุก checklist และกฎต้องตรวจสอบได้ทันทีว่าถูกหรือผิด — ไม่มีคำว่า "ขึ้นอยู่กับ"</div>'+
+      '<div style="margin-top:10px">'+rCk(['เปลี่ยน Status แล้วหรือยัง → ดู ClickUp ได้ทันที','ส่ง Daily update แล้วหรือยัง → ดู Telegram timestamp','มี Owner ไหม → ดู ClickUp Owner field','แจ้ง 3 ข้อครบไหม → ดู comment ใน task'])+'</div></div></div>'+
+      '<div class="nav-bar"><span></span><span class="nav-prog">Overview</span><button class="nav-btn" onclick="OS_show(0)">เริ่ม Standard 1 →</button></div>'+
+      '</div>';
+  } else {
+    document.querySelectorAll('#os-sidebar .sbtn')[i].classList.add('active');
+    var s = OS_SECS[i];
+    document.getElementById('os-main').innerHTML = '<div class="fade-in">'+
+      '<div class="hero"><div class="hero-num" style="color:var(--os)">'+s.num+'</div><div>'+
+      '<div class="hero-name">'+s.name+'</div></div></div>'+
+      OS_BODIES[i]+
+      '<div class="nav-bar">'+
+      '<button class="nav-btn" onclick="OS_show('+(i-1)+')" '+(i===0?'disabled':'')+'>← ก่อนหน้า</button>'+
+      '<span class="nav-prog">'+(i+1)+' / '+OS_SECS.length+'</span>'+
+      '<button class="nav-btn" onclick="OS_show('+(i+1)+')" '+(i===OS_SECS.length-1?'disabled':'')+'>ถัดไป →</button>'+
+      '</div></div>';
+  }
+  OS_buildSidebar();
+  document.getElementById('os-main').scrollTop=0;
+}
+
+// ── QA GOVERNANCE ──
+var QA_STEPS = [
+  {num:'1',name:'Evidence Collection',hint:'รวบรวม Evidence จากงานจริง'},
+  {num:'2',name:'Review',hint:'Reviewer ตรวจสอบตาม Standards'},
+  {num:'3',name:'Finding & Recommendation',hint:'สรุป Finding + Recommendation'},
+  {num:'4',name:'Corrective Action & Follow-up',hint:'แก้ไข + ตรวจซ้ำ'}
+];
+var QA_BODIES = [
+  '<div class="sh">Evidence ที่ใช้ (Observable)</div><div class="card"><div class="cb">'+rCk(['ClickUp Activity / Status History / Task Metadata','Daily / Weekly Report (Telegram)','QA / UAT Report','Release Log','Incident Record','Support Ticket','KPI / Metric'])+'</div></div><div class="sh">Review Scope</div><div class="card"><div class="cb"><table class="ftable"><tr><th>ประเภท</th><th>ปลายทาง</th></tr><tr><td>Process Compliance</td><td style="color:#145c37">✅ QA Governance</td></tr><tr><td>Documentation Compliance</td><td style="color:#145c37">✅ QA Governance</td></tr><tr><td>Output Quality / KPI</td><td style="color:#145c37">✅ QA Governance</td></tr><tr><td>Product Feature / Bug</td><td style="color:var(--muted)">➜ Support / Product Flow</td></tr><tr><td>Process Improvement</td><td style="color:var(--muted)">➜ CI Framework</td></tr></table></div></div>',
+  '<div class="sh">Rating Scale</div><div class="card"><div class="cb"><table class="ftable"><tr><th>Rating</th><th>ความหมาย</th><th>Action</th></tr><tr><td style="color:#145c37;font-weight:500">Pass</td><td style="font-size:12px;color:var(--muted)">ไม่พบ Gap</td><td style="font-size:12px;color:var(--muted)">Closed</td></tr><tr><td style="color:#7a5008;font-weight:500">Needs Improvement</td><td style="font-size:12px;color:var(--muted)">พบ Gap</td><td style="font-size:12px;color:var(--muted)">Corrective Action + Timeline</td></tr><tr><td style="color:#8c2020;font-weight:500">Critical</td><td style="font-size:12px;color:var(--muted)">Gap ผลกระทบสูง</td><td style="font-size:12px;color:#8c2020;font-weight:500">รายงาน COO ทันที</td></tr><tr><td style="color:var(--hint)">N/A</td><td style="font-size:12px;color:var(--muted)">ไม่มีรายการที่เกี่ยวข้อง</td><td style="font-size:12px;color:var(--muted)">Closed (N/A)</td></tr></table></div></div><div class="sh">กฎสำคัญ</div><div class="card"><div class="cb">'+rCk(['Finding ต้องมี Evidence อ้างอิงเสมอ — ห้ามใช้ความเห็นส่วนตัว','ทุก Review ต้องมีผลลัพธ์ชัดเจน — ไม่มีที่ค้างไว้','QA Framework ไม่มีอำนาจสั่งแก้มาตรฐาน — ทำได้แค่ออก Recommendation'])+'</div></div>',
+  '<div class="sh">Recommendation Standard</div><div class="card"><div class="cb">'+rCk(['Recommendation ปฏิบัติได้จริง','ระบุ Owner ที่รับผิดชอบ','ระบุ Timeline ที่คาดหวัง','ระบุ Priority (Critical = เร่งด่วน)','ถ้า Finding ชี้ว่ามาตรฐานมีปัญหา → ส่ง CI Framework ทันที'])+'</div></div><div class="sh">Gate</div><div class="card"><div class="cb"><div class="gate-chain"><div class="gate-box">Evidence Collected</div><div class="gate-arr">↓</div><div class="gate-box">Finding Issued</div><div class="gate-arr">↓</div><div class="gate-split"><div style="display:flex;flex-direction:column;align-items:center;gap:4px"><div class="gate-box gate-pass">Pass / N/A</div><div class="gate-arr">↓</div><div class="gate-box">Closed</div></div><div style="display:flex;flex-direction:column;align-items:center;gap:4px"><div class="gate-box" style="background:var(--amber-dim);border-color:rgba(146,97,10,.22);color:#7a5008;font-weight:500">Needs Improvement</div><div class="gate-arr">↓</div><div class="gate-box">Corrective Action</div></div></div></div></div></div>',
+  '<div class="sh">Corrective Action</div><div class="card"><div class="cb"><div class="info-amber" style="margin-bottom:10px">Corrective Action เป็นความรับผิดชอบของ TL / PL — ไม่ใช่ QA Framework</div>'+rCk(['Coaching / Training ทีม','ปรับวิธีการทำงาน','อัปเดต Documentation','ถ้า Finding ชี้ว่ามาตรฐานมีปัญหา → ส่ง CI Framework'])+'</div></div><div class="sh">Follow-up (Mandatory)</div><div class="card"><div class="cb"><div class="gate-chain"><div class="gate-split"><div style="display:flex;flex-direction:column;align-items:center;gap:4px"><div class="gate-box gate-pass">Resolved</div><div class="gate-arr">↓</div><div class="gate-box">Finding Closed</div></div><div style="display:flex;flex-direction:column;align-items:center;gap:4px"><div class="gate-box gate-fail">Unresolved</div><div class="gate-arr">↓</div><div class="gate-box" style="background:var(--amber-dim);border-color:rgba(146,97,10,.22);color:#7a5008">Escalate to COO</div></div></div></div></div></div>'
+];
+var QA_cur = -1;
+function QA_buildSidebar() {
+  document.getElementById('qa-sidebar').innerHTML = QA_STEPS.map(function(s,i){
+    return '<button class="sbtn qa-btn'+(i===QA_cur?' active':'')+'" onclick="QA_show('+i+')">'+
+      '<span class="snum">'+s.num+'</span>'+
+      '<span class="smeta"><span class="stitle">'+s.name+'</span><span class="shint">'+s.hint+'</span></span></button>';
+  }).join('');
+}
+function QA_show(i) {
+  QA_cur = i;
+  document.querySelectorAll('#qa-sidebar .sbtn,#qa-ov-btn').forEach(function(b){b.classList.remove('active');});
+  if(i===-1) {
+    document.getElementById('qa-ov-btn').classList.add('active');
+    document.getElementById('qa-main').innerHTML = '<div class="fade-in">'+
+      '<div class="hero"><div class="hero-num" style="color:var(--qa)">QA</div><div>'+
+      '<div class="hero-name">Quality Assurance v1.0 <span style="font-size:11px;padding:2px 7px;border-radius:999px;background:var(--qa-dim);border:1px solid var(--qa-mid);color:var(--qa)">Frozen</span></div>'+
+      '<div class="hero-desc">ตรวจสอบว่าทีมปฏิบัติตาม Standards — QA ไม่ได้มีหน้าที่จับผิด แต่ทำให้รู้ว่าสิ่งที่ทำอยู่ตรงกับที่กำหนดหรือไม่</div></div></div>'+
+      '<div class="sh">4 Steps</div>'+
+      '<div class="card"><div class="cb"><div class="ov-chain">'+rOvChain(QA_STEPS,'#92610a','QA_show')+'</div></div></div>'+
+      '<div class="sh">ตำแหน่งใน Governance Layer</div>'+
+      '<div class="card"><div class="cb"><div class="gate-chain">'+
+      '<div class="gate-box">Operating Standards · Execution Flows</div><div class="gate-arr">↓ ตรวจสอบ</div>'+
+      '<div class="gate-box" style="background:var(--qa-dim);border-color:var(--qa-mid);color:var(--qa);font-weight:500">QA Governance</div><div class="gate-arr">↓ Recommendation</div>'+
+      '<div class="gate-box" style="background:var(--ci-dim);border-color:var(--ci-mid);color:var(--ci);font-weight:500">CI Framework</div>'+
+      '</div></div></div>'+
+      '<div class="nav-bar"><span></span><span class="nav-prog">Overview</span><button class="nav-btn" onclick="QA_show(0)">เริ่ม Step 1 →</button></div>'+
+      '</div>';
+  } else {
+    document.querySelectorAll('#qa-sidebar .sbtn')[i].classList.add('active');
+    var s = QA_STEPS[i];
+    document.getElementById('qa-main').innerHTML = '<div class="fade-in">'+
+      '<div class="hero"><div class="hero-num" style="color:var(--qa)">'+s.num+'</div><div>'+
+      '<div class="hero-name">'+s.name+'</div></div></div>'+
+      QA_BODIES[i]+
+      '<div class="nav-bar">'+
+      '<button class="nav-btn" onclick="QA_show('+(i-1)+')" '+(i===0?'disabled':'')+'>← ก่อนหน้า</button>'+
+      '<span class="nav-prog">'+(i+1)+' / '+QA_STEPS.length+'</span>'+
+      '<button class="nav-btn" onclick="QA_show('+(i+1)+')" '+(i===QA_STEPS.length-1?'disabled':'')+'>ถัดไป →</button>'+
+      '</div></div>';
+  }
+  QA_buildSidebar();
+  document.getElementById('qa-main').scrollTop=0;
+}
+
+// ── CI FRAMEWORK ──
+var CI_STEPS = [
+  {num:'0',name:'Submit',hint:'ทุกคน submit ได้ทุกเมื่อ'},
+  {num:'1',name:'Review',hint:'Document Owner ทบทวน — 5 วัน'},
+  {num:'2',name:'Decision',hint:'COO ตัดสินใจ — 10 วัน'},
+  {num:'3',name:'Improvement',hint:'Conditional — เฉพาะ Approved'},
+  {num:'4',name:'Communication',hint:'Mandatory — แจ้งทุกกรณี'}
+];
+var CI_BODIES = [
+  '<div class="sh">สิ่งที่ Submit ได้</div><div class="card"><div class="cb"><div class="g2" style="gap:8px;margin:0">'+['Process / Workflow','Operating Standards','Template / Checklist','Documentation','Tool / Automation','Meeting / Reporting'].map(function(x){return '<div style="padding:8px 10px;background:var(--bg3);border-radius:var(--r-sm);font-size:12px;color:var(--muted)">'+x+'</div>';}).join('')+'</div></div></div><div class="sh">Scope</div><div class="card"><div class="cb"><table class="ftable"><tr><th>ประเภท</th><th>ปลายทาง</th></tr><tr><td>Process / Standards / Documentation</td><td style="color:#145c37">✅ CI Framework</td></tr><tr><td>Product Feature</td><td style="color:var(--muted)">➜ Product Flow</td></tr><tr><td>Bug Report</td><td style="color:var(--muted)">➜ Support Flow</td></tr></table></div></div>',
+  '<div class="sh">Checklist ก่อน Review</div><div class="card"><div class="cb">'+rCk(['เข้าใจปัญหาที่เสนอ','มี Evidence สนับสนุน','ประเมินผลกระทบ','วิเคราะห์ทางเลือก','ระบุ Owner ที่จะรับผิดชอบถ้า Approved'])+'</div></div><div class="info-note" style="font-size:12px">Output: Review Result → ส่งให้ COO เพื่อ Decision — Document Owner ไม่ตัดสินใจเอง</div>',
+  '<div class="sh">Decision Status</div><div class="card"><div class="cb"><table class="ftable"><tr><th>Status</th><th>ใช้เมื่อ</th></tr><tr><td style="color:#145c37;font-weight:500">Approved</td><td style="font-size:12px;color:var(--muted)">เห็นชอบ มี Owner ดำเนินการ</td></tr><tr><td style="color:#0f4fa3;font-weight:500">Planned</td><td style="font-size:12px;color:var(--muted)">เห็นชอบ แต่รอรอบถัดไป</td></tr><tr><td style="color:#7a5008;font-weight:500">Need More Info</td><td style="font-size:12px;color:var(--muted)">ข้อมูลยังไม่เพียงพอ</td></tr><tr><td style="color:#8c2020;font-weight:500">Rejected</td><td style="font-size:12px;color:var(--muted)">ไม่สอดคล้องหรือไม่คุ้มค่า — ต้องระบุเหตุผล</td></tr></table></div></div><div class="info-amber" style="font-size:12px">ไม่มีข้อเสนอใดที่ถูกเพิกเฉย — ทุกอันต้องได้รับ Status</div>',
+  '<div class="info-blue" style="margin-bottom:14px">เกิดขึ้นเฉพาะเมื่อ Decision = Approved หรือ Planned</div><div class="sh">Improvement Actions</div><div class="card"><div class="cb">'+rCk(['ปรับปรุง Process / Operating Standards','ปรับปรุง Template / Documentation','ปรับปรุง Tool','วางแผน Rollout'])+'</div></div><div class="info-note" style="font-size:12px">CI Framework ไม่แก้เอกสาร Flow อื่นเอง — ส่งต่อให้ Document Owner เป็นผู้ดำเนินการ</div>',
+  '<div class="sh">Communication Checklist (ทุกกรณี)</div><div class="card"><div class="cb">'+rCk(['แจ้งผลการพิจารณา','อธิบายเหตุผล','แจ้ง Version ที่เปลี่ยน (กรณี Approved/Planned)','ประกาศวันเริ่มใช้งาน (กรณี Approved/Planned)'])+'</div></div><div class="sh">Common Pitfalls</div><div class="card"><div class="cb">'+rFails(['Feedback ถูกเสนอแต่ไม่มีการติดตาม','ปฏิเสธโดยไม่อธิบายเหตุผล','เปลี่ยนมาตรฐานโดยไม่ประกาศก่อน','CI Framework แก้เอกสาร Flow อื่นเอง'])+'</div></div>'
+];
+var CI_cur = -1;
+function CI_buildSidebar() {
+  document.getElementById('ci-sidebar').innerHTML = CI_STEPS.map(function(s,i){
+    return '<button class="sbtn ci-btn'+(i===CI_cur?' active':'')+'" onclick="CI_show('+i+')">'+
+      '<span class="snum">'+s.num+'</span>'+
+      '<span class="smeta"><span class="stitle">'+s.name+'</span><span class="shint">'+s.hint+'</span></span></button>';
+  }).join('');
+}
+function CI_show(i) {
+  CI_cur = i;
+  document.querySelectorAll('#ci-sidebar .sbtn,#ci-ov-btn').forEach(function(b){b.classList.remove('active');});
+  if(i===-1) {
+    document.getElementById('ci-ov-btn').classList.add('active');
+    document.getElementById('ci-main').innerHTML = '<div class="fade-in">'+
+      '<div class="hero"><div class="hero-num" style="color:var(--ci)">CI</div><div>'+
+      '<div class="hero-name">Continuous Improvement v1.0 <span style="font-size:11px;padding:2px 7px;border-radius:999px;background:var(--amber-dim);border:1px solid rgba(146,97,10,.25);color:#7a5008">Draft</span></div>'+
+      '<div class="hero-desc">Entry point สำหรับ Feedback จากทุกคน — ทุกข้อเสนอจะได้รับการพิจารณาและแจ้งผลอย่างโปร่งใส</div></div></div>'+
+      '<div class="sh">5 Steps</div>'+
+      '<div class="card"><div class="cb"><div class="ov-chain">'+rOvChain(CI_STEPS,'#2d6e6e','CI_show')+'</div></div></div>'+
+      '<div class="sh">Gate</div>'+
+      '<div class="card"><div class="cb"><div class="gate-chain">'+
+      '<div class="gate-box">Feedback Received</div><div class="gate-arr">↓</div>'+
+      '<div class="gate-box">Decision Made</div><div class="gate-arr">↓</div>'+
+      '<div class="gate-split">'+
+      '<div style="display:flex;flex-direction:column;align-items:center;gap:4px"><div class="gate-box gate-fail">Rejected</div><div class="gate-arr">↓</div><div class="gate-box">Closed with Reason</div></div>'+
+      '<div style="display:flex;flex-direction:column;align-items:center;gap:4px"><div class="gate-box gate-pass">Approved / Planned</div><div class="gate-arr">↓</div><div class="gate-box gate-pass">Improvement Completed</div></div>'+
+      '</div></div></div></div>'+
+      '<div class="nav-bar"><span></span><span class="nav-prog">Overview</span><button class="nav-btn" onclick="CI_show(0)">เริ่ม Step 0 →</button></div>'+
+      '</div>';
+  } else {
+    document.querySelectorAll('#ci-sidebar .sbtn')[i].classList.add('active');
+    var s = CI_STEPS[i];
+    document.getElementById('ci-main').innerHTML = '<div class="fade-in">'+
+      '<div class="hero"><div class="hero-num" style="color:var(--ci)">'+s.num+'</div><div>'+
+      '<div class="hero-name">'+s.name+'</div></div></div>'+
+      CI_BODIES[i]+
+      '<div class="nav-bar">'+
+      '<button class="nav-btn" onclick="CI_show('+(i-1)+')" '+(i===0?'disabled':'')+'>← ก่อนหน้า</button>'+
+      '<span class="nav-prog">'+(i+1)+' / '+CI_STEPS.length+'</span>'+
+      '<button class="nav-btn" onclick="CI_show('+(i+1)+')" '+(i===CI_STEPS.length-1?'disabled':'')+'>ถัดไป →</button>'+
+      '</div></div>';
+  }
+  CI_buildSidebar();
+  document.getElementById('ci-main').scrollTop=0;
+}
+
+// ── BOOT ──
+PF_buildSidebar();
+DF_buildSidebar();
+OF_buildSidebar();
+SF_buildSidebar();
+OS_buildSidebar();
+QA_buildSidebar();
+CI_buildSidebar();
+showHome();
+</script>
+</body>
+</html>
